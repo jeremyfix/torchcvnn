@@ -1,5 +1,7 @@
 # Complex-Valued Neural Networks (CVNN) - Pytorch
 
+![docs](https://github.com/jeremyfix/torchcvnn/actions/workflows/doc.yml/badge.svg)
+
 This is a library that uses [pytorch](https://pytorch.org) as a back-end for complex valued neural networks.
 
 It was initially developed by Victor Dhédin and Jérémie Levi during their third year project at CentraleSupélec. 

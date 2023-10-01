@@ -5,7 +5,7 @@ import torch.nn as nn
 class MaxPool2d(nn.Module):
     r"""Applies a 2D max pooling on the module of the input signal
 
-    In the simplest case, the output value of the layer with input size $(N, C, H, W)$, output $(N, C, H_{out}, W_{out})$ and :attr:`kernel_size` :math:`(kH, kW)` can be precisely described as:
+    In the simplest case, the output value of the layer with input size $(N, C, H, W)$, output $(N, C, H_{out}, W_{out})$ and `kernel_size` `(kH, kW)` can be precisely described as:
 
     $$
     \begin{aligned}
@@ -15,7 +15,6 @@ class MaxPool2d(nn.Module):
     \end{aligned}
     $$
 
-    Returns complex values associated to the MaxPool indices.
     """
 
     def __init__(

@@ -9,7 +9,8 @@ markdown_extensions:
 plugins:
     - search
     - include-markdown
-    - mkdocstrings
+    - mkdocstrings:
+        default_handler: python
 
 theme:
     name: readthedocs

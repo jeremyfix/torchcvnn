@@ -9,6 +9,7 @@ markdown_extensions:
 plugins:
     - search
     - include-markdown
+    - mkdocstrings
 
 theme:
     name: readthedocs
@@ -16,3 +17,5 @@ theme:
 nav: 
   - Home: index.md
   - Installation: installation.md
+  - Modules:
+    - torchcvnn.nn: nn.md

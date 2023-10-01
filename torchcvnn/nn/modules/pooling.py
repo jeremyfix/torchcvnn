@@ -46,7 +46,7 @@ class MaxPool2d(nn.Module):
             return z.flatten()[indices]
 
 
-class C_AvgPool2d(nn.Module):
+class AvgPool2d(nn.Module):
     """
     Implementation of torch.nn.AvgPool2d for complex numbers.
     Apply AvgPool2d on the real and imaginary part.

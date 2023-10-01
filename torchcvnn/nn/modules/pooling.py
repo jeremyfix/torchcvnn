@@ -8,11 +8,11 @@ class MaxPool2d(nn.Module):
     In the simplest case, the output value of the layer with input size $(N, C, H, W)$, output $(N, C, H_{out}, W_{out})$ and :attr:`kernel_size` :math:`(kH, kW)` can be precisely described as:
 
     $$
-        \begin{aligned}
-            out(N_i, C_j, h, w) ={} & \max_{m=0, \ldots, kH-1} \max_{n=0, \ldots, kW-1} \\
-                                    & \text{|input|}(N_i, C_j, \text{stride[0]} \times h + m,
+    \begin{aligned}
+    out(N_i, C_j, h, w) ={} & \max_{m=0, \ldots, kH-1} \max_{n=0, \ldots, kW-1} \\
+                            & \text{|input|}(N_i, C_j, \text{stride[0]} \times h + m,
                                                    \text{stride[1]} \times w + n)
-        \end{aligned}
+    \end{aligned}
     $$
 
     Returns complex values associated to the MaxPool indices.

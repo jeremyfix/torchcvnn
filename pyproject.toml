@@ -1,0 +1,10 @@
+[project]
+name = "torchcvnn"
+version = "0.0.1"
+
+dependencies = [
+    "torch >= 2.0"
+]
+
+[tool.setuptools]
+packages = ["torchcvnn"]

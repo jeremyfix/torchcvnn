@@ -1,6 +1,6 @@
 # Complex-Valued Neural Networks (CVNN) - Pytorch
 
-![docs](https://github.com/jeremyfix/torchcvnn/actions/workflows/doc.yml/badge.svg)
+[![docs](https://github.com/jeremyfix/torchcvnn/actions/workflows/doc.yml/badge.svg)](https://jeremyfix.github.io/torchcvnn/)
 
 This is a library that uses [pytorch](https://pytorch.org) as a back-end for complex valued neural networks.
 

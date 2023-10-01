@@ -1,0 +1,15 @@
+site_name: Complex Valued Neural Networks in pytorch
+theme: readthedocs
+
+markdown_extensions:
+    - attr_list
+    - toc:
+        permalink: True
+
+plugins:
+    - search
+    - include-markdown
+
+theme:
+    name: readthedocs
+

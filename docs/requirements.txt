@@ -6,5 +6,6 @@ mkdocs-gen-files
 mkdocs-section-index
 mkdocs-material
 mkdocs-material-extensions
+black
 numpy
 matplotlib

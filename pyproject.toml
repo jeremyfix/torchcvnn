@@ -3,5 +3,6 @@ name = "torchcvnn"
 version = "0.0.1"
 
 dependencies = [
-    "torch >= 2.0"
+    "torch >= 2.0",
+	"numpy"
 ]

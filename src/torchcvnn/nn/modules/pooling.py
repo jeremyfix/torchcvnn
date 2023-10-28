@@ -1,5 +1,10 @@
+# Standard imports
+from typing import Optional
+
+# External imports
 import torch
 import torch.nn as nn
+from torch.nn.common_types import _size_2_t
 
 
 class MaxPool2d(nn.Module):
@@ -15,16 +20,26 @@ class MaxPool2d(nn.Module):
     \end{aligned}
     $$
 
+    Internally, it is relying on the `torch.nn.MaxPool2d`
+    
+    Arguments:
+        kernel_size: thr size of the window to take a max over
+        stride: the stride of the window
+        padding: implicit negative infinity padding to be added
+        dilation: a parameter that controls the stride of elements in the window
+        ceil_mode: when `True`, use `ceil` instead of `floor` to compute the output shape
+        return_indices: if `True`, will return the max indices along with the outputs
+
     """
 
     def __init__(
         self,
-        kernel_size,
-        stride=None,
-        padding=0,
-        dilation=1,
-        ceil_mode=False,
-        return_indices=False,
+        kernel_size: _size_2_t,
+        stride: Optional[_size_2_t] = None,
+        padding: _size_2_t = 0,
+        dilation: _size_2_t = 1,
+        ceil_mode: bool = False,
+        return_indices: bool = False,
     ) -> None:
         super().__init__()
         self.return_indices = return_indices
@@ -37,7 +52,10 @@ class MaxPool2d(nn.Module):
             return_indices=True,
         )
 
-    def forward(self, z: torch.Tensor):
+    def forward(self, z: torch.Tensor) -> torch.Tensor:
+        """
+        Computes and return the MaxPool over the magnitude of the input
+        """
         _, indices = self.m(torch.abs(z))
 
         if self.return_indices:
@@ -50,17 +68,25 @@ class AvgPool2d(nn.Module):
     """
     Implementation of torch.nn.AvgPool2d for complex numbers.
     Apply AvgPool2d on the real and imaginary part.
-    Returns complex values associated to the AvgPool2dresults.
+    Returns complex values associated to the AvgPool2d results.
+
+    Arguments:
+        kernel_size: thr size of the window to compute the average
+        stride: the stride of the window
+        padding: implicit negative infinity padding to be added
+        ceil_mode: when `True`, use `ceil` instead of `floor` to compute the output shape
+        count_include_pad: when `True`, will include the zero-padding in the averaging calculation
+        divisor_override: if specified, it will be used as divisor, otherwise size of the pooling region will be used.
     """
 
     def __init__(
         self,
-        kernel_size,
-        stride=None,
-        padding=0,
-        ceil_mode=False,
-        count_include_pad=True,
-        divisor_override=None,
+        kernel_size: _size_2_t,
+        stride: Optional[_size_2_t] = None,
+        padding: _size_2_t = 0,
+        ceil_mode: bool = False,
+        count_include_pad: bool = True,
+        divisor_override: Optional[int] = None,
     ) -> None:
         super().__init__()
         if type(kernel_size) == int:
@@ -88,5 +114,8 @@ class AvgPool2d(nn.Module):
             divisor_override,
         )
 
-    def forward(self, z: torch.Tensor):
+    def forward(self, z: torch.Tensor) -> torch.Tensor:
+        """
+        Computes the average over the real and imaginery parts.
+        """
         return torch.view_as_complex(self.m(torch.view_as_real(z)))

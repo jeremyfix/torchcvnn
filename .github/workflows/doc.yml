@@ -19,7 +19,5 @@ jobs:
           pip install -r docs/requirements.txt
       - name: Install torchcvnn
         run: pip install .
-      - name: Generate illustrations
-        run: python docs/gen_images.py
       - name: Generate and deploy the documentation
         run: mkdocs gh-deploy --force --clean --verbose

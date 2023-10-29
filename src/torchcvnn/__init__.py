@@ -1,6 +1,6 @@
 # MIT License
 
-# Copyright (c) 2023 Jeremy Fix
+# Copyright (c) 2023 Jérémie Levi, Victor Dhédin, Jeremy Fix
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,3 +21,10 @@
 # SOFTWARE.
 
 __version__ = "0.0.1"
+
+"""
+# Torchcvnn
+
+This provides several modules (layers, activation functions) suitable for
+optimizing complex valued neural networks with the pytorch framework.
+"""

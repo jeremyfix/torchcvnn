@@ -21,3 +21,4 @@
 # SOFTWARE.
 
 from .pooling import MaxPool2d, AvgPool2d
+from .activation import CReLU, CPReLU, CELU, CCELU, CGELU, zReLU

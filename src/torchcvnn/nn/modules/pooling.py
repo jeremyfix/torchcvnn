@@ -127,10 +127,18 @@ class AvgPool2d(nn.Module):
             else:
                 self.stride = stride
 
+        if type(padding) == int:
+            self.padding = [padding] * 2 + [0]
+        elif type(padding) == tuple:
+            if len(padding) < 3:
+                self.padding = [padding] + [0]
+            else:
+                self.padding = padding
+
         self.m = torch.nn.AvgPool3d(
             self.kernel_size,
             self.stride,
-            padding,
+            self.padding,
             ceil_mode,
             count_include_pad,
             divisor_override,

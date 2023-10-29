@@ -14,6 +14,17 @@ def test_mpool2d():
     inputs = inputs.unsqueeze(0).unsqueeze(0)
     outputs = mpool(inputs)
 
+    expected_outputs = (
+        torch.tensor(
+            [
+                [2 * i + 1 + (2 * j + 1) * 1j for i in range(N // 2)]
+                for j in range(N // 2)
+            ]
+        )
+        .unsqueeze(0)
+        .unsqueeze(0)
+    )
+    assert torch.allclose(outputs, expected_outputs)
     expected_outputs = torch.tensor(
         [[2 * i + 1 + (2 * j + 1) * 1j for i in range(N // 2)] for j in range(N // 2)]
     )

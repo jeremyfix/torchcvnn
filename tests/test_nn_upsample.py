@@ -20,22 +20,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .pooling import MaxPool2d, AvgPool2d
-from .dropout import Dropout, Dropout2d
-from .conv import ConvTranspose2d
-from .upsampling import Upsample
-from .activation import (
-    CReLU,
-    CPReLU,
-    CELU,
-    CCELU,
-    CGELU,
-    CSigmoid,
-    CTanh,
-    zReLU,
-    zAbsReLU,
-    zLeakyReLU,
-    Mod,
-    modReLU,
-    Cardioid,
-)
+# External imports
+import torch
+
+# Local imports
+import torchcvnn.nn as c_nn
+
+
+def test_upsample():
+    z = torch.randn((1, 1, 2, 2), dtype=torch.complex64)
+    m = c_nn.Upsample(scale_factor=2, mode="nearest")
+    output = m(z)
+    print(output)
+
+    m = c_nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True)
+    output = m(z)
+    print(output)
+
+
+if __name__ == "__main__":
+    test_upsample()

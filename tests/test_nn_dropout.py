@@ -20,20 +20,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .pooling import MaxPool2d, AvgPool2d
-from .dropout import Dropout, Dropout2d
-from .activation import (
-    CReLU,
-    CPReLU,
-    CELU,
-    CCELU,
-    CGELU,
-    CSigmoid,
-    CTanh,
-    zReLU,
-    zAbsReLU,
-    zLeakyReLU,
-    Mod,
-    modReLU,
-    Cardioid,
-)
+# External imports
+import torch
+
+# Local imports
+import torchcvnn.nn as c_nn
+
+
+def test_dropout():
+    dropout = c_nn.Dropout(0.5)
+
+    x = torch.randn((3, 3), dtype=torch.complex64)
+    output = dropout(x)
+
+
+def test_dropout2d():
+    dropout = c_nn.Dropout2d(0.5)
+
+    B, C, H, W = 2, 3, 5, 6
+    x = torch.randn((B, C, H, W), dtype=torch.complex64)
+    output = dropout(x)
+
+
+if __name__ == "__main__":
+    test_dropout()
+    test_dropout2d()

@@ -62,8 +62,36 @@ def test_cgelu():
     output = activation(x)
 
 
+def test_sigmoid():
+    activation = c_nn.Sigmoid()
+
+    x = torch.randn((3, 3), dtype=torch.complex64)
+    output = activation(x)
+
+
 def test_zrelu():
     activation = c_nn.zReLU()
+
+    x = torch.randn((3, 3), dtype=torch.complex64)
+    output = activation(x)
+
+
+def test_zleakyrelu():
+    activation = c_nn.zLeakyReLU()
+
+    x = torch.randn((3, 3), dtype=torch.complex64)
+    output = activation(x)
+
+
+def test_mod():
+    activation = c_nn.Mod()
+
+    x = torch.randn((3, 3), dtype=torch.complex64)
+    output = activation(x)
+
+
+def test_modReLU():
+    activation = c_nn.modReLU()
 
     x = torch.randn((3, 3), dtype=torch.complex64)
     output = activation(x)
@@ -75,4 +103,8 @@ if __name__ == "__main__":
     test_celu()
     test_ccelu()
     test_cgelu()
+    test_sigmoid()
     test_zrelu()
+    test_zleakyrelu()
+    test_mod()
+    test_modReLU()

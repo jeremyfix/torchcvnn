@@ -122,6 +122,24 @@ class CGELU(IndependentRealImag):
         super().__init__(nn.GELU)
 
 
+class Sigmoid(IndependentRealImag):
+    """
+    Applies a Sigmoid independently on both the real and imaginary parts
+
+    as used in Nitta Tohru. An extension of the back-propagation algorithm to complex numbers. Neural Networks, 10(9):1391–1415, November 1997.
+
+
+    $$
+    Sigmoid(z) = Sigmoid(Re[z]) + Sigmoid(Im[z])j
+    $$
+
+    where the real valued sigmoid is applied in the right hand side terms.
+    """
+
+    def __init__(self) -> None:
+        super().__init__(nn.Sigmoid)
+
+
 class zReLU(nn.Module):
     r"""
     Applies a zReLU
@@ -176,3 +194,52 @@ class zLeakyReLU(nn.Module):
         pos_real = z.real > 0
         pos_img = z.imag > 0
         return z * pos_real * pos_img + self.a * (z * ~(pos_real * pos_img))
+
+
+class Mod(nn.Module):
+    r"""
+    Extracts the magnitude of the complex input: maps to $\mathbb{R}$
+
+    $$
+    Mod(z) = |z|
+    $$
+
+    This activation function allows to go from complex values to real
+    values.
+
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, z: torch.Tensor):
+        """
+        Performs the forward pass.
+
+        Arguments:
+            z: the input tensor on which to apply the activation function
+        """
+        return torch.abs(z)
+
+
+class modReLU(nn.Module):
+    r"""
+    Applies a ReLU with parametric offset on the amplitude, keeping the phase unchanged.
+
+    $$
+    modReLU(z = r e^{\theta j}) = ReLU(r + b) e^{\theta j})
+    $$
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.b = torch.nn.Parameter(torch.tensor(0.0, dtype=torch.float), True)
+
+    def forward(self, z: torch.Tensor):
+        """
+        Performs the forward pass.
+
+        Arguments:
+            z: the input tensor on which to apply the activation function
+        """
+        return nn.functional.relu(z.abs() + self.b) * torch.exp(1j * z.angle())

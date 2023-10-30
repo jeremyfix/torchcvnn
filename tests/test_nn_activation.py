@@ -62,8 +62,15 @@ def test_cgelu():
     output = activation(x)
 
 
-def test_sigmoid():
-    activation = c_nn.Sigmoid()
+def test_csigmoid():
+    activation = c_nn.CSigmoid()
+
+    x = torch.randn((3, 3), dtype=torch.complex64)
+    output = activation(x)
+
+
+def test_ctanh():
+    activation = c_nn.CTanh()
 
     x = torch.randn((3, 3), dtype=torch.complex64)
     output = activation(x)
@@ -97,14 +104,23 @@ def test_modReLU():
     output = activation(x)
 
 
+def test_cardioid():
+    activation = c_nn.Cardioid()
+
+    x = torch.randn((3, 3), dtype=torch.complex64)
+    output = activation(x)
+
+
 if __name__ == "__main__":
     test_crelu()
     test_cprelu()
     test_celu()
     test_ccelu()
     test_cgelu()
-    test_sigmoid()
+    test_csigmoid()
+    test_ctanh()
     test_zrelu()
     test_zleakyrelu()
     test_mod()
     test_modReLU()
+    test_cardioid()

@@ -122,7 +122,7 @@ class CGELU(IndependentRealImag):
         super().__init__(nn.GELU)
 
 
-class Sigmoid(IndependentRealImag):
+class CSigmoid(IndependentRealImag):
     """
     Applies a Sigmoid independently on both the real and imaginary parts
 
@@ -130,7 +130,7 @@ class Sigmoid(IndependentRealImag):
 
 
     $$
-    Sigmoid(z) = Sigmoid(Re[z]) + Sigmoid(Im[z])j
+    CSigmoid(z) = Sigmoid(Re[z]) + Sigmoid(Im[z])j
     $$
 
     where the real valued sigmoid is applied in the right hand side terms.
@@ -138,6 +138,21 @@ class Sigmoid(IndependentRealImag):
 
     def __init__(self) -> None:
         super().__init__(nn.Sigmoid)
+
+
+class CTanh(IndependentRealImag):
+    """
+    Applies a Tanh independently on both the real and imaginary parts
+
+    $$
+    CTanh(z) = Tanh(Re[z]) + Tanh(Im[z])j
+    $$
+
+    where the real valued sigmoid is applied in the right hand side terms.
+    """
+
+    def __init__(self) -> None:
+        super().__init__(nn.Tanh)
 
 
 class zReLU(nn.Module):
@@ -243,3 +258,33 @@ class modReLU(nn.Module):
             z: the input tensor on which to apply the activation function
         """
         return nn.functional.relu(z.abs() + self.b) * torch.exp(1j * z.angle())
+
+
+class Cardioid(nn.Module):
+    r"""
+    Applies a ReLU with parametric offset on the amplitude, keeping the phase unchanged.
+
+    $$
+    Cardioid(z = r e^{\theta j}) = \frac{1+\cos(\theta)}{2} z
+    $$
+
+    As proposed by Virtue et al. (2019). For real numbers, e.g. $\theta \in \{0,
+    \pi\}$, it reduces to the ReLU :
+
+    $$
+    \forall r \in \mathbb{R}, \theta \in \{0, \pi\}, Cardiod(r e^{\theta j}) = Relu(r)
+    $$
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.b = torch.nn.Parameter(torch.tensor(0.0, dtype=torch.float), True)
+
+    def forward(self, z: torch.Tensor):
+        """
+        Performs the forward pass.
+
+        Arguments:
+            z: the input tensor on which to apply the activation function
+        """
+        return 0.5 * (1 + torch.cos(z.angle())) * z

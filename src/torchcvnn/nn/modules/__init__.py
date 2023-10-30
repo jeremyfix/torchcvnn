@@ -27,9 +27,11 @@ from .activation import (
     CELU,
     CCELU,
     CGELU,
-    Sigmoid,
+    CSigmoid,
+    CTanh,
     zReLU,
     zLeakyReLU,
     Mod,
     modReLU,
+    Cardioid,
 )

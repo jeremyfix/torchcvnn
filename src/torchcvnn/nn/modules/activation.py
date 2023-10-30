@@ -182,6 +182,35 @@ class zReLU(nn.Module):
         return z * pos_real * pos_img
 
 
+class zAbsReLU(nn.Module):
+    r"""
+    Applies a zAbsReLU
+
+    $$
+    zAbsReLU(z) = \begin{cases} z & \mbox{if } |z| \geq a\\ 0 & \mbox{otherwise}  \end{cases}
+    $$
+
+    This cancels all the complex plane in the circle of radius $a$, where $a$ is
+    trainable.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.a = torch.nn.parameter.Parameter(
+            data=torch.Tensor([1.0]), requires_grad=True
+        )
+
+    def forward(self, z: torch.Tensor):
+        """
+        Performs the forward pass.
+
+        Arguments:
+            z: the input tensor on which to apply the activation function
+        """
+        mask = z.abs() < self.a
+        return z * mask
+
+
 class zLeakyReLU(nn.Module):
     r"""
     Applies a zReLU

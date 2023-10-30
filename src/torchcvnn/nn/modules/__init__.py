@@ -30,6 +30,7 @@ from .activation import (
     CSigmoid,
     CTanh,
     zReLU,
+    zAbsReLU,
     zLeakyReLU,
     Mod,
     modReLU,

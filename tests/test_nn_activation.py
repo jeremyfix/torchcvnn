@@ -83,6 +83,13 @@ def test_zrelu():
     output = activation(x)
 
 
+def test_zabsrelu():
+    activation = c_nn.zAbsReLU()
+
+    x = torch.randn((3, 3), dtype=torch.complex64)
+    output = activation(x)
+
+
 def test_zleakyrelu():
     activation = c_nn.zLeakyReLU()
 
@@ -120,6 +127,7 @@ if __name__ == "__main__":
     test_csigmoid()
     test_ctanh()
     test_zrelu()
+    test_zabsrelu()
     test_zleakyrelu()
     test_mod()
     test_modReLU()

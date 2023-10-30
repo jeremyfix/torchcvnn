@@ -127,7 +127,7 @@ class zReLU(nn.Module):
     Applies a zReLU
 
     $$
-    zRELU(z) = \begin{cases} 0 & \mbox{if } Re[z] > 0 \mbox{ and } Im[z] > 0\\ z & \mbox{otherwise}  \end{cases}
+    zRELU(z) = \begin{cases} z & \mbox{if } Re[z] > 0 \mbox{ and } Im[z] > 0\\ 0 & \mbox{otherwise}  \end{cases}
     $$
 
     All the quadrant where both `Re[z]` and `Im[z]` are non negative are
@@ -147,3 +147,32 @@ class zReLU(nn.Module):
         pos_real = z.real > 0
         pos_img = z.imag > 0
         return z * pos_real * pos_img
+
+
+class zLeakyReLU(nn.Module):
+    r"""
+    Applies a zReLU
+
+    $$
+    zLeajyReLU(z) = \begin{cases} z & \mbox{if } Re[z] > 0 \mbox{ and } Im[z] >
+    0\\ a.z & \mbox{otherwise}  \end{cases}
+    $$
+
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.a = torch.nn.parameter.Parameter(
+            data=torch.Tensor([0.2]), requires_grad=True
+        )
+
+    def forward(self, z: torch.Tensor):
+        """
+        Performs the forward pass.
+
+        Arguments:
+            z: the input tensor on which to apply the activation function
+        """
+        pos_real = z.real > 0
+        pos_img = z.imag > 0
+        return z * pos_real * pos_img + self.a * (z * ~(pos_real * pos_img))

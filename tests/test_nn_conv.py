@@ -20,21 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .pooling import MaxPool2d, AvgPool2d
-from .dropout import Dropout, Dropout2d
-from .conv import ConvTranspose2d
-from .activation import (
-    CReLU,
-    CPReLU,
-    CELU,
-    CCELU,
-    CGELU,
-    CSigmoid,
-    CTanh,
-    zReLU,
-    zAbsReLU,
-    zLeakyReLU,
-    Mod,
-    modReLU,
-    Cardioid,
-)
+# External imports
+import torch
+
+# Local imports
+import torchcvnn.nn as c_nn
+
+
+def test_convtranspose2d():
+    m = c_nn.ConvTranspose2d(16, 33, 3, stride=2)
+
+    x = torch.randn((20, 16, 50, 100), dtype=torch.complex64)
+    output = m(x)
+    assert output.shape == (20, 33, 101, 201)
+
+
+if __name__ == "__main__":
+    test_convtranspose2d()

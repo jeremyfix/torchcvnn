@@ -20,23 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .pooling import MaxPool2d, AvgPool2d
-from .dropout import Dropout, Dropout2d
-from .conv import ConvTranspose2d
-from .batchnorm import BatchNorm2d
-from .upsampling import Upsample
-from .activation import (
-    CReLU,
-    CPReLU,
-    CELU,
-    CCELU,
-    CGELU,
-    CSigmoid,
-    CTanh,
-    zReLU,
-    zAbsReLU,
-    zLeakyReLU,
-    Mod,
-    modReLU,
-    Cardioid,
-)
+# External imports
+import torch
+
+# Local imports
+import torchcvnn.nn as c_nn
+
+
+def test_batchnorm2d():
+    B, C, H, W = 20, 16, 50, 100
+    m = c_nn.BatchNorm2d(C)
+
+    x = torch.randn((B, C, H, W), dtype=torch.complex32)
+    output = m(x)
+
+
+if __name__ == "__main__":
+    test_batchnorm2d()

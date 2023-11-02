@@ -20,6 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Standard imports
+import math
+
 # External imports
 import torch
 import torch.nn as nn
@@ -42,11 +45,18 @@ def inv_sqrt_22_batch(M: torch.Tensor) -> torch.Tensor:
     return M_inv
 
 
-class BatchNorm(nn.Module):
-    """
+class BatchNorm2d(nn.Module):
+    r"""
     BatchNorm for complex valued neural networks.
 
     As defined by Trabelsi et al. (2018)
+
+    Arguments:
+        num_features: $C$ from an expected input of size $(B, C, H, W)$
+        eps: a value added to the denominator for numerical stability. Default $1e-5$.
+        momentum: the value used for the running mean and running var computation. Can be set to `None` for cumulative moving average (i.e. simple average). Default: $0.1$
+        affine: a boolean value that when set to `True`, this module has learnable affine parameters. Default: `True`
+        track_running_stats: a boolean value that when set to `True`, this module tracks the running mean and variance, and when set to`False`, this module does not track such statistics, and initializes statistics buffers running_mean and running_var as None. When these buffers are None, this module always uses batch statistics. in both training and eval modes. Default: `True`
     """
 
     def __init__(
@@ -55,141 +65,62 @@ class BatchNorm(nn.Module):
         eps: float = 1e-5,
         momentum: float = 0.1,
         affine: bool = True,
+        track_running_stats: bool = True,
         device=None,
     ) -> None:
-        factory_kwargs = {'device': device, 'dtype': torch.complex64}
         super().__init__()
-   
+
         self.num_features = num_features
         self.eps = eps
         self.momentum = momentum
         self.affine = affine
-        self.device = device
+        self.track_running_stats = track_running_stats
 
         if self.affine:
-            self.weight = Parameter(torch.empty(num_features, **factory_kwargs))
-            self.bias = Parameter(torch.empty(num_features, **factory_kwargs))
+            self.weight = torch.nn.parameter.Parameter(
+                torch.empty((num_features, 2, 2), device=device)
+            )
+            self.bias = torch.nn.parameter.Parameter(
+                torch.empty((num_features, 2), device=device, dtype=torch.complex64)
+            )
         else:
             self.register_parameter("weight", None)
             self.register_parameter("bias", None)
 
-        self.register_buffer('running_mean', torch.zeros(num_features, **factory_kwargs))
-        self.register_buffer('running_var', torch.ones(num_features, **factory_kwargs))
-
+        if self.track_running_stats:
+            self.register_buffer(
+                "running_mean",
+                torch.zeros((num_features,), device=device, dtype=torch.complex64),
+            )
+            self.register_buffer(
+                "running_var", torch.ones((num_features, 2, 2), device=device)
+            )
+            self.register_buffer(
+                "num_batches_tracked", torch.tensor(0, dtype=torch.long, device=device)
+            )
+        else:
+            self.register_buffer("running_mean", None)
+            self.register_buffer("running_var", None)
+            self.register_buffer(
+                "num_batches_tracked",
+                None,
+            )
         self.reset_parameters()
 
     def reset_running_stats(self) -> None:
-        self.running_mean.zero_()
-        self.running_var[]
-        identity = torch.eye(2) / torch.sqrt(torch.tensor(2))
-        self.gamma = torch.nn.Parameter(identity, requires_grad=True, device=device)
-        self.beta = torch.nn.Parameter(
-            torch.zeros(2), requires_grad=True, device=device
-        )
+        if self.track_running_stats:
+            self.running_mean.zero_()
+            self.running_var.view(-1, 2).fill_diagonal_(1)
 
     def reset_parameters(self) -> None:
-        self.reset_running_stats()
-        if self.affine:
-            init.ones_(self.weight)
-            init.zeros_(self.bias)
-
-    def init_running_avg(self, n_features):
-        I = torch.eye(2) / torch.sqrt(torch.tensor(2))
-        # [C, H, W, 2, 2]
-        self.sigma_running = self.sigma = I.tile(n_features, 1, 1)
-        # [C, H, W, 2]
-        self.mu_running = self.mu = torch.zeros(1, 2).tile(n_features, 1)
-
-    def update_mu_sigma(self, z: torch.Tensor):
-        """
-        Update mu and sigma matrix.
-        """
-        # [B, C, H, W, 2]
-        B, C, H, W, _ = z.shape
-        # [B, C*H*W, 2]
-        z = z.reshape(B, C * H * W, 2)
-
-        ### MEAN
-        # [1, C*H*W, 2]
-        self.mu = torch.mean(z, dim=0).unsqueeze(0)
-
-        ### COV
-        # [B, C*H*W, 2]
-        x_centered = z - self.mu
-        # [B*C*H*W, 2]
-        x_centered_b = x_centered.reshape(B * C * H * W, 2)
-        # [B*C*H*W, 2] = [B*C*H*W, 2, 1] @ [B*C*H*W, 1, 2]
-        prods = torch.bmm(x_centered_b.unsqueeze(2), x_centered_b.unsqueeze(1))
-        # [B, C*H*W, 2, 2]
-        prods = prods.view(B, C * H * W, 2, 2)
-        # [1, C*H*W, 2, 2]
-        self.sigma = 1 / (B - 1) * prods.sum(dim=0)
-
-        self.sigma_running = (
-            1 - self.momentum
-        ) * self.sigma_running + self.momentum * self.sigma
-        self.mu_running = (
-            1 - self.momentum
-        ) * self.mu_running + self.momentum * self.mu
-
-    def normalize(self, z: torch.Tensor):
-        """
-        Returns a normalized tensor of input z (complex) [B, C, H, W].
-        Uses self.sigma as covariance matrix and self.mu as mean vector.
-        Return:
-            torch.Tensor [B*C*H*W, 2] (complex viewed as real)
-        """
-        B, C, H, W, _ = z.shape
-        z = z.reshape(B, C * H * W, 2)
-        # [C*H*W, 2, 2]
-        sigma_inv_sqrt = self.inv_sqrt_22_batch(self.sigma)
-        # [B, C*H*W, 2, 1]
-        z_centered = (z - self.mu).reshape(B * C * H * W, 2).unsqueeze(-1)
-        o = torch.bmm(
-            sigma_inv_sqrt.tile(B, 1, 1).reshape(B * C * H * W, 2, 2), z_centered
-        )
-        return o
-
-    def normalize_inference(self, z: torch.Tensor):
-        """
-        Returns a normalized tensor of input z (complex) [B, C, H, W].
-        Uses self.sigma_running as covariance matrix and self.mu_running as mean vector.
-        Return:
-            torch.Tensor [B*C*H*W, 2] (complex viewed as real)
-        """
-        B, C, H, W, _ = z.shape
-        # [C*H*W, 2, 2]
-        sigma_inv_sqrt = self.inv_sqrt_22_batch(self.sigma_running)
-        # [B, C*H*W, 2, 1]
-        z_centered = (z - self.mu_running).reshape(B * C * H * W, 2).unsqueeze(-1)
-        o = torch.bmm(
-            sigma_inv_sqrt.tile(B, 1, 1).reshape(B * C * H * W, 2, 2), z_centered
-        )
-        return o
+        with torch.no_grad():
+            self.reset_running_stats()
+            if self.affine:
+                self.weight.view(-1, 2).fill_diagonal_(1) / math.sqrt(2.0)
+                init.zeros_(self.bias)
 
     def forward(self, z: torch.Tensor):
         # z : [B, C, H, W] (complex)
 
         B, C, H, W = z.shape
-        if not (self.running_avg_initilized):
-            self.init_running_avg(C * H * W)
-
-        z = torch.view_as_real(z)
-
-        if self.training:
-            self.update_mu_sigma(z)
-            # [B*C*H*W, 2]
-            o = self.normalize(z)
-        else:
-            # [B*C*H*W, 2]
-            o = self.normalize_inference(z)
-
-        if self.affine:
-            # [B*C*H*W, 2, 1]
-            o = torch.bmm(self.gamma.tile(B * C * H * W, 1, 1), o) + self.beta.reshape(
-                1, 2, 1
-            )
-
-        # [B, C, H, W, 2]
-        o = o.view(B, C, H, W, 2)
-        return torch.view_as_complex(o)
+        pass

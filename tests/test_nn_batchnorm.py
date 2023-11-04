@@ -25,14 +25,26 @@ import torch
 
 # Local imports
 import torchcvnn.nn as c_nn
+import torchcvnn.nn.modules.batchnorm as bn
 
 
 def test_batchnorm2d():
     B, C, H, W = 20, 16, 50, 100
     m = c_nn.BatchNorm2d(C)
 
-    x = torch.randn((B, C, H, W), dtype=torch.complex32)
+    x = torch.randn((B, C, H, W), dtype=torch.complex64)
     output = m(x)
+
+    # Compute the variance/covariance
+    xc = output.transpose(0, 1).reshape(C, -1)  # C, BxHxW
+    mus = xc.mean(axis=-1)  # 16 means
+    xc_real = torch.view_as_real(xc)
+    covs = bn.batch_cov(xc_real)  # 16 covariances matrices
+
+    # All the mus must be 0's
+    assert torch.allclose(mus, torch.zeros_like(mus))
+    # All the covs must be identities
+    # TODO:
 
 
 if __name__ == "__main__":

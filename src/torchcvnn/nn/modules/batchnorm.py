@@ -29,6 +29,26 @@ import torch.nn as nn
 import torch.nn.init as init
 
 
+def batch_cov(points: torch.Tensor, centered=False) -> torch.Tensor:
+    """
+    Batched covariance computation
+    Adapted from : https://stackoverflow.com/a/71357620/2164582
+
+    Arguments:
+        points: the (B, N, D) input tensor from which to compute B covariances
+        centered: If `True`, assumes for every batch, the N vectors are centered.  default: `False`
+    """
+    B, N, D = points.size()
+    if not centered:
+        mean = points.mean(dim=1).unsqueeze(1)
+        diffs = (points - mean).reshape(B * N, D)
+    else:
+        diffs = points.reshape(B * N, D)
+    prods = torch.bmm(diffs.unsqueeze(2), diffs.unsqueeze(1)).reshape(B, N, D, D)
+    bcov = prods.sum(dim=1) / (N - 1)  # Unbiased estimate
+    return bcov  # (B, D, D)
+
+
 def inv_sqrt_22_batch(M: torch.Tensor) -> torch.Tensor:
     """
     Computes the square root of the inverse of a tensor of shape [N, 2, 2]
@@ -121,6 +141,29 @@ class BatchNorm2d(nn.Module):
 
     def forward(self, z: torch.Tensor):
         # z : [B, C, H, W] (complex)
-
         B, C, H, W = z.shape
-        pass
+        xc = z.transpose(0, 1).reshape(self.num_features, -1)  # num_features, BxHxW
+        # Compute the means
+        mus = xc.mean(axis=-1)  # num_features means
+
+        # Center the xc
+        xc_centered = torch.view_as_real(
+            xc - mus.unsqueeze(-1)
+        )  # num_features, BxHxW, 2
+
+        # Transform the complex numbers as 2 reals to compute the variances and
+        # covariances
+        covs = batch_cov(xc_centered, centered=True)  # 16 covariances matrices
+
+        if self.training:
+            invsqrt_covs = inv_sqrt_22_batch(covs)  # num_features, 2, 2
+            flat_outz_real = torch.bmm(invsqrt_covs, xc_centered.transpose(1, 2))
+            outz = torch.view_as_complex(
+                flat_outz_real.transpose(1, 2).contiguous()
+            )  # num_features, BxHxW
+            outz = outz.reshape(C, B, H, W).transpose(0, 1)
+            return outz
+        else:
+            raise NotImplementedError("Batchnorm inference mode not yet implemented")
+
+        return z

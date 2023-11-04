@@ -36,7 +36,7 @@ def test_inv():
     XXT = torch.bmm(X, XT) + (0.01 * torch.eye(2)).unsqueeze(0)
 
     # Compute its inverse square root
-    inv = bn.inv(XXT)
+    inv = bn.inv_2x2(XXT)
     torch_inv = torch.linalg.inv(XXT)
 
     # And check this is really the inerse of X
@@ -51,7 +51,7 @@ def test_inv_sqrt():
     XXT = torch.bmm(X, XT) + (0.05 * torch.eye(2)).unsqueeze(0)
 
     # Compute its inverse square root
-    inv_sqrt = bn.inv_sqrt_22_batch(XXT)
+    inv_sqrt = bn.inv_sqrt_2x2(XXT)
 
     # Square it to have the inverse
     inv = torch.bmm(inv_sqrt, inv_sqrt)

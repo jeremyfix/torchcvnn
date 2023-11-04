@@ -49,9 +49,24 @@ def batch_cov(points: torch.Tensor, centered=False) -> torch.Tensor:
     return bcov  # (B, D, D)
 
 
-def inv(M: torch.Tensor) -> torch.Tensor:
-    """
-    Computes the inverse of a tensor of shape [N, 2, 2]
+def inv_2x2(M: torch.Tensor) -> torch.Tensor:
+    r"""
+    Computes the inverse of a tensor of shape [N, 2, 2].
+
+    If we denote
+
+    $$
+    M = \begin{pmatrix} a & b \\ c & d \end{pmatrix}
+    $$
+
+    The inverse is given by
+
+    $$
+    M^{-1} = \frac{1}{Det M} Adj(M) = \frac{1}{ad - bc}\begin{pmatrix}d & -b \\ -c & a\end{pmatrix}
+    $$
+
+    Arguments:
+        M: a batch of 2x2 tensors to invert, i.e. a $(B, 2, 2)$ tensor
     """
     det = torch.linalg.det(M).unsqueeze(-1).unsqueeze(-1)
 
@@ -63,9 +78,27 @@ def inv(M: torch.Tensor) -> torch.Tensor:
     return M_inv
 
 
-def sqrt(M: torch.Tensor) -> torch.Tensor:
-    """
-    Computes the square root of the tensor of shape [N, 2, 2]
+def sqrt_2x2(M: torch.Tensor) -> torch.Tensor:
+    r"""
+    Computes the square root of the tensor of shape [N, 2, 2].
+
+    If we denote
+
+    $$
+    M = \begin{pmatrix} a & b \\ c & d \end{pmatrix}
+    $$
+
+    The square root is given by :
+
+    $$
+    \begin{align}
+    \sqrt{M} &= \frac{1}{t} ( M + \sqrt{Det M} I)\\
+    t &= \sqrt{Tr M + 2 \sqrt{Det M}}
+    \end{align}
+    $$
+
+    Arguments:
+        M: a batch of 2x2 tensors to invert, i.e. a $(B, 2, 2)$ tensor
     """
     N = M.shape[0]
     det = torch.linalg.det(M).unsqueeze(-1).unsqueeze(-1)
@@ -78,11 +111,14 @@ def sqrt(M: torch.Tensor) -> torch.Tensor:
     return sqrt_M
 
 
-def inv_sqrt_22_batch(M: torch.Tensor) -> torch.Tensor:
+def inv_sqrt_2x2(M: torch.Tensor) -> torch.Tensor:
     """
     Computes the square root of the inverse of a tensor of shape [N, 2, 2]
+
+    Arguments:
+        M: a batch of 2x2 tensors to sqrt invert, i.e. a $(B, 2, 2)$ tensor
     """
-    return sqrt(inv(M))
+    return sqrt_2x2(inv_2x2(M))
 
 
 class BatchNorm2d(nn.Module):
@@ -176,7 +212,7 @@ class BatchNorm2d(nn.Module):
         covs = batch_cov(xc_centered, centered=True)  # 16 covariances matrices
 
         if self.training:
-            invsqrt_covs = inv_sqrt_22_batch(covs)  # num_features, 2, 2
+            invsqrt_covs = inv_sqrt_2x2(covs)  # num_features, 2, 2
             flat_outz_real = torch.bmm(invsqrt_covs, xc_centered.transpose(1, 2))
             outz = torch.view_as_complex(
                 flat_outz_real.transpose(1, 2).contiguous()

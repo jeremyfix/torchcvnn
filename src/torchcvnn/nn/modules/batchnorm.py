@@ -49,20 +49,40 @@ def batch_cov(points: torch.Tensor, centered=False) -> torch.Tensor:
     return bcov  # (B, D, D)
 
 
+def inv(M: torch.Tensor) -> torch.Tensor:
+    """
+    Computes the inverse of a tensor of shape [N, 2, 2]
+    """
+    det = torch.linalg.det(M).unsqueeze(-1).unsqueeze(-1)
+
+    M_adj = M.clone()
+    M_adj[:, 0, 0], M_adj[:, 1, 1] = M[:, 1, 1], M[:, 0, 0]
+    M_adj[:, 0, 1] *= -1
+    M_adj[:, 1, 0] *= -1
+    M_inv = 1 / det * M_adj
+    return M_inv
+
+
+def sqrt(M: torch.Tensor) -> torch.Tensor:
+    """
+    Computes the square root of the tensor of shape [N, 2, 2]
+    """
+    N = M.shape[0]
+    det = torch.linalg.det(M).unsqueeze(-1).unsqueeze(-1)
+    sqrt_det = torch.sqrt(det)
+
+    trace = torch.diagonal(M, dim1=-2, dim2=-1).sum(-1).unsqueeze(-1).unsqueeze(-1)
+    t = torch.sqrt(trace + 2 * sqrt_det)
+
+    sqrt_M = 1 / t * (M + sqrt_det * torch.eye(2).tile(N, 1, 1))
+    return sqrt_M
+
+
 def inv_sqrt_22_batch(M: torch.Tensor) -> torch.Tensor:
     """
     Computes the square root of the inverse of a tensor of shape [N, 2, 2]
     """
-    N = M.shape[0]
-    # [M, 1, 1]
-    trace = torch.diagonal(M, dim1=-2, dim2=-1).sum(-1).reshape(N, 1, 1)
-    det = torch.linalg.det(M).reshape(N, 1, 1)
-
-    s = torch.sqrt(det)
-    t = torch.sqrt(trace + 2 * s)
-    # [M, 2, 2]
-    M_inv = 1 / t * (M + s * torch.eye(2).tile(N, 1, 1))
-    return M_inv
+    return sqrt(inv(M))
 
 
 class BatchNorm2d(nn.Module):

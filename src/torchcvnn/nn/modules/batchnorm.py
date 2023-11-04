@@ -111,7 +111,7 @@ def sqrt_2x2(M: torch.Tensor) -> torch.Tensor:
     return sqrt_M
 
 
-def inv_sqrt_2x2(M: torch.Tensor) -> torch.Tensor:
+def slow_inv_sqrt_2x2(M: torch.Tensor) -> torch.Tensor:
     """
     Computes the square root of the inverse of a tensor of shape [N, 2, 2]
 
@@ -119,6 +119,28 @@ def inv_sqrt_2x2(M: torch.Tensor) -> torch.Tensor:
         M: a batch of 2x2 tensors to sqrt invert, i.e. a $(B, 2, 2)$ tensor
     """
     return sqrt_2x2(inv_2x2(M))
+
+
+def inv_sqrt_2x2(M: torch.Tensor) -> torch.Tensor:
+    """
+    Computes the square root of the inverse of a tensor of shape [N, 2, 2]
+
+    Arguments:
+        M: a batch of 2x2 tensors to sqrt invert, i.e. a $(B, 2, 2)$ tensor
+    """
+    N = M.shape[0]
+    det = torch.linalg.det(M).unsqueeze(-1).unsqueeze(-1)
+    sqrt_det = torch.sqrt(det)
+
+    trace = torch.diagonal(M, dim1=-2, dim2=-1).sum(-1).unsqueeze(-1).unsqueeze(-1)
+    t = torch.sqrt(trace + 2 * sqrt_det)
+
+    M_adj = M.clone()
+    M_adj[:, 0, 0], M_adj[:, 1, 1] = M[:, 1, 1], M[:, 0, 0]
+    M_adj[:, 0, 1] *= -1
+    M_adj[:, 1, 0] *= -1
+    M_sqrt_inv = 1 / t * (M_adj / sqrt_det + torch.eye(2).tile(N, 1, 1))
+    return M_sqrt_inv
 
 
 class BatchNorm2d(nn.Module):

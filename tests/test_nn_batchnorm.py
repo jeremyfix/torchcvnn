@@ -20,6 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Standard imports
+import time
+
 # External imports
 import torch
 
@@ -62,6 +65,27 @@ def test_inv_sqrt():
     assert torch.allclose(inv, torch_inv)
 
 
+def time_it(f, N=1000):
+    t0 = time.time()
+    for i in range(N):
+        f()
+    t1 = time.time()
+    return (t1 - t0) / N
+
+
+def time_inv_sqrt():
+    # Take a positive semi-definite matrix
+    B = 10
+    X = torch.randn((B, 2, 2))
+    XT = torch.transpose(X, 1, 2)
+    XXT = torch.bmm(X, XT) + (0.05 * torch.eye(2)).unsqueeze(0)
+
+    # Compute its inverse square root
+    el1 = time_it(lambda: bn.slow_inv_sqrt_2x2(XXT))
+    el2 = time_it(lambda: bn.inv_sqrt_2x2(XXT))
+    print(el1, el2)
+
+
 def test_batchnorm2d():
     B, C, H, W = 20, 16, 50, 100
     m = c_nn.BatchNorm2d(C)
@@ -86,4 +110,5 @@ def test_batchnorm2d():
 if __name__ == "__main__":
     test_inv()
     test_inv_sqrt()
+    # time_inv_sqrt()
     test_batchnorm2d()

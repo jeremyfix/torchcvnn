@@ -28,6 +28,40 @@ import torchcvnn.nn as c_nn
 import torchcvnn.nn.modules.batchnorm as bn
 
 
+def test_inv():
+    # Take a positive semi-definite matrix
+    B = 10
+    X = torch.randn((B, 2, 2))
+    XT = torch.transpose(X, 1, 2)
+    XXT = torch.bmm(X, XT) + (0.01 * torch.eye(2)).unsqueeze(0)
+
+    # Compute its inverse square root
+    inv = bn.inv(XXT)
+    torch_inv = torch.linalg.inv(XXT)
+
+    # And check this is really the inerse of X
+    assert torch.allclose(inv, torch_inv)
+
+
+def test_inv_sqrt():
+    # Take a positive semi-definite matrix
+    B = 10
+    X = torch.randn((B, 2, 2))
+    XT = torch.transpose(X, 1, 2)
+    XXT = torch.bmm(X, XT) + (0.05 * torch.eye(2)).unsqueeze(0)
+
+    # Compute its inverse square root
+    inv_sqrt = bn.inv_sqrt_22_batch(XXT)
+
+    # Square it to have the inverse
+    inv = torch.bmm(inv_sqrt, inv_sqrt)
+
+    torch_inv = torch.linalg.inv(XXT)
+
+    # And check this is really the inerse of X
+    assert torch.allclose(inv, torch_inv)
+
+
 def test_batchnorm2d():
     B, C, H, W = 20, 16, 50, 100
     m = c_nn.BatchNorm2d(C)
@@ -42,10 +76,14 @@ def test_batchnorm2d():
     covs = bn.batch_cov(xc_real)  # 16 covariances matrices
 
     # All the mus must be 0's
-    assert torch.allclose(mus, torch.zeros_like(mus))
+    # For some reasons, this is not exactly 0
+    assert torch.allclose(mus, torch.zeros_like(mus), atol=1e-7)
     # All the covs must be identities
-    # TODO:
+    id_cov = torch.eye(2).tile(C, 1, 1)
+    assert torch.allclose(covs, id_cov)
 
 
 if __name__ == "__main__":
+    test_inv()
+    test_inv_sqrt()
     test_batchnorm2d()

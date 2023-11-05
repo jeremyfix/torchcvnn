@@ -118,7 +118,9 @@ def train():
     # Loss, optimizer, callbacks
     f_loss = nn.CrossEntropyLoss()
     optim = torch.optim.Adam(model.parameters(), lr=3e-4)
-    checkpoint = utils.ModelCheckpoint(model, "best_model.pt", 4, min_is_best=True)
+    logpath = utils.generate_unique_logpath("./logs", "CMNIST")
+    print(f"Logging to {logpath}")
+    checkpoint = utils.ModelCheckpoint(model, logpath, 4, min_is_best=True)
 
     # Training loop
     for e in range(epochs):
@@ -139,10 +141,5 @@ def train():
         )
 
 
-def test():
-    raise NotImplementedError()
-
-
 if __name__ == "__main__":
     train()
-    # test()

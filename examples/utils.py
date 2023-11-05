@@ -114,7 +114,7 @@ def test_epoch(
             # Forward propagate through the loss
             loss = f_loss(pred_outputs, outputs)
 
-            loss_avg += loss.item()
+            loss_avg += inputs.shape[0] * loss.item()
             num_samples += inputs.shape[0]
 
     return loss_avg / num_samples

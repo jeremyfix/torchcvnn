@@ -23,10 +23,14 @@
 """
 Sample using complex valued neural networks to classify MNIST from the Fourier
 Transform of the digits
+
+Requires dependencies :
+    python3 -m pip install torchvision tqdm
 """
 
 # Standard imports
 import random
+import sys
 
 # External imports
 import torch
@@ -35,6 +39,9 @@ import torchvision
 import torchvision.transforms.v2 as v2_transforms
 
 import torchcvnn.nn as c_nn
+
+# Local imports
+import utils
 
 
 def conv_block(in_c, out_c, cdtype):
@@ -61,6 +68,12 @@ def train():
         download=True,
         transform=v2_transforms.Compose([v2_transforms.PILToTensor(), torch.fft.fft]),
     )
+    test_dataset = torchvision.datasets.MNIST(
+        root="./data",
+        train=False,
+        download=True,
+        transform=v2_transforms.Compose([v2_transforms.PILToTensor(), torch.fft.fft]),
+    )
 
     all_indices = list(range(len(train_valid_dataset)))
     random.shuffle(all_indices)
@@ -79,12 +92,17 @@ def train():
         valid_dataset, batch_size=batch_size, shuffle=False
     )
 
+    # Test dataloader
+    test_loader = torch.utils.data.DataLoader(
+        test_dataset, batch_size=batch_size, shuffle=False
+    )
+
     # Model
     conv_model = nn.Sequential(
         *conv_block(1, 16, cdtype),
         *conv_block(16, 32, cdtype),
         *conv_block(32, 64, cdtype),
-        nn.Flatten()
+        nn.Flatten(),
     )
     dummy_input = torch.zeros((64, 1, 28, 28), dtype=cdtype, device=device)
     out_conv = conv_model(dummy_input).view(64, -1)
@@ -97,14 +115,21 @@ def train():
     model = nn.Sequential(conv_model, lin_model)
     model = model.to(device)
 
-    # Test the forward loop
-    X, y = next(iter(train_loader))
-    out = model(X)
-    print(out.shape)
+    # Loss, optimizer, callbacks
+    f_loss = nn.CrossEntropyLoss()
+    optim = torch.optim.Adam(model.parameters(), lr=3e-4)
 
     # Training loop
     for e in range(epochs):
-        pass
+        print(">> Training")
+        train_loss = utils.train_epoch(model, train_loader, f_loss, optim, device)
+
+        print(">> Testing")
+        valid_loss = utils.test_epoch(model, valid_loader, f_loss, device)
+        test_loss = utils.test_epoch(model, test_loader, f_loss, device)
+        print(
+            f"\r[Step {e}] Train : {train_loss:8.2f} | Valid : {valid_loss:8.2f} | Test : {test_loss:8.2f} "
+        )
 
 
 def test():

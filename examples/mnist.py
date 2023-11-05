@@ -118,6 +118,7 @@ def train():
     # Loss, optimizer, callbacks
     f_loss = nn.CrossEntropyLoss()
     optim = torch.optim.Adam(model.parameters(), lr=3e-4)
+    checkpoint = utils.ModelCheckpoint(model, "best_model.pt", 4, min_is_best=True)
 
     # Training loop
     for e in range(epochs):
@@ -129,8 +130,16 @@ def train():
         print(">> Testing")
         valid_loss, valid_acc = utils.test_epoch(model, valid_loader, f_loss, device)
         test_loss, test_acc = utils.test_epoch(model, test_loader, f_loss, device)
+        updated = checkpoint.update(valid_loss)
+        better_str = "[>> BETTER <<]" if updated else ""
+
         print(
+<<<<<<< Updated upstream
             f"[Step {e}] Train : CE {train_loss:5.2f} Acc {train_acc:5.2f} | Valid : CE {valid_loss:5.2f} Acc {valid_acc:5.2f} | Test : CE {test_loss:5.2f} Acc {test_acc:5.2f}\n"
+=======
+            f"\r[Step {e}] Train : CE {train_loss:5.2f} Acc {train_acc:5.2f} | Valid : CE {valid_loss:5.2f} Acc {valid_acc:5.2f} | Test : CE {test_loss:5.2f} Acc {test_acc:5.2f}"
+            + better_str
+>>>>>>> Stashed changes
         )
 
 

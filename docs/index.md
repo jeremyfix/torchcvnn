@@ -4,6 +4,14 @@ This is a library that uses [pytorch](https://pytorch.org) as a back-end for com
 
 It was initially developed by Victor Dhédin and Jérémie Levi during their third year project at [CentraleSupélec](https://www.centralesupelec.fr/). 
 
+## Installation
+
+To install the library, it is simple as :
+
+```
+pip install git+ssh://git@github.com/jeremyfix/torchcvnn.git
+```
+
 
 ## Other projects
 

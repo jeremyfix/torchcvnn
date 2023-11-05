@@ -122,13 +122,15 @@ def train():
     # Training loop
     for e in range(epochs):
         print(">> Training")
-        train_loss = utils.train_epoch(model, train_loader, f_loss, optim, device)
+        train_loss, train_acc = utils.train_epoch(
+            model, train_loader, f_loss, optim, device
+        )
 
         print(">> Testing")
-        valid_loss = utils.test_epoch(model, valid_loader, f_loss, device)
-        test_loss = utils.test_epoch(model, test_loader, f_loss, device)
+        valid_loss, valid_acc = utils.test_epoch(model, valid_loader, f_loss, device)
+        test_loss, test_acc = utils.test_epoch(model, test_loader, f_loss, device)
         print(
-            f"\r[Step {e}] Train : {train_loss:8.2f} | Valid : {valid_loss:8.2f} | Test : {test_loss:8.2f} "
+            f"\r[Step {e}] Train : CE {train_loss:5.2f} Acc {train_acc:5.2f} | Valid : CE {valid_loss:5.2f} Acc {valid_acc:5.2f} | Test : CE {test_loss:5.2f} Acc {test_acc:5.2f}"
         )
 
 

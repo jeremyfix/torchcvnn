@@ -23,6 +23,7 @@
 
 # Standard imports
 import os
+from typing import Tuple
 
 # External imports
 import torch
@@ -38,7 +39,7 @@ def train_epoch(
     f_loss: nn.Module,
     optim: torch.optim.Optimizer,
     device: torch.device,
-) -> float:
+) -> Tuple[float, float]:
     """
     Run the training loop for nsteps minibatches of the dataloader
 
@@ -51,10 +52,12 @@ def train_epoch(
 
     Returns:
         The averaged training loss
+        The averaged training accuracy
     """
     model.train()
 
     loss_avg = 0
+    acc_avg = 0
     num_samples = 0
     for inputs, outputs in tqdm.tqdm(loader):
         inputs = inputs.to(device)
@@ -76,8 +79,10 @@ def train_epoch(
         # Denormalize the loss that is supposed to be averaged over the
         # minibatch
         loss_avg += inputs.shape[0] * loss.item()
+        pred_cls = pred_outputs.argmax(dim=-1)
+        acc_avg += (pred_cls == outputs).sum().item()
 
-    return loss_avg / num_samples
+    return loss_avg / num_samples, acc_avg / num_samples
 
 
 def test_epoch(
@@ -85,7 +90,7 @@ def test_epoch(
     loader: torch.utils.data.DataLoader,
     f_loss: nn.Module,
     device: torch.device,
-) -> float:
+) -> Tuple[float, float]:
     """
     Run the test loop for n_test_batches minibatches of the dataloader
 
@@ -96,12 +101,14 @@ def test_epoch(
         device: the device on which to run the code
 
     Returns:
-        the averaged test loss
+        The averaged test loss
+        The averaged test accuracy
 
     """
     model.eval()
 
     loss_avg = 0
+    acc_avg = 0
     num_samples = 0
     with torch.no_grad():
         for inputs, outputs in loader:
@@ -115,9 +122,11 @@ def test_epoch(
             loss = f_loss(pred_outputs, outputs)
 
             loss_avg += inputs.shape[0] * loss.item()
+            pred_cls = pred_outputs.argmax(dim=-1)
+            acc_avg += (pred_cls == outputs).sum().item()
             num_samples += inputs.shape[0]
 
-    return loss_avg / num_samples
+    return loss_avg / num_samples, acc_avg / num_samples
 
 
 class ModelCheckpoint(object):

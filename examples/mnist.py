@@ -104,7 +104,7 @@ def train():
         *conv_block(32, 64, cdtype),
         nn.Flatten(),
     )
-    dummy_input = torch.zeros((64, 1, 28, 28), dtype=cdtype, device=device)
+    dummy_input = torch.zeros((64, 1, 28, 28), dtype=cdtype)
     out_conv = conv_model(dummy_input).view(64, -1)
     lin_model = nn.Sequential(
         nn.Linear(out_conv.shape[-1], 124, dtype=cdtype),
@@ -113,7 +113,7 @@ def train():
         c_nn.Mod(),
     )
     model = nn.Sequential(conv_model, lin_model)
-    model = model.to(device)
+    model.to(device)
 
     # Loss, optimizer, callbacks
     f_loss = nn.CrossEntropyLoss()
@@ -130,7 +130,7 @@ def train():
         valid_loss, valid_acc = utils.test_epoch(model, valid_loader, f_loss, device)
         test_loss, test_acc = utils.test_epoch(model, test_loader, f_loss, device)
         print(
-            f"\r[Step {e}] Train : CE {train_loss:5.2f} Acc {train_acc:5.2f} | Valid : CE {valid_loss:5.2f} Acc {valid_acc:5.2f} | Test : CE {test_loss:5.2f} Acc {test_acc:5.2f}"
+            f"[Step {e}] Train : CE {train_loss:5.2f} Acc {train_acc:5.2f} | Valid : CE {valid_loss:5.2f} Acc {valid_acc:5.2f} | Test : CE {test_loss:5.2f} Acc {test_acc:5.2f}\n"
         )
 
 

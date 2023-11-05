@@ -21,8 +21,9 @@
 # SOFTWARE.
 
 """
-Sample using complex valued neural networks to classify MNIST from the Fourier
-Transform of the digits
+# Example using complex valued neural networks to classify MNIST from the Fourier Transform of the digits.
+
+
 
 Requires dependencies :
     python3 -m pip install torchvision tqdm
@@ -31,6 +32,7 @@ Requires dependencies :
 # Standard imports
 import random
 import sys
+from typing import List
 
 # External imports
 import torch
@@ -44,7 +46,16 @@ import torchcvnn.nn as c_nn
 import utils
 
 
-def conv_block(in_c, out_c, cdtype):
+def conv_block(in_c: int, out_c: int, cdtype: torch.dtype) -> List[nn.Module]:
+    """
+    Builds a basic building block of
+    `Conv2d`-`Cardioid`-`Conv2d`-`Cardioid`-`AvgPool2d`
+
+    Arguments:
+        in_c : the number of input channels
+        out_c : the number of output channels
+        cdtype : the dtype of complex values (expected to be torch.complex64 or torch.complex32)
+    """
     return [
         nn.Conv2d(in_c, out_c, kernel_size=3, stride=1, padding=1, dtype=cdtype),
         c_nn.Cardioid(),
@@ -55,6 +66,32 @@ def conv_block(in_c, out_c, cdtype):
 
 
 def train():
+    """
+    Train function
+
+    Sample output :
+        ```.bash
+        (venv) me@host:~$ python mnist.py
+        Logging to ./logs/CMNIST_0
+        >> Training
+        100%|██████| 844/844 [00:17<00:00, 48.61it/s]
+        >> Testing
+        [Step 0] Train : CE  0.20 Acc  0.94 | Valid : CE  0.08 Acc  0.97 | Test : CE 0.06 Acc  0.98[>> BETTER <<]
+
+        >> Training
+        100%|██████| 844/844 [00:16<00:00, 51.69it/s]
+        >> Testing
+        [Step 1] Train : CE  0.06 Acc  0.98 | Valid : CE  0.06 Acc  0.98 | Test : CE 0.05 Acc  0.98[>> BETTER <<]
+
+        >> Training
+        100%|██████| 844/844 [00:15<00:00, 53.47it/s]
+        >> Testing
+        [Step 2] Train : CE  0.04 Acc  0.99 | Valid : CE  0.04 Acc  0.99 | Test : CE 0.04 Acc  0.99[>> BETTER <<]
+
+        [...]
+        ```
+
+    """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     valid_ratio = 0.1
     batch_size = 64

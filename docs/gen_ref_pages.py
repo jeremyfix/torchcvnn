@@ -42,5 +42,12 @@ for path in sorted(Path(rootdir).rglob("*.py")):
     with mkdocs_gen_files.open(full_doc_path, "w") as fd:
         fd.write(f"::: {identifier}")
 
+# Add the examples
+doc_path = "examples/mnist.md"
+full_doc_path = Path("reference", doc_path)
+nav[("Tutorials", "MNIST")] = doc_path
+with mkdocs_gen_files.open(full_doc_path, "w") as fd:
+    fd.write("::: examples.mnist\n")
+
 with mkdocs_gen_files.open("reference/SUMMARY.md", "w") as nav_file:
     nav_file.writelines(nav.build_literate_nav())

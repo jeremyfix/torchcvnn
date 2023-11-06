@@ -191,6 +191,10 @@ class BatchNorm2d(nn.Module):
             self.register_parameter("bias", None)
 
         if self.track_running_stats:
+            # Register the running mean and running variance
+            # These will not be returned by model.parameters(), hence
+            # not updated by the optimizer although returned in the state_dict
+            # and therefore stored as model's assets
             self.register_buffer(
                 "running_mean",
                 torch.zeros((num_features,), device=device, dtype=cdtype),

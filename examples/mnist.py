@@ -139,8 +139,9 @@ def train():
     # Model
     conv_model = nn.Sequential(
         *conv_block(1, 16, cdtype),
+        *conv_block(16, 16, cdtype),
         *conv_block(16, 32, cdtype),
-        *conv_block(32, 64, cdtype),
+        *conv_block(32, 32, cdtype),
         nn.Flatten(),
     )
 

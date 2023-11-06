@@ -141,8 +141,11 @@ def train():
         *conv_block(32, 64, cdtype),
         nn.Flatten(),
     )
-    dummy_input = torch.zeros((64, 1, 28, 28), dtype=cdtype)
-    out_conv = conv_model(dummy_input).view(64, -1)
+
+    with torch.no_grad():
+        conv_model.eval()
+        dummy_input = torch.zeros((64, 1, 28, 28), dtype=cdtype, requires_grad=False)
+        out_conv = conv_model(dummy_input).view(64, -1)
     lin_model = nn.Sequential(
         nn.Linear(out_conv.shape[-1], 124, dtype=cdtype),
         c_nn.Cardioid(),

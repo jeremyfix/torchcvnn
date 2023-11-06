@@ -237,38 +237,66 @@ class BatchNorm2d(nn.Module):
     def forward(self, z: torch.Tensor):
         # z : [B, C, H, W] (complex)
         B, C, H, W = z.shape
+
         xc = z.transpose(0, 1).reshape(self.num_features, -1)  # num_features, BxHxW
-        # Compute the means
-        mus = xc.mean(axis=-1)  # num_features means
 
-        # Center the xc
-        xc_centered = xc - mus.unsqueeze(-1)  # num_features, BxHxW
-        xc_centered = torch.view_as_real(xc_centered)  # num_features, BxHxW, 2
+        if self.training or not self.track_running_stats:
+            # For training
+            # Or for testing but using the batch stats for centering/scaling
 
-        # Transform the complex numbers as 2 reals to compute the variances and
-        # covariances
-        covs = batch_cov(xc_centered, centered=True)  # 16 covariances matrices
+            # Compute the means
+            mus = xc.mean(axis=-1)  # num_features means
 
-        if self.training:
-            invsqrt_covs = inv_sqrt_2x2(covs)  # num_features, 2, 2
+            # Center the xc
+            xc_centered = xc - mus.unsqueeze(-1)  # num_features, BxHxW
+            xc_centered = torch.view_as_real(xc_centered)  # num_features, BxHxW, 2
 
-            outz = torch.bmm(invsqrt_covs, xc_centered.transpose(1, 2))
-            outz = outz.contiguous()  # num_features, 2, BxHxW
-
-            # Shift by beta and scale by gamma
-            # weight is (num_features, 2, 2) real valued
-            outz = torch.bmm(self.weight, outz)  # num_features, 2, BxHxW
-            outz = outz.transpose(1, 2).contiguous()
-            outz = torch.view_as_complex(outz)  # num_features, BxHxW
-
-            # bias is (C, ) complex dtype
-            outz += self.bias.view((C, 1))
-
-            # With the following operation, weight
-            outz = outz.reshape(C, B, H, W).transpose(0, 1)
-
-            return outz
+            # Transform the complex numbers as 2 reals to compute the variances and
+            # covariances
+            covs = batch_cov(xc_centered, centered=True)  # 16 covariances matrices
         else:
-            raise NotImplementedError("Batchnorm inference mode not yet implemented")
+            # The means come from the running stats
+            mus = self.running_mean
 
-        return z
+            # Center the xc
+            xc_centered = xc - mus.unsqueeze(-1)  # num_features, BxHxW
+            xc_centered = torch.view_as_real(xc_centered)  # num_features, BxHxW, 2
+
+            # The variance/covariance come from the running stats
+            covs = self.running_var
+
+        # Invert the covariance to scale
+        invsqrt_covs = inv_sqrt_2x2(covs)  # num_features, 2, 2
+        # Note: the xc_centered.transpose is to make
+        # xc_centered from (C, BxHxW, 2) to (B, 2, BxHxW)
+        # So that the batch matrix multiply works as expected
+        # where invsqrt_covs is (C, 2, 2)
+        outz = torch.bmm(invsqrt_covs, xc_centered.transpose(1, 2))
+        outz = outz.contiguous()  # num_features, 2, BxHxW
+
+        # Shift by beta and scale by gamma
+        # weight is (num_features, 2, 2) real valued
+        outz = torch.bmm(self.weight, outz)  # num_features, 2, BxHxW
+        outz = outz.transpose(1, 2).contiguous()
+        outz = torch.view_as_complex(outz)  # num_features, BxHxW
+
+        # bias is (C, ) complex dtype
+        outz += self.bias.view((C, 1))
+
+        # With the following operation, weight
+        outz = outz.reshape(C, B, H, W).transpose(0, 1)
+
+        if self.training and self.track_running_stats:
+            self.running_mean = (
+                1.0 - self.momentum
+            ) * self.running_mean + self.momentum * mus
+            if torch.isnan(self.running_mean).any():
+                raise RuntimeError("Running mean divergence")
+
+            self.running_var = (
+                1.0 - self.momentum
+            ) * self.running_var + self.momentum * covs
+            if torch.isnan(self.running_var).any():
+                raise RuntimeError("Running var divergence")
+
+        return outz

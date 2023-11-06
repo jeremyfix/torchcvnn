@@ -217,7 +217,9 @@ class BatchNorm2d(nn.Module):
     def reset_running_stats(self) -> None:
         if self.track_running_stats:
             self.running_mean.zero_()
-            self.running_var.view(-1, 2).fill_diagonal_(1)
+            self.running_var.zero_()
+            self.running_var[:, 0, 0] = 1 / math.sqrt(2.0)
+            self.running_var[:, 1, 1] = 1 / math.sqrt(2.0)
 
     def reset_parameters(self) -> None:
         with torch.no_grad():

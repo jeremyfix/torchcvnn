@@ -58,8 +58,10 @@ def conv_block(in_c: int, out_c: int, cdtype: torch.dtype) -> List[nn.Module]:
     """
     return [
         nn.Conv2d(in_c, out_c, kernel_size=3, stride=1, padding=1, dtype=cdtype),
+        c_nn.BatchNorm2d(out_c),
         c_nn.Cardioid(),
         nn.Conv2d(out_c, out_c, kernel_size=3, stride=1, padding=1, dtype=cdtype),
+        c_nn.BatchNorm2d(out_c),
         c_nn.Cardioid(),
         c_nn.AvgPool2d(kernel_size=2, stride=2, padding=0),
     ]

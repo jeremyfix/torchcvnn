@@ -37,6 +37,9 @@ def batch_cov(points: torch.Tensor, centered=False) -> torch.Tensor:
     Arguments:
         points: the (B, N, D) input tensor from which to compute B covariances
         centered: If `True`, assumes for every batch, the N vectors are centered.  default: `False`
+
+    Returns:
+        bcov: the covariances as a `(B, D, D)` tensor
     """
     B, N, D = points.size()
     if not centered:
@@ -216,7 +219,13 @@ class BatchNorm2d(nn.Module):
         with torch.no_grad():
             self.reset_running_stats()
             if self.affine:
-                self.weight.view(-1, 2).fill_diagonal_(1) / math.sqrt(2.0)
+                # Initialize all the weights to zeros
+                init.zeros_(self.weight)
+                # And then fill in the diagonal with 1/sqrt(2)
+                # w is C, 2, 2
+                self.weight[:, 0, 0] = 1 / math.sqrt(2.0)
+                self.weight[:, 1, 1] = 1 / math.sqrt(2.0)
+                # Initialize all the biases to zero
                 init.zeros_(self.bias)
 
     def forward(self, z: torch.Tensor):
@@ -227,9 +236,8 @@ class BatchNorm2d(nn.Module):
         mus = xc.mean(axis=-1)  # num_features means
 
         # Center the xc
-        xc_centered = torch.view_as_real(
-            xc - mus.unsqueeze(-1)
-        )  # num_features, BxHxW, 2
+        xc_centered = xc - mus.unsqueeze(-1)  # num_features, BxHxW
+        xc_centered = torch.view_as_real(xc_centered)  # num_features, BxHxW, 2
 
         # Transform the complex numbers as 2 reals to compute the variances and
         # covariances
@@ -237,11 +245,22 @@ class BatchNorm2d(nn.Module):
 
         if self.training:
             invsqrt_covs = inv_sqrt_2x2(covs)  # num_features, 2, 2
-            flat_outz_real = torch.bmm(invsqrt_covs, xc_centered.transpose(1, 2))
-            outz = torch.view_as_complex(
-                flat_outz_real.transpose(1, 2).contiguous()
-            )  # num_features, BxHxW
+
+            outz = torch.bmm(invsqrt_covs, xc_centered.transpose(1, 2))
+            outz = outz.contiguous()  # num_features, 2, BxHxW
+
+            # Shift by beta and scale by gamma
+            # weight is (num_features, 2, 2) real valued
+            outz = torch.bmm(self.weight, outz)  # num_features, 2, BxHxW
+            outz = outz.transpose(1, 2).contiguous()
+            outz = torch.view_as_complex(outz)  # num_features, BxHxW
+
+            # bias is (C, ) complex dtype
+            outz += self.bias.view((C, 1))
+
+            # With the following operation, weight
             outz = outz.reshape(C, B, H, W).transpose(0, 1)
+
             return outz
         else:
             raise NotImplementedError("Batchnorm inference mode not yet implemented")

@@ -103,7 +103,7 @@ def test_batchnorm2d():
     # For some reasons, this is not exactly 0
     assert torch.allclose(mus, torch.zeros_like(mus), atol=1e-7)
     # All the covs must be identities
-    id_cov = torch.eye(2).tile(C, 1, 1)
+    id_cov = 0.5 * torch.eye(2).tile(C, 1, 1)
     assert torch.allclose(covs, id_cov)
 
 

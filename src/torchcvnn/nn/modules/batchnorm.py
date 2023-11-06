@@ -110,7 +110,7 @@ def sqrt_2x2(M: torch.Tensor) -> torch.Tensor:
     trace = torch.diagonal(M, dim1=-2, dim2=-1).sum(-1).unsqueeze(-1).unsqueeze(-1)
     t = torch.sqrt(trace + 2 * sqrt_det)
 
-    sqrt_M = 1 / t * (M + sqrt_det * torch.eye(2).tile(N, 1, 1))
+    sqrt_M = 1 / t * (M + sqrt_det * torch.eye(2, device=M.device).tile(N, 1, 1))
     return sqrt_M
 
 
@@ -142,7 +142,9 @@ def inv_sqrt_2x2(M: torch.Tensor) -> torch.Tensor:
     M_adj[:, 0, 0], M_adj[:, 1, 1] = M[:, 1, 1], M[:, 0, 0]
     M_adj[:, 0, 1] *= -1
     M_adj[:, 1, 0] *= -1
-    M_sqrt_inv = 1 / t * (M_adj / sqrt_det + torch.eye(2).tile(N, 1, 1))
+    M_sqrt_inv = (
+        1 / t * (M_adj / sqrt_det + torch.eye(2, device=M.device).tile(N, 1, 1))
+    )
     return M_sqrt_inv
 
 

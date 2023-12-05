@@ -14,6 +14,19 @@ To install the library, it is simple as :
 pip install git+ssh://git@github.com/jeremyfix/torchcvnn.git
 ```
 
+## Installation for developping
+
+To install when developping the library, within a virtual envrionment, you can :
+
+```
+git clone git@github.com:jeremyfix/torchcvnn.git
+python3 -m venv torchcvnn-venv
+source torchcvnn-venv/bin/activate
+python -m pip install -e torchcvnn
+```
+
+This will install torchcvnn in developper mode. 
+
 ## Other projects
 
 You might also be interested in some other projects: 

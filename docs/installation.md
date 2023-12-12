@@ -8,4 +8,6 @@ python3 -m pip install git+https://github.com/jeremyfix/torchcvnn.git
 
 ## Using pip
 
-Soon :)
+```
+python3 -m pip install torchcvnn
+```

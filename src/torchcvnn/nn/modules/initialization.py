@@ -37,7 +37,7 @@ def complex_kaiming_normal_(
     a: float = 0,
     mode: str = "fan_in",
     nonlinearity: str = "leaky_relu",
-):
+) -> torch.Tensor:
     r"""Fills the input `Tensor` with values according to the method
     described in `Delving deep into rectifiers: Surpassing human-level
     performance on ImageNet classification` - He, K. et al. (2015), using a
@@ -62,7 +62,7 @@ def complex_kaiming_normal_(
 
     Examples:
         >>> w = torch.empty(3, 5, dtype=torch.complex64)
-        >>> c_nn.init.kaiming_normal_(w, mode='fan_out', nonlinearity='relu')
+        >>> c_nn.init.complex_kaiming_normal_(w, mode='fan_out', nonlinearity='relu')
 
     This implementation is a minor adaptation of the torch.nn.init.kaiming_normal_ function
     """
@@ -70,8 +70,8 @@ def complex_kaiming_normal_(
     fan = nn.init._calculate_correct_fan(tensor, mode)
     gain = nn.init.calculate_gain(nonlinearity, a)
     std = (gain / math.sqrt(fan)) / math.sqrt(2)
-    with torch.no_grad():
-        return tensor.normal_(0, std)
+
+    return nn.init._no_grad_normal_(tensor, 0.0, std)
 
 
 def complex_kaiming_uniform_(
@@ -79,7 +79,7 @@ def complex_kaiming_uniform_(
     a: float = 0,
     mode: str = "fan_in",
     nonlinearity: str = "leaky_relu",
-):
+) -> torch.Tensor:
     r"""Fills the input `Tensor` with values according to the method
     described in `Delving deep into rectifiers: Surpassing human-level
     performance on ImageNet classification` - He, K. et al. (2015), using a
@@ -104,7 +104,7 @@ def complex_kaiming_uniform_(
 
     Examples:
         >>> w = torch.empty(3, 5, dtype=torch.complex64)
-        >>> c_nn.init.kaiming_uniform_(w, mode='fan_in', nonlinearity='relu')
+        >>> c_nn.init.complex_kaiming_uniform_(w, mode='fan_in', nonlinearity='relu')
 
     This implementation is a minor adaptation of the torch.nn.init.kaiming_uniform_ function
     """
@@ -116,11 +116,15 @@ def complex_kaiming_uniform_(
     gain = nn.init.calculate_gain(nonlinearity, a)
     std = gain / math.sqrt(fan) / math.sqrt(2)
     bound = math.sqrt(3.0) * std  # Calculate uniform bounds from standard deviation
-    with torch.no_grad():
-        return tensor.uniform_(-bound, bound)
+
+    return nn.init._no_grad_uniform_(tensor, -bound, bound)
 
 
-def xavier_uniform_(tensor: torch.Tensor, gain: float = 1.0) -> torch.Tensor:
+def complex_xavier_uniform_(
+    tensor: torch.Tensor,
+    a: float = 0,
+    nonlinearity: str = "leaky_relu",
+) -> torch.Tensor:
     r"""Fills the input `Tensor` with values according to the method
     described in `Understanding the difficulty of training deep feedforward
     neural networks` - Glorot, X. & Bengio, Y. (2010), using a uniform
@@ -138,18 +142,23 @@ def xavier_uniform_(tensor: torch.Tensor, gain: float = 1.0) -> torch.Tensor:
 
     Examples:
         >>> w = torch.empty(3, 5, dtype=torch.complex64)
-        >>> c_nn.init.xavier_uniform_(w, gain=nn.init.calculate_gain('relu'))
+        >>> c_nn.init.complex_xavier_uniform_(w, gain=nn.init.calculate_gain('relu'))
 
     This implementation is a minor adaptation of the torch.nn.init.xavier_uniform_ function
     """
     fan_in, fan_out = nn.init._calculate_fan_in_and_fan_out(tensor)
+    gain = nn.init.calculate_gain(nonlinearity, a)
     std = gain * math.sqrt(2.0 / float(fan_in + fan_out)) / math.sqrt(2)
-    a = math.sqrt(3.0) * std  # Calculate uniform bounds from standard deviation
+    bound = math.sqrt(3.0) * std  # Calculate uniform bounds from standard deviation
 
-    return nn.init._no_grad_uniform_(tensor, -a, a)
+    return nn.init._no_grad_uniform_(tensor, -bound, bound)
 
 
-def xavier_normal_(tensor: torch.Tensor, gain: float = 1.0) -> torch.Tensor:
+def complex_xavier_normal_(
+    tensor: torch.Tensor,
+    a: float = 0,
+    nonlinearity: str = "leaky_relu",
+) -> torch.Tensor:
     r"""Fills the input `Tensor` with values according to the method
     described in `Understanding the difficulty of training deep feedforward
     neural networks` - Glorot, X. & Bengio, Y. (2010), using a normal
@@ -167,11 +176,12 @@ def xavier_normal_(tensor: torch.Tensor, gain: float = 1.0) -> torch.Tensor:
 
     Examples:
         >>> w = torch.empty(3, 5, dtype=torch.complex64)
-        >>> nn.init.xavier_normal_(w)
+        >>> nn.init.complex_xavier_normal_(w)
 
     This implementation is a minor adaptation of the torch.nn.init.xavier_normal_ function
     """
     fan_in, fan_out = nn.init._calculate_fan_in_and_fan_out(tensor)
+    gain = nn.init.calculate_gain(nonlinearity, a)
     std = (gain * math.sqrt(2.0 / float(fan_in + fan_out))) / math.sqrt(2)
 
     return nn.init._no_grad_normal_(tensor, 0.0, std)

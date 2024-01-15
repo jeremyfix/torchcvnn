@@ -1,6 +1,6 @@
 # MIT License
 
-# Copyright (c) 2023 Quentin Gabot
+# Copyright (c) 2024 Quentin Gabot
 
 # The following is an adaptation of the initialization code from
 # PyTorch library for the complex-valued neural networks

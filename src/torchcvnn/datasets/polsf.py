@@ -31,25 +31,32 @@ import requests
 import spectral.io.envi as envi
 from tqdm import tqdm
 import torch
-import torch.nn as nn
 import torch.utils.data
 from torch.utils.data import Dataset
 
 
 class PolSFAlos2Dataset(Dataset):
+    r"""
+    The Polarimetric SAR dataset provided by
+    [https://ietr-lab.univ-rennes1.fr/polsarpro-bio/san-francisco/]()
+
+    Arguments:
+        root: the top root dir where the data are downloaded and saved
+        transform : the transform applied the cropped image
+        save: whether or not to generate and save the crops. If not, just reload them
+        coordinates: the labelised crop of the image is given by the following coordinates(2832, 736, 7888, 3520)
+        download: wheter or not to download the dataset.
+    """
+
     def __init__(
         self,
-        root=None,
+        root: str = None,
         transform=None,
-        save=False,
-        coordinates=None,
-        download=False,
-        url="https://ietr-lab.univ-rennes1.fr/polsarpro-bio/san-francisco/dataset/SAN_FRANCISCO_ALOS2.zip",
+        save: bool = False,
+        coordinates: tuple = None,
+        download: bool = False,
+        url: str = "https://ietr-lab.univ-rennes1.fr/polsarpro-bio/san-francisco/dataset/SAN_FRANCISCO_ALOS2.zip",
     ):
-        """
-        Args:
-            coordinates: the labelised crop of the image is given by the following coordinates(2832, 736, 7888, 3520)
-        """
         self.root = root
         if not self.root:
             self.root = os.path.join(os.getcwd(), "datasets/SAN_FRANCISCO_ALOS2")
@@ -159,14 +166,20 @@ def download_zip(dir, dataset_url):
     # Load your data here (after extraction)
 
 
-def slide_and_save_crops(array_3d, output_folder, crop_size=(128, 128), step_size=16):
-    """
-    Slides over a 3D numpy array, extracts 128x128 crops, and saves them with a progress bar.
+def slide_and_save_crops(
+    array_3d: np.array,
+    output_folder: str,
+    crop_size: tuple = (128, 128),
+    step_size: int = 16,
+):
+    r"""
+    Slides over a 3D numpy array, extracts $128\times128$ crops, and saves them with a progress bar.
 
-    :param array_3d: Input 3D numpy array.
-    :param output_folder: Folder where cropped images will be saved.
-    :param crop_size: Size of each crop (height, width).
-    :param step_size: Step size for sliding the window.
+    Arguments:
+        array_3d: Input 3D numpy array.
+        output_folder: Folder where cropped images will be saved.
+        crop_size: Size of each crop (height, width).
+        step_size: Step size for sliding the window.
     """
     # Check if the directory exists
     if os.path.exists(output_folder) and os.path.isdir(output_folder):

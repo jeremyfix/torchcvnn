@@ -42,10 +42,11 @@ def complex_kaiming_normal_(
     described in `Delving deep into rectifiers: Surpassing human-level
     performance on ImageNet classification` - He, K. et al. (2015), using a
     normal distribution. The resulting tensor will have values sampled from
-    :math:`\mathcal{N}(0, \text{std}^2)` where
+    $\mathcal{N}(0, \text{std}^2)$ where
 
-    .. math::
-        \text{std} = \frac{\text{gain}}{\sqrt{2\text{fan\_mode}}}
+    $$
+    \text{std} = \frac{\text{gain}}{\sqrt{2\text{fan_mode}}}
+    $$
 
     Also known as He initialization.
 
@@ -84,10 +85,11 @@ def complex_kaiming_uniform_(
     described in `Delving deep into rectifiers: Surpassing human-level
     performance on ImageNet classification` - He, K. et al. (2015), using a
     uniform distribution. The resulting tensor will have values sampled from
-    :math:`\mathcal{U}(-\text{bound}, \text{bound})` where
+    $\mathcal{U}(-\text{bound}, \text{bound})$ where
 
-    .. math::
-        \text{bound} = \text{gain} \times \sqrt{\frac{3}{2\text{fan\_mode}}}
+    $$
+    \text{bound} = \text{gain} \times \sqrt{\frac{3}{2\text{fan_mode}}}
+    $$
 
     Also known as He initialization.
 
@@ -129,10 +131,11 @@ def complex_xavier_uniform_(
     described in `Understanding the difficulty of training deep feedforward
     neural networks` - Glorot, X. & Bengio, Y. (2010), using a uniform
     distribution. The resulting tensor will have values sampled from
-    :math:`\mathcal{U}(-a, a)` where
+    $\mathcal{U}(-a, a)$ where
 
-    .. math::
-        a = \text{gain} \times \sqrt{\frac{6}{2(\text{fan\_in} + \text{fan\_out})}}
+    $$
+    a = \text{gain} \times \sqrt{\frac{6}{2(\text{fan_in} + \text{fan_out})}}
+    $$
 
     Also known as Glorot initialization.
 
@@ -163,10 +166,11 @@ def complex_xavier_normal_(
     described in `Understanding the difficulty of training deep feedforward
     neural networks` - Glorot, X. & Bengio, Y. (2010), using a normal
     distribution. The resulting tensor will have values sampled from
-    :math:`\mathcal{N}(0, \text{std}^2)` where
+    $\mathcal{N}(0, \text{std}^2)$ where
 
-    .. math::
-        \text{std} = \text{gain} \times \sqrt{\frac{2}{2(\text{fan\_in} + \text{fan\_out})}}
+    $$
+    \text{std} = \text{gain} \times \sqrt{\frac{2}{2(\text{fan_in} + \text{fan_out})}}
+    $$
 
     Also known as Glorot initialization.
 

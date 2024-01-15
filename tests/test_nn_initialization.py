@@ -1,6 +1,6 @@
 # MIT License
 
-# Copyright (c) 2023 Jérémie Levi, Victor Dhédin, Jeremy Fix
+# Copyright (c) 2024 Quentin Gabot
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,24 +20,35 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .pooling import MaxPool2d, AvgPool2d
-from .dropout import Dropout, Dropout2d
-from .conv import ConvTranspose2d
-from .batchnorm import BatchNorm2d
-from .upsampling import Upsample
-from . import initialization as init
-from .activation import (
-    CReLU,
-    CPReLU,
-    CELU,
-    CCELU,
-    CGELU,
-    CSigmoid,
-    CTanh,
-    zReLU,
-    zAbsReLU,
-    zLeakyReLU,
-    Mod,
-    modReLU,
-    Cardioid,
-)
+# External imports
+import torch
+
+# Local imports
+import torchcvnn.nn as c_nn
+
+
+def test_complex_kaiming_normal():
+    w = torch.empty(3, 5, dtype=torch.complex64)
+    c_nn.init.complex_kaiming_normal_(w, mode="fan_in", nonlinearity="relu")
+
+
+def test_complex_kaiming_uniform_():
+    w = torch.empty(3, 5, dtype=torch.complex64)
+    c_nn.init.complex_kaiming_uniform_(w, mode="fan_in", nonlinearity="relu")
+
+
+def test_complex_xavier_uniform_():
+    w = torch.empty(3, 5, dtype=torch.complex64)
+    c_nn.init.complex_xavier_uniform_(w, nonlinearity="relu")
+
+
+def test_complex_xavier_normal_():
+    w = torch.empty(3, 5, dtype=torch.complex64)
+    c_nn.init.complex_xavier_normal_(w, nonlinearity="relu")
+
+
+if __name__ == "__main__":
+    test_complex_kaiming_normal()
+    test_complex_kaiming_uniform_()
+    test_complex_xavier_uniform_()
+    test_complex_xavier_normal_()

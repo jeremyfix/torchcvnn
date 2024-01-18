@@ -52,3 +52,4 @@ If you have different settings for the polarization, the structure of the files 
 """
 
 from .vol_file import VolFile
+from .trailer_file import TrailerFile

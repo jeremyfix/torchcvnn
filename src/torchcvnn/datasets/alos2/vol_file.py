@@ -20,6 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Standard imports
+from typing import Union
+import pathlib
+
 # Local imports
 from . import parse_utils
 
@@ -69,7 +73,16 @@ text_record_length = 360
 
 
 class VolFile:
-    def __init__(self, filepath):
+    r"""
+    Processing a Volume Directory file in the CEOS format. The parsed
+    informations can be accessed through the attributes `descriptor_records`,
+    `file_pointer_records` and `text_records`
+
+    Arguments:
+        filepath: the path to the volume directory file
+    """
+
+    def __init__(self, filepath: Union[str, pathlib.Path]):
         self.descriptor_records = {}
         self.file_pointer_records = []
         self.text_records = {}

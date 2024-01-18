@@ -1,4 +1,5 @@
 from pathlib import Path
+from torchcvnn.datasets import alos2
 
 """
 Example script to read ALOS-2 data for San Francisco Bay
@@ -38,76 +39,14 @@ Volume Directory file:
 """
 
 
-def read_field(fh, start_byte, num_bytes, type_bytes, expected):
-    fh.seek(start_byte)
-    data_bytes = fh.read(num_bytes)
-    if type_bytes == "A":
-        value = data_bytes.decode("ascii")
-    elif type_bytes == "B":
-        # Binary number representation, big_endian
-        value = int.from_bytes(data_bytes, "big")
-    elif type_bytes == "I":
-        value = int(data_bytes.decode("ascii"))
-
-    if expected is not None:
-        assert value == expected
-
-    return value
-
-
-descriptor_format = [
-    ("record_sequence_number", 0, 4, "B", 1),
-    ("first_record_subtype_code", 4, 1, "B", 192),
-    ("record_type_code", 5, 1, "B", 192),
-    ("second_subtype_code", 6, 1, "B", 18),
-    ("third_subtype_code", 7, 1, "B", 18),
-    ("length_record", 8, 4, "B", 360),
-    ("flag", 12, 2, "A", "A "),
-    # ("blanks", 14, 2, "A", "  "),
-    ("superstructure_doc_id", 16, 12, "A", "CEOS-SAR    "),
-    ("superstructure_doc_rev_level", 28, 2, "A", " A"),
-    ("superstructure_fmt_rev_level", 30, 2, "A", " A"),
-    ("software_release_level", 32, 12, "A", None),
-    ("physical_volume_id", 44, 16, "A", None),
-    ("logical_volume_id", 60, 16, "A", None),
-    ("volume_set_id", 76, 16, "A", None),
-    ("total_number_volumes", 92, 2, "I", 1),
-    ("physical_volume_seq_num_first", 94, 2, "I", 1),
-    ("physical_volume_seq_num_last", 96, 2, "I", 1),
-    ("physical_volume_seq_num_cur", 98, 2, "I", 1),
-    ("file_number", 100, 4, "I", None),
-    ("logical_volume_within_volume", 104, 4, "I", None),
-    ("logical_volume_within_physical", 108, 4, "I", None),
-    ("logical_volume_creation_date", 112, 8, "A", None),  # YYYYMMDD
-    ("logical_volume_creation_time", 120, 8, "A", None),  # HHMMSSXX
-    ("logical_volume_creation_country", 128, 12, "A", None),
-    ("logical_volume_creation_agency", 140, 8, "A", None),
-    ("logical_volume_generation_facility", 148, 12, "A", None),
-    ("number_of_file_pointer_records", 160, 4, "I", None),
-    ("number_of_text_records", 164, 4, "I", None),
-    # Volume descriptor spare A92 + local use segment A100
-]
-
-
-class VolFile:
-    def __init__(self, filepath):
-        self.descriptor_records = {}
-        with open(filepath, "rb") as fh:
-            parse_from_format(fh, self.descriptor_records, descriptor_format)
-
-
-def parse_from_format(fh, obj, descriptor_format):
-    for field_name, start_byte, num_bytes, type_bytes, expected in descriptor_format:
-        value = read_field(fh, start_byte, num_bytes, type_bytes, expected)
-        obj[field_name] = value
-
-
 def test1():
     rootdir = Path("/mounts/Datasets1/Polarimetric-SanFrancisco/SAN_FRANCISCO_ALOS2/")
 
     vol_filepath = rootdir / "VOL-ALOS2044980750-150324-HBQR1.1__A"
-    volFile = VolFile(vol_filepath)
+    volFile = alos2.VolFile(vol_filepath)
     print(volFile.descriptor_records)
+    print(volFile.file_pointer_records)
+    print(volFile.text_records)
 
 
 if __name__ == "__main__":

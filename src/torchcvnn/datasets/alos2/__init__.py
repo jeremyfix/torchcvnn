@@ -26,6 +26,9 @@ Scripts to read and parse ALOS-2 data files
 The format is described in
 https://www.eorc.jaxa.jp/ALOS/en/alos-2/pdf/product_format_description/PALSAR-2_xx_Format_CEOS_E_g.pdf
 
+See also the handbook : https://www.eorc.jaxa.jp/ALOS/en/doc/alos_userhb_en.pdf
+for example p99 for the image line formats
+
 We have for High-sensitive/Fine Mode Full (Quad.) Polarimetry :
     IMG-{HH, HV, VH, VV}xxxxx__A
     LED-xxxx.1__A : SAR Leader file
@@ -54,3 +57,4 @@ If you have different settings for the polarization, the structure of the files 
 from .vol_file import VolFile
 from .trailer_file import TrailerFile
 from .leader_file import LeaderFile
+from .sar_image import SARImage

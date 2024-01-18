@@ -57,6 +57,16 @@ def test1():
     leaderFile = alos2.LeaderFile(leader_filepath)
     print(leaderFile)
 
+    print("===== SAR HH Image =====")
+    hh_filepath = rootdir / "IMG-HH-ALOS2044980750-150324-HBQR1.1__A"
+    HH_Image = alos2.SARImage(hh_filepath)
+    print(HH_Image)
+
+    print("===== SAR HV Image =====")
+    hv_filepath = rootdir / "IMG-HV-ALOS2044980750-150324-HBQR1.1__A"
+    HV_Image = alos2.SARImage(hv_filepath)
+    print(HV_Image)
+
 
 if __name__ == "__main__":
     test1()

@@ -116,8 +116,19 @@ class VolFile:
             fh_offset = parse_utils.parse_from_format(
                 fh,
                 self.text_records,
-                file_pointer_format,
+                text_records_format,
                 1,
                 text_record_length,
                 fh_offset,
             )
+
+    def __repr__(self):
+        descriptor_txt = parse_utils.format_dictionary(self.descriptor_records, 1)
+        text_txt = parse_utils.format_dictionary(self.text_records, 1)
+        return f"""
+Descriptor:
+{descriptor_txt}
+File pointers : {len(self.file_pointer_records)} records
+Text records:
+{text_txt}
+        """

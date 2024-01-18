@@ -21,17 +21,38 @@
 # SOFTWARE.
 
 
+def format_key_val(key_value):
+    key, value = key_value
+    return key.replace("_", " ").capitalize() + f" : {value}"
+
+
+def format_dictionary(record, level=0):
+    strs = map(format_key_val, record.items())
+    # Add heading padding
+    strs = map(lambda s: " " * (level * 4) + s, strs)
+    return "\n".join(strs)
+
+
 def read_field(fh, start_byte, num_bytes, type_bytes, expected):
     fh.seek(start_byte)
     data_bytes = fh.read(num_bytes)
-    if type_bytes == "A":
+    if type_bytes[0] == "A":
         value = data_bytes.decode("ascii")
-    elif type_bytes == "B":
+    elif type_bytes[0] == "B":
         # Binary number representation, big_endian
         value = int.from_bytes(data_bytes, "big")
-    elif type_bytes == "I":
+    elif type_bytes[0] == "I":
         value = int(data_bytes.decode("ascii"))
-
+    elif type_bytes[0] == "E":
+        # This is a  Em.n format
+        # Exponential notation, right fill
+        m, n = type_bytes[1:].split(".")
+        value = float(data_bytes.decode("ascii").strip())
+    elif type_bytes[0] == "F":
+        # This is a  Fm.n format
+        # Exponential notation, right fill
+        m, n = type_bytes[1:].split(".")
+        value = float(data_bytes.decode("ascii").strip())
     if expected is not None:
         assert value == expected
 
@@ -53,7 +74,7 @@ def parse_from_format(
                 fh, base_offset + start_byte, num_bytes, type_bytes, expected
             )
             obj[field_name] = value
-        return record_length
+        return base_offset + record_length
     else:
         record = {}
         offset = base_offset

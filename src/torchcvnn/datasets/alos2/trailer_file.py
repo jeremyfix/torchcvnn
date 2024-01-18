@@ -71,10 +71,8 @@ class TrailerFile:
             self.image_data = parse_image_data(fh, num_pixels, num_lines)
 
     def __repr__(self):
+        descriptor_txt = parse_utils.format_dictionary(self.descriptor_records, 1)
         return f"""
-File id : {self.descriptor_records['file_id']}
-Number of low resolution image data records : {self.descriptor_records['number_low_resolution_image_records']}
-Number of pixels : {self.descriptor_records['number_of_pixels']}
-Number of lines : {self.descriptor_records['number_of_lines']}
-Image record length : {self.descriptor_records['image_record_length']} bytes
+Descriptor : 
+{descriptor_txt}
         """

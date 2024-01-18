@@ -45,14 +45,17 @@ def test1():
     print("===== Volume =====")
     vol_filepath = rootdir / "VOL-ALOS2044980750-150324-HBQR1.1__A"
     volFile = alos2.VolFile(vol_filepath)
-    print(volFile.descriptor_records)
-    print(volFile.file_pointer_records)
-    print(volFile.text_records)
+    print(volFile)
 
     print("===== Trailer =====")
     trailer_filepath = rootdir / "TRL-ALOS2044980750-150324-HBQR1.1__A"
     trailFile = alos2.TrailerFile(trailer_filepath)
     print(trailFile)
+
+    print("===== Leader =====")
+    leader_filepath = rootdir / "LED-ALOS2044980750-150324-HBQR1.1__A"
+    leaderFile = alos2.LeaderFile(leader_filepath)
+    print(leaderFile)
 
 
 if __name__ == "__main__":

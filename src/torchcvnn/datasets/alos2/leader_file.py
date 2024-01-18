@@ -130,21 +130,17 @@ class LeaderFile:
             )
 
     def __repr__(self):
+        descriptor_txt = parse_utils.format_dictionary(self.descriptor_record, 1)
+        summary_txt = parse_utils.format_dictionary(self.summary_record, 1)
+        altitude_txt = parse_utils.format_dictionary(self.altitude_record, 1)
+        radiometric_txt = parse_utils.format_dictionary(self.radiometric_record, 1)
         return f"""
 Descriptor:
-    File id : {self.descriptor_record['file_id']}
+{descriptor_txt}
 Summary:
-    Scene id : {self.summary_record['scene_id']}
-    Number of SAR channels : {self.summary_record['number_sar_channels']}
-    Sensor id : '{self.summary_record['sensor_id']}'
-    Line spacing : {self.summary_record['line_spacing']} m
-    Pixel spacing : {self.summary_record['pixel_spacing']} m
-    Nominal Off Nadir : {self.summary_record['nominal_off_nadir']}
+{summary_txt}
 Altitude:
-    Roll : {self.altitude_record['roll']} deg
-    Pitch : {self.altitude_record['pitch']} deg
-    Yaw : {self.altitude_record['yaw']} deg
+{altitude_txt}
 Radiometric:
-    record number : {self.radiometric_record['record_number']}
-    Calibration factor : {self.radiometric_record['calibration_factor']}
+{radiometric_txt}
         """

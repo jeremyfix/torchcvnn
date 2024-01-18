@@ -1,5 +1,13 @@
 from pathlib import Path
 from torchcvnn.datasets import alos2
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+import numpy as np
+import skimage
+from skimage import exposure
 
 """
 Example script to read ALOS-2 data for San Francisco Bay
@@ -62,10 +70,26 @@ def test1():
     HH_Image = alos2.SARImage(hh_filepath)
     print(HH_Image)
 
+    mod = 20 * np.log10(np.abs(HH_Image.data) + 1e-2)
+    mod = (mod - mod.min()) / (mod.max() - mod.min())  # rescale between 0 and 1
+    p2, p98 = np.percentile(mod, (2, 98))
+
+    mod = exposure.rescale_intensity(mod, in_range=(p2, p98))
+    mod = skimage.img_as_float(mod)
+
+    plt.figure()
+    plt.imshow(mod, cmap="gray")
+    plt.savefig("HH.png", bbox_inches="tight")
+    plt.close()
+
     print("===== SAR HV Image =====")
-    hv_filepath = rootdir / "IMG-HV-ALOS2044980750-150324-HBQR1.1__A"
-    HV_Image = alos2.SARImage(hv_filepath)
-    print(HV_Image)
+    # hv_filepath = rootdir / "IMG-HV-ALOS2044980750-150324-HBQR1.1__A"
+    # HV_Image = alos2.SARImage(hv_filepath)
+
+    # plt.figure()
+    # plt.imshow(np.log10(np.abs(HV_Image.data) + 1e-10), cmap="gray")
+    # plt.savefig("HV.png", bbox_inches="tight")
+    # plt.close()
 
 
 if __name__ == "__main__":

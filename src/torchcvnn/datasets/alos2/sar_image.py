@@ -35,6 +35,7 @@ descriptor_format = [
     ("format_control_document_id", 16, 12, "A", "CEOS-SAR    "),
     ("file_id", 48, 16, "A", None),
     ("number_data_records", 180, 6, "I", None),
+    ("sar_data_record_length", 186, 6, "I", None),
     ("number_bytes_prefix_data", 276, 4, "I", None),  # 544 for L1.1, 192 for L1.5/3.1
     ("number_bytes_data_record", 280, 8, "I", None),
     ("number_bytes_suffix_data", 288, 4, "I", None),  # 0
@@ -63,11 +64,31 @@ data_records_format = [
 ]
 
 
-def parse_image_data(fh, number_pixels, number_records):
-    data_bytes = fh.read(number_records * number_pixels * 8)
-    datas = struct.unpack(">" + ("i" * number_records * number_pixels * 2), data_bytes)
-    cplx_datas = [real + 1j * imag for (real, imag) in zip(datas[0::2], datas[1::2])]
-    datas = np.array(cplx_datas).reshape(number_records, number_pixels)
+def parse_image_data(fh, number_prefix, number_pixels, number_records):
+    # For some reasons, the following which I expect to be faster
+    # is taking much more memory than the line by line approach below
+    # print("Parsing image data")
+    # data_bytes = fh.read(number_records * number_pixels * 8)
+    # datas = struct.unpack(">" + ("i" * number_records * number_pixels * 2), data_bytes)
+    # cplx_datas = [real + 1j * imag for (real, imag) in zip(datas[0::2], datas[1::2])]
+    # del datas
+
+    # print("Cplx data")
+    # datas = np.array(cplx_datas).reshape(number_records, number_pixels) / 2**16
+    # del cplx_datas
+    # print("As numpy")
+
+    lines = []
+    for _ in range(number_records):
+        fh.seek(number_prefix, 1)  # relative shift with whence=1
+        data_bytes = fh.read(number_pixels * 8)
+        datas = struct.unpack(">" + ("i" * (number_pixels * 2)), data_bytes)
+        cplx_datas = [real + 1j * imag for (real, imag) in zip(datas[::2], datas[1::2])]
+        lines.append(np.array(cplx_datas))
+        # There is no trailing data in our level 1.1 test samples
+        # There might be suffix bytes actually
+
+    datas = np.array(lines) / 2**15
 
     return datas
 
@@ -102,10 +123,13 @@ class SARImage:
             )
 
             # Rewind the head to the beginning of the data records
-            fh.seek(fh_offset + self.descriptor_records["number_bytes_prefix_data"])
+            fh.seek(descriptor_record_length)
             number_records = self.descriptor_records["number_data_records"]
             number_pixels = self.data_records["count_data_pixels"]
-            self.data = parse_image_data(fh, number_pixels, number_records)
+            number_prefix = self.descriptor_records["number_bytes_prefix_data"]
+            self.data = parse_image_data(
+                fh, number_prefix, number_pixels, 5000  # number_records
+            )
 
     def __repr__(self):
         descriptor_txt = parse_utils.format_dictionary(self.descriptor_records, 1)

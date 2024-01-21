@@ -44,8 +44,10 @@ descriptor_format = [
     ("number_bytes_data_record", 280, 8, "I", None),
     ("number_bytes_suffix_data", 288, 4, "I", None),  # 0
     ("sample_data_number_locator", 296, 8, "A", None),
-    ("sar_data_format_type", 428, 4, "A", None)  # e.g L1.1 'C*8b'
-    # ("scanscar_burst_information", 456, 4, "I", None),
+    ("sar_data_format_type", 428, 4, "A", None),  # e.g L1.1 'C*8b'
+    ("scanscar_num_burst", 448, 4, "I", None),
+    ("scanscar_num_lines_per_burst", 452, 4, "I", None),
+    ("scanscar_burst_information", 456, 4, "I", None),
 ]
 descriptor_record_length = 720
 
@@ -55,8 +57,15 @@ data_records_format = [
     ("record_type_code", 5, 1, "B", 10),  # To check we are aligned with the file format
     ("record_length", 8, 4, "B", None),
     ("sar_image_data_line_number", 12, 4, "B", None),
+    ("num_left_fill_pixels", 20, 4, "B", 0),  # No left fill in 1.1, hence 0 is expected
     ("count_data_pixels", 24, 4, "B", None),
-    ("num_right_fill_pixels", 27, 4, "B", None),
+    (
+        "num_right_fill_pixels",
+        28,
+        4,
+        "B",
+        0,
+    ),  # No right fill in 1.1, hence 0 is expected
     ("transmitted_pulse_polarization", 52, 2, "B", None),  # either H(0) or V(1)
     ("received_pulse_polarization", 54, 2, "B", None),  # either H(0) or V(1)
     ("chirp_length", 68, 4, "B", None),
@@ -70,6 +79,7 @@ data_records_format = [
     ("longitude_first", 204, 4, "B", None),  # 1/1,000,000 deg
     ("longitude_last", 212, 4, "B", None),  # 1/1,000,000 deg
     ("ALOS2_frame_number", 284, 4, "B", 0),
+    ("auxiliary_data", 288, 256, "B", 0),
 ]
 data_record_header_length = 544
 
@@ -91,6 +101,7 @@ def parse_image_data(fh, base_offset, number_records):
     lines = []
     record_info = {}
     for i in range(number_records):
+        # print(base_offset)
         # Read the header and shift the file pointer
         base_offset = parse_utils.parse_from_format(
             fh,
@@ -105,17 +116,22 @@ def parse_image_data(fh, base_offset, number_records):
 
         number_pixels = record_info["count_data_pixels"]
 
+        fh.seek(base_offset)
         data_bytes = fh.read(number_pixels * 8)
         datas = struct.unpack(">" + ("i" * (number_pixels * 2)), data_bytes)
+
         cplx_datas = [real + 1j * imag for (real, imag) in zip(datas[::2], datas[1::2])]
-        lines.append(np.array(cplx_datas))
-        # There is no trailing data in our level 1.1 test samples
-        # There might be suffix bytes actually
+        cplx_datas = np.array(cplx_datas) / 2**31
+        if i == 0:
+            print(cplx_datas[:5])
+            print(cplx_datas[-5:])
+            print(record_info)
+        lines.append(cplx_datas)
 
         # Shift the base_offset to the next record header beginning
         base_offset += 8 * number_pixels
 
-    datas = np.array(lines) / 2**31
+    datas = np.array(lines)
 
     return datas
 
@@ -153,7 +169,7 @@ class SARImage:
             fh.seek(descriptor_record_length)
             base_offset = descriptor_record_length
             number_records = self.descriptor_records["number_data_records"]
-            self.data = parse_image_data(fh, base_offset, 5000)  # number_records)
+            self.data = parse_image_data(fh, base_offset, number_records)
 
     def __repr__(self):
         descriptor_txt = parse_utils.format_dictionary(self.descriptor_records, 1)

@@ -42,6 +42,8 @@ summary_format = [
     ("line_content_indicator", 1670, 8, "A", None),  # RANGEbbb for L1.1 or OTHERbbb
     ("line_spacing", 1686, 16, "F16.7", None),
     ("pixel_spacing", 1702, 16, "F16.7", None),
+    ("doppler_center_frequency_constant_term", 1734, 16, "F16.7", None),
+    ("doppler_center_frequency_linear_term", 1750, 16, "F16.7", None),
     ("nominal_off_nadir", 1838, 16, "F16.7", None),
 ]
 summary_record_length = 4096

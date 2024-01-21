@@ -42,7 +42,11 @@ def read_field(fh, start_byte, num_bytes, type_bytes, expected):
         # Binary number representation, big_endian
         value = int.from_bytes(data_bytes, "big")
     elif type_bytes[0] == "I":
-        value = int(data_bytes.decode("ascii"))
+        data_str = data_bytes.decode("ascii").strip()
+        if len(data_str) == 0:
+            value = None
+        else:
+            value = int(data_str)
     elif type_bytes[0] == "E":
         # This is a  Em.n format
         # Exponential notation, right fill
@@ -74,6 +78,7 @@ def parse_from_format(
                 fh, base_offset + start_byte, num_bytes, type_bytes, expected
             )
             obj[field_name] = value
+        fh.seek(base_offset + record_length)
         return base_offset + record_length
     else:
         record = {}
@@ -92,4 +97,5 @@ def parse_from_format(
                 record[field_name] = value
             obj.append(record)
             offset += record_length
+        fh.seek(offset)
         return offset

@@ -70,12 +70,15 @@ def test1():
     HH_Image = alos2.SARImage(hh_filepath)
     print(HH_Image)
 
+    mod = np.abs(HH_Image.data)
+    print(mod.min(), mod.max())
     mod = 20 * np.log10(np.abs(HH_Image.data) + 1e-2)
     mod = (mod - mod.min()) / (mod.max() - mod.min())  # rescale between 0 and 1
     p2, p98 = np.percentile(mod, (2, 98))
 
     mod = exposure.rescale_intensity(mod, in_range=(p2, p98))
     mod = skimage.img_as_float(mod)
+    print(mod.min(), mod.max())
 
     plt.figure()
     plt.imshow(mod, cmap="gray")

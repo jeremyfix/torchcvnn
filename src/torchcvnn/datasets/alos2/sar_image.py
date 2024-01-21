@@ -31,6 +31,10 @@ from . import parse_utils
 
 # Format described p84 of
 # https://www.eorc.jaxa.jp/ALOS/en/alos-2/pdf/product_format_description/PALSAR-2_xx_Format_CEOS_E_g.pdf
+# A SAR Image file contains
+# - A File descriptor with 720 bytes
+# - For L1.1 : Signal data
+
 descriptor_format = [
     ("format_control_document_id", 16, 12, "A", "CEOS-SAR    "),
     ("file_id", 48, 16, "A", None),
@@ -47,8 +51,12 @@ descriptor_record_length = 720
 
 
 data_records_format = [
+    ("record_sequence_number", 0, 4, "B", None),
     ("record_type_code", 5, 1, "B", 10),  # To check we are aligned with the file format
+    ("record_length", 8, 4, "B", None),
+    ("sar_image_data_line_number", 12, 4, "B", None),
     ("count_data_pixels", 24, 4, "B", None),
+    ("num_right_fill_pixels", 27, 4, "B", None),
     ("transmitted_pulse_polarization", 52, 2, "B", None),  # either H(0) or V(1)
     ("received_pulse_polarization", 54, 2, "B", None),  # either H(0) or V(1)
     ("chirp_length", 68, 4, "B", None),
@@ -61,10 +69,12 @@ data_records_format = [
     ("latitude_last", 200, 4, "B", None),  # 1/1,000,000 deg
     ("longitude_first", 204, 4, "B", None),  # 1/1,000,000 deg
     ("longitude_last", 212, 4, "B", None),  # 1/1,000,000 deg
+    ("ALOS2_frame_number", 284, 4, "B", 0),
 ]
+data_record_header_length = 544
 
 
-def parse_image_data(fh, number_prefix, number_pixels, number_records):
+def parse_image_data(fh, base_offset, number_records):
     # For some reasons, the following which I expect to be faster
     # is taking much more memory than the line by line approach below
     # print("Parsing image data")
@@ -79,8 +89,22 @@ def parse_image_data(fh, number_prefix, number_pixels, number_records):
     # print("As numpy")
 
     lines = []
-    for _ in range(number_records):
-        fh.seek(number_prefix, 1)  # relative shift with whence=1
+    record_info = {}
+    for i in range(number_records):
+        # Read the header and shift the file pointer
+        base_offset = parse_utils.parse_from_format(
+            fh,
+            record_info,
+            data_records_format,
+            1,
+            data_record_header_length,
+            base_offset,
+        )
+
+        assert i == (record_info["sar_image_data_line_number"] - 1)
+
+        number_pixels = record_info["count_data_pixels"]
+
         data_bytes = fh.read(number_pixels * 8)
         datas = struct.unpack(">" + ("i" * (number_pixels * 2)), data_bytes)
         cplx_datas = [real + 1j * imag for (real, imag) in zip(datas[::2], datas[1::2])]
@@ -88,7 +112,10 @@ def parse_image_data(fh, number_prefix, number_pixels, number_records):
         # There is no trailing data in our level 1.1 test samples
         # There might be suffix bytes actually
 
-    datas = np.array(lines) / 2**15
+        # Shift the base_offset to the next record header beginning
+        base_offset += 8 * number_pixels
+
+    datas = np.array(lines) / 2**31
 
     return datas
 
@@ -112,24 +139,21 @@ class SARImage:
                 fh_offset,
             )
 
-            # Move the reading head to the beginning of the buffer
-            parse_utils.parse_from_format(
+            # Read the header of the first record
+            fh_offset = parse_utils.parse_from_format(
                 fh,
                 self.data_records,
                 data_records_format,
                 1,
-                0,  # Note: this is variable, don't trust the fh_offset from this call
+                data_record_header_length,
                 fh_offset,
             )
 
             # Rewind the head to the beginning of the data records
             fh.seek(descriptor_record_length)
+            base_offset = descriptor_record_length
             number_records = self.descriptor_records["number_data_records"]
-            number_pixels = self.data_records["count_data_pixels"]
-            number_prefix = self.descriptor_records["number_bytes_prefix_data"]
-            self.data = parse_image_data(
-                fh, number_prefix, number_pixels, 5000  # number_records
-            )
+            self.data = parse_image_data(fh, base_offset, 5000)  # number_records)
 
     def __repr__(self):
         descriptor_txt = parse_utils.format_dictionary(self.descriptor_records, 1)

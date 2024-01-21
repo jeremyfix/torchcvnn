@@ -40,6 +40,9 @@ descriptor_format = [
     ("file_id", 48, 16, "A", None),
     ("number_data_records", 180, 6, "I", None),
     ("sar_data_record_length", 186, 6, "I", None),
+    ("bit_length_per_sample", 216, 4, "I", None),
+    ("num_samples_per_data_group", 220, 4, "I", None),
+    ("num_bytes_per_data_group", 224, 4, "I", None),
     ("number_bytes_prefix_data", 276, 4, "I", None),  # 544 for L1.1, 192 for L1.5/3.1
     ("number_bytes_data_record", 280, 8, "I", None),
     ("number_bytes_suffix_data", 288, 4, "I", None),  # 0

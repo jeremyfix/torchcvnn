@@ -114,21 +114,18 @@ def parse_image_data(fh, base_offset, number_records):
             data_record_header_length,
             base_offset,
         )
-
         assert i == (record_info["sar_image_data_line_number"] - 1)
 
         number_pixels = record_info["count_data_pixels"]
 
         fh.seek(base_offset)
         data_bytes = fh.read(number_pixels * 8)
-        datas = struct.unpack(">" + ("i" * (number_pixels * 2)), data_bytes)
+        # TODO: is that the correct unpacking format ?!
+        datas = struct.unpack(">" + ("f" * (number_pixels * 2)), data_bytes)
 
         cplx_datas = [real + 1j * imag for (real, imag) in zip(datas[::2], datas[1::2])]
-        cplx_datas = np.array(cplx_datas) / 2**31
-        if i == 0:
-            print(cplx_datas[:5])
-            print(cplx_datas[-5:])
-            print(record_info)
+        cplx_datas = np.array(cplx_datas)
+
         lines.append(cplx_datas)
 
         # Shift the base_offset to the next record header beginning

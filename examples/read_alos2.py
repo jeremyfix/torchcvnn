@@ -80,13 +80,46 @@ def test1():
 
     print("===== SAR HH Image =====")
     hh_filepath = rootdir / "IMG-HH-ALOS2044980750-150324-HBQR1.1__A"
-    HH_Image = alos2.SARImage(hh_filepath, num_max_records=5)
+    HH_Image = alos2.SARImage(hh_filepath, num_max_records=1000)
     print(HH_Image.data[0, :5])
+
+    mod = normalize(HH_Image.data)
+    plt.figure()
+    plt.imshow(mod, cmap="gray")
+    plt.savefig("HH.png", bbox_inches="tight")
+    plt.close()
 
     print("===== SAR HV Image =====")
     hv_filepath = rootdir / "IMG-HV-ALOS2044980750-150324-HBQR1.1__A"
-    HV_Image = alos2.SARImage(hv_filepath, num_max_records=5)
+    HV_Image = alos2.SARImage(hv_filepath, num_max_records=1000)
     print(HV_Image.data[0, :5])
+
+    mod = normalize(HV_Image.data)
+    plt.figure()
+    plt.imshow(mod, cmap="gray")
+    plt.savefig("HV.png", bbox_inches="tight")
+    plt.close()
+
+    print("===== SAR VH Image =====")
+    vh_filepath = rootdir / "IMG-VH-ALOS2044980750-150324-HBQR1.1__A"
+    VH_Image = alos2.SARImage(vh_filepath, num_max_records=1000)
+    print(VH_Image.data[0, :5])
+
+    mod = normalize(VH_Image.data)
+    plt.figure()
+    plt.imshow(mod, cmap="gray")
+    plt.savefig("VH.png", bbox_inches="tight")
+    plt.close()
+
+    print("=== Mean cross pol ===")
+    mean = 0.5 * (HV_Image.data + VH_Image.data)
+    print(mean[0, :5])
+
+    mod = normalize(mean)
+    plt.figure()
+    plt.imshow(mod, cmap="gray")
+    plt.savefig("mean_cross.png", bbox_inches="tight")
+    plt.close()
 
     print("===== SAR VV Image =====")
     vv_filepath = rootdir / "IMG-VV-ALOS2044980750-150324-HBQR1.1__A"
@@ -94,12 +127,10 @@ def test1():
     print(VV_Image.data[0, :5])
 
     mod = normalize(VV_Image.data)
-
     plt.figure()
     plt.imshow(mod, cmap="gray")
-    # plt.savefig("HH.png", bbox_inches="tight")
-    # plt.close()
-    plt.show()
+    plt.savefig("VV.png", bbox_inches="tight")
+    plt.close()
 
 
 if __name__ == "__main__":

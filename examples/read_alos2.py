@@ -2,7 +2,7 @@ from pathlib import Path
 from torchcvnn.datasets import alos2
 import matplotlib
 
-matplotlib.use("Agg")
+# matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -47,8 +47,21 @@ Volume Directory file:
 """
 
 
+def normalize(data):
+    mod = np.abs(data)
+    mod = 20 * np.log10(mod + 1e-10)
+
+    mod = (mod - mod.min()) / (mod.max() - mod.min())  # rescale between 0 and 1
+    p2, p98 = np.percentile(mod, (2, 98))
+
+    mod = exposure.rescale_intensity(mod, in_range=(p2, p98))
+    mod = skimage.img_as_float(mod)
+    return mod
+
+
 def test1():
-    rootdir = Path("/mounts/Datasets1/Polarimetric-SanFrancisco/SAN_FRANCISCO_ALOS2/")
+    rootdir = Path("/home/fix_jer/Tools/SARData/SAN_FRANCISCO_ALOS2")
+    # rootdir = Path("/mounts/Datasets1/Polarimetric-SanFrancisco/SAN_FRANCISCO_ALOS2/")
 
     print("===== Volume =====")
     vol_filepath = rootdir / "VOL-ALOS2044980750-150324-HBQR1.1__A"
@@ -67,32 +80,26 @@ def test1():
 
     print("===== SAR HH Image =====")
     hh_filepath = rootdir / "IMG-HH-ALOS2044980750-150324-HBQR1.1__A"
-    HH_Image = alos2.SARImage(hh_filepath)
-    print(HH_Image)
+    HH_Image = alos2.SARImage(hh_filepath, num_max_records=5)
+    print(HH_Image.data[0, :5])
 
-    mod = np.abs(HH_Image.data)
-    print(mod.min(), mod.max())
-    mod = 20 * np.log10(np.abs(HH_Image.data) + 1e-2)
-    mod = (mod - mod.min()) / (mod.max() - mod.min())  # rescale between 0 and 1
-    p2, p98 = np.percentile(mod, (2, 98))
+    print("===== SAR HV Image =====")
+    hv_filepath = rootdir / "IMG-HV-ALOS2044980750-150324-HBQR1.1__A"
+    HV_Image = alos2.SARImage(hv_filepath, num_max_records=5)
+    print(HV_Image.data[0, :5])
 
-    mod = exposure.rescale_intensity(mod, in_range=(p2, p98))
-    mod = skimage.img_as_float(mod)
-    print(mod.min(), mod.max())
+    print("===== SAR VV Image =====")
+    vv_filepath = rootdir / "IMG-VV-ALOS2044980750-150324-HBQR1.1__A"
+    VV_Image = alos2.SARImage(vv_filepath, num_max_records=1000)
+    print(VV_Image.data[0, :5])
+
+    mod = normalize(VV_Image.data)
 
     plt.figure()
     plt.imshow(mod, cmap="gray")
-    plt.savefig("HH.png", bbox_inches="tight")
-    plt.close()
-
-    print("===== SAR HV Image =====")
-    # hv_filepath = rootdir / "IMG-HV-ALOS2044980750-150324-HBQR1.1__A"
-    # HV_Image = alos2.SARImage(hv_filepath)
-
-    # plt.figure()
-    # plt.imshow(np.log10(np.abs(HV_Image.data) + 1e-10), cmap="gray")
-    # plt.savefig("HV.png", bbox_inches="tight")
+    # plt.savefig("HH.png", bbox_inches="tight")
     # plt.close()
+    plt.show()
 
 
 if __name__ == "__main__":

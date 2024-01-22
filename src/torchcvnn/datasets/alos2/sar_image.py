@@ -141,7 +141,7 @@ class SARImage:
     Processing of the SAR Image
     """
 
-    def __init__(self, filepath):
+    def __init__(self, filepath, num_max_records=-1):
         self.descriptor_records = {}
         self.data_records = {}
         with open(filepath, "rb") as fh:
@@ -168,7 +168,10 @@ class SARImage:
             # Rewind the head to the beginning of the data records
             fh.seek(descriptor_record_length)
             base_offset = descriptor_record_length
-            number_records = self.descriptor_records["number_data_records"]
+            if num_max_records == -1:
+                number_records = self.descriptor_records["number_data_records"]
+            else:
+                number_records = num_max_records
             self.data = parse_image_data(fh, base_offset, number_records)
 
     def __repr__(self):

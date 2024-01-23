@@ -62,12 +62,17 @@ descriptor_format = [
 volume_descriptor_record_length = 360
 
 file_pointer_format = [
+    ("record_number", 0, 4, "B", None),
     ("reference_id", 20, 16, "A", None),
+    ("reference_file_class_code", 64, 4, "A", None),
 ]
 file_pointer_record_length = 360
 
 text_records_format = [
+    ("record_number", 0, 4, "B", None),
     ("product_id", 16, 40, "A", None),
+    ("scene_id", 156, 40, "A", None),
+    ("scene_location_id", 196, 40, "A", None),
 ]
 text_record_length = 360
 
@@ -85,7 +90,7 @@ class VolFile:
     def __init__(self, filepath: Union[str, pathlib.Path]):
         self.descriptor_records = {}
         self.file_pointer_records = []
-        self.text_records = {}
+        self.text_record = {}
 
         with open(filepath, "rb") as fh:
             # Parsing the volume descriptor
@@ -115,7 +120,7 @@ class VolFile:
             # Parsing the file pointer
             fh_offset = parse_utils.parse_from_format(
                 fh,
-                self.text_records,
+                self.text_record,
                 text_records_format,
                 1,
                 text_record_length,
@@ -124,11 +129,19 @@ class VolFile:
 
     def __repr__(self):
         descriptor_txt = parse_utils.format_dictionary(self.descriptor_records, 1)
-        text_txt = parse_utils.format_dictionary(self.text_records, 1)
+        # text_txt = parse_utils.format_dictionary(self.text_records, 1)
+        fp_texts = ""
+        for i, fi in enumerate(self.file_pointer_records):
+            fp_texts += f"File pointer {i} : \n" + parse_utils.format_dictionary(fi, 2)
+            fp_texts += "\n"
+
+        text_texts = parse_utils.format_dictionary(self.text_record, 1)
         return f"""
 Descriptor:
 {descriptor_txt}
 File pointers : {len(self.file_pointer_records)} records
+{fp_texts}
+
 Text records:
-{text_txt}
+{text_texts}
         """

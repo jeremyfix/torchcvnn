@@ -141,9 +141,11 @@ class SARImage:
     Processing of the SAR Image
     """
 
-    def __init__(self, filepath, num_max_records=-1):
+    def __init__(self, filepath):
         self.descriptor_records = {}
         self.data_records = {}
+        self.filepath = filepath
+
         with open(filepath, "rb") as fh:
             fh_offset = 0
             fh_offset = parse_utils.parse_from_format(
@@ -166,13 +168,59 @@ class SARImage:
             )
 
             # Rewind the head to the beginning of the data records
-            fh.seek(descriptor_record_length)
-            base_offset = descriptor_record_length
-            if num_max_records == -1:
-                number_records = self.descriptor_records["number_data_records"]
-            else:
-                number_records = num_max_records
-            self.data = parse_image_data(fh, base_offset, number_records)
+            # fh.seek(descriptor_record_length)
+            # base_offset = descriptor_record_length
+            # if num_max_records == -1:
+            #     number_records = self.descriptor_records["number_data_records"]
+            # else:
+            #     number_records = num_max_records
+            # self.data = parse_image_data(fh, base_offset, number_records)
+
+    @property
+    def num_rows(self):
+        self.descriptor_records["number_data_records"]
+
+    @property
+    def num_cols(self):
+        return self.data_records["count_data_pixels"]
+
+    def read_patch(self, start_line, num_lines, start_col, num_cols):
+        number_of_pixels_per_line = self.data_records["count_data_pixels"]
+        base_offset = (
+            descriptor_record_length
+            + (data_record_header_length + 8 * number_of_pixels_per_line) * start_line
+        )
+        lines = []
+        with open(self.filepath, "rb") as fh:
+            for i in range(num_lines):
+                offset = base_offset + i * (
+                    data_record_header_length + 8 * number_of_pixels_per_line
+                )
+
+                # Move the file descriptor to the beginning of the record
+                fh.seek(offset)
+
+                # And read/decode the record header
+                record = {}
+                parse_utils.parse_from_format(
+                    fh,
+                    record,
+                    data_records_format,
+                    1,
+                    data_record_header_length,
+                    offset,
+                )
+
+                # Move the fh up to the columns to read
+                fh.seek(8 * start_col, 1)  # whence=1 for relative shift
+                data_bytes = fh.read(num_cols * 8)
+                datas = struct.unpack(">" + ("f" * (num_cols * 2)), data_bytes)
+                cplx_datas = [
+                    real + 1j * imag for (real, imag) in zip(datas[::2], datas[1::2])
+                ]
+                cplx_datas = np.array(cplx_datas)
+                lines.append(cplx_datas)
+        return np.array(lines)
 
     def __repr__(self):
         descriptor_txt = parse_utils.format_dictionary(self.descriptor_records, 1)

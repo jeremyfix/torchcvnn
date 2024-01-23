@@ -1,0 +1,124 @@
+# MIT License
+
+# Copyright (c) 2024 Jeremy Fix
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Standard imports
+# External imports
+from torch.utils.data import Dataset
+import numpy as np
+
+# Local imports
+from . import VolFile, LeaderFile, TrailerFile, SARImage
+
+
+class ALOSDataset(Dataset):
+    r"""
+    ALOSDataset
+
+    The format is described in
+    https://www.eorc.jaxa.jp/ALOS/en/alos-2/pdf/product_format_description/PALSAR-2_xx_Format_CEOS_E_g.pdf
+
+    The dataset is constructed from the volume file. If leader and trailer files
+    are colocated, they are loaded as well.
+
+    Important, this code has been developed for working with L1.1 HBQ-R Quad Pol
+    datafiles. It is not expected to work out of the box for other levels and
+    for less than 4 polarizations.
+
+    Arguments:
+        volpath: the path to the VOLUME file
+        transform : the transform applied the cropped image
+        crop_coordinates: the subpart of the image to consider as ((row_i, col_i), (row_j, col_j))
+                          defining the corner coordinates
+        patch_size: the dimensions of the patches to consider
+    """
+
+    def __init__(
+        self,
+        volpath: str = None,
+        transform=None,
+        crop_coordinates: tuple = None,
+        patch_size: tuple = (128, 128),
+    ):
+        super().__init__()
+
+        self.patch_size = patch_size
+
+        self.volFile = VolFile(volpath)
+
+        leader_filepath = volpath.parents[0] / volpath.name.replace("VOL-", "LED-")
+        self.leaderFile = None
+        if leader_filepath.exists():
+            self.leaderFile = LeaderFile(leader_filepath)
+
+        trailer_filepath = volpath.parents[0] / volpath.name.replace("VOL-", "TRL-")
+        self.trailerFile = None
+        if trailer_filepath.exists():
+            self.trailerFile = TrailerFile(trailer_filepath)
+
+        self.images = []
+        for pol in ["HH", "HV", "VH", "VV"]:
+            filepath = volpath.parents[0] / volpath.name.replace("VOL-", f"IMG-{pol}-")
+            if not filepath.exists():
+                raise RuntimeError(f"The file {filepath} does not exist")
+            self.images.append(SARImage(filepath))
+
+        self.crop_coordinates = (
+            (0, 0),
+            (self.images[0].num_rows, self.images[0].num_cols),
+        )
+        print(self.crop_coordinates)
+        if crop_coordinates is not None:
+            self.crop_coordinates = crop_coordinates
+
+    def describe(self):
+        print(
+            f"""
+Volume File
+===========
+{self.volFile}
+
+Leader File
+===========
+{self.leaderFile}
+
+Trailer File
+===========
+{self.trailerFile}
+"""
+        )
+
+    def __len__(self) -> int:
+        """
+        Returns the length of the dataset
+        """
+        return 0
+
+    def __getitem__(self, idx):
+        # TODO
+        start_row = self.crop_coordinates[0][0] + 0
+        start_col = self.crop_coordinates[0][1] + 0
+        num_rows, num_cols = self.patch_size
+        patches = [
+            im.read_patch(start_row, num_rows, start_col, num_cols)
+            for im in self.images
+        ]
+        return np.stack(patches)

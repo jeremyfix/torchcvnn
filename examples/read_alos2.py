@@ -80,35 +80,39 @@ def test1():
 
     print("===== SAR HH Image =====")
     hh_filepath = rootdir / "IMG-HH-ALOS2044980750-150324-HBQR1.1__A"
-    HH_Image = alos2.SARImage(hh_filepath, num_max_records=1000)
+    HH_Image = alos2.SARImage(hh_filepath, num_max_records=2000)
     print(HH_Image.data[0, :5])
 
     mod = normalize(HH_Image.data)
+
     plt.figure()
     plt.imshow(mod, cmap="gray")
-    plt.savefig("HH.png", bbox_inches="tight")
+    plt.axis("off")
+    plt.savefig("HH.png", bbox_inches="tight", dpi=500)
     plt.close()
 
     print("===== SAR HV Image =====")
     hv_filepath = rootdir / "IMG-HV-ALOS2044980750-150324-HBQR1.1__A"
-    HV_Image = alos2.SARImage(hv_filepath, num_max_records=1000)
+    HV_Image = alos2.SARImage(hv_filepath, num_max_records=2000)
     print(HV_Image.data[0, :5])
 
     mod = normalize(HV_Image.data)
     plt.figure()
     plt.imshow(mod, cmap="gray")
-    plt.savefig("HV.png", bbox_inches="tight")
+    plt.axis("off")
+    plt.savefig("HV.png", bbox_inches="tight", dpi=500)
     plt.close()
 
     print("===== SAR VH Image =====")
     vh_filepath = rootdir / "IMG-VH-ALOS2044980750-150324-HBQR1.1__A"
-    VH_Image = alos2.SARImage(vh_filepath, num_max_records=1000)
+    VH_Image = alos2.SARImage(vh_filepath, num_max_records=2000)
     print(VH_Image.data[0, :5])
 
     mod = normalize(VH_Image.data)
     plt.figure()
     plt.imshow(mod, cmap="gray")
-    plt.savefig("VH.png", bbox_inches="tight")
+    plt.axis("off")
+    plt.savefig("VH.png", bbox_inches="tight", dpi=500)
     plt.close()
 
     print("=== Mean cross pol ===")
@@ -118,20 +122,44 @@ def test1():
     mod = normalize(mean)
     plt.figure()
     plt.imshow(mod, cmap="gray")
-    plt.savefig("mean_cross.png", bbox_inches="tight")
+    plt.axis("off")
+    plt.savefig("mean_cross.png", bbox_inches="tight", dpi=500)
     plt.close()
 
     print("===== SAR VV Image =====")
     vv_filepath = rootdir / "IMG-VV-ALOS2044980750-150324-HBQR1.1__A"
-    VV_Image = alos2.SARImage(vv_filepath, num_max_records=1000)
+    VV_Image = alos2.SARImage(vv_filepath, num_max_records=2000)
     print(VV_Image.data[0, :5])
 
     mod = normalize(VV_Image.data)
     plt.figure()
     plt.imshow(mod, cmap="gray")
-    plt.savefig("VV.png", bbox_inches="tight")
+    plt.axis("off")
+    plt.savefig("VV.png", bbox_inches="tight", dpi=500)
     plt.close()
 
 
+def test2():
+    rootdir = Path("/home/fix_jer/Tools/SARData/SAN_FRANCISCO_ALOS2")
+    vol_filepath = rootdir / "VOL-ALOS2044980750-150324-HBQR1.1__A"
+    crop_coordinates = ((2832, 736), (7888, 3520))
+    dataset = alos2.ALOSDataset(
+        vol_filepath,
+        patch_size=(7888 - 2832, 3520 - 736),
+        crop_coordinates=crop_coordinates,
+    )
+
+    X = dataset[0]
+    X = X[:, ::-1, :]
+
+    fig, axes = plt.subplots(1, 4, figsize=(10, 4))
+    for ax, xi in zip(axes, X):
+        norm_xi = normalize(xi)
+        ax.imshow(norm_xi, cmap="gray")
+        ax.axis("off")
+    plt.show()
+
+
 if __name__ == "__main__":
-    test1()
+    # test1()
+    test2()

@@ -21,3 +21,4 @@
 # SOFTWARE.
 
 from .polsf import PolSFAlos2Dataset
+from .alos2 import ALOSDataset

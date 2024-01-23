@@ -58,3 +58,4 @@ from .vol_file import VolFile
 from .trailer_file import TrailerFile
 from .leader_file import LeaderFile
 from .sar_image import SARImage
+from .dataset import ALOSDataset

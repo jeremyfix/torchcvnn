@@ -81,9 +81,9 @@ def parse_from_format(
         fh.seek(base_offset + record_length)
         return base_offset + record_length
     else:
-        record = {}
         offset = base_offset
         for _ in range(num_records):
+            record = {}
             for (
                 field_name,
                 start_byte,

@@ -83,6 +83,9 @@ def plot_summaries(rootdir):
 
 
 def plot_patches(rootdir):
+    """
+    Loads a ALOS-2 dataset and display some extracted patches
+    """
     # Get and find a VOL file in the provided path
     vol_filepath = get_volfile(rootdir)
 

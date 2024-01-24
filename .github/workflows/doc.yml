@@ -19,5 +19,14 @@ jobs:
           pip install -r docs/requirements.txt
       - name: Install torchcvnn
         run: pip install .
+
+      - name: Download code coverage report
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: test.yml
+          branch: master
+          name: coverage_report
+          path: htmlcov
       - name: Generate and deploy the documentation
         run: mkdocs gh-deploy --force --clean --verbose

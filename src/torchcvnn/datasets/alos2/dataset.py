@@ -92,6 +92,7 @@ class ALOSDataset(Dataset):
         )
         if crop_coordinates is not None:
             self.crop_coordinates = crop_coordinates
+        print(self.crop_coordinates)
 
         # Precompute the dimension of the grid of patches
         nrows = self.crop_coordinates[1][0] - self.crop_coordinates[0][0]
@@ -132,6 +133,12 @@ Trailer File
         return self.nsamples_per_rows * self.nsamples_per_cols
 
     def __getitem__(self, idx):
+        """
+        Access and returns the subpatch specified by the index
+
+        Arguments:
+            idx: the index of the patch to access
+        """
         row_stride, col_stride = self.patch_stride
         start_row = (
             self.crop_coordinates[0][0] + (idx // self.nsamples_per_cols) * row_stride

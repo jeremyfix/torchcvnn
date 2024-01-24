@@ -1,50 +1,46 @@
+# MIT License
+
+# Copyright (c) 2023 Jérémy Fix
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+"""
+Example script to read ALOS2 data
+
+Requires additional dependencies:
+        python3 -m pip install matplotlib scikit-image 
+"""
+
+
+# Standard imports
 from pathlib import Path
-from torchcvnn.datasets import alos2
+import argparse
+import glob
+import os
+
+# External  imports
 import matplotlib
-
-# matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-
 import numpy as np
-import skimage
 from skimage import exposure
 
-"""
-Example script to read ALOS-2 data for San Francisco Bay
-
-The format is described in
-https://www.eorc.jaxa.jp/ALOS/en/alos-2/pdf/product_format_description/PALSAR-2_xx_Format_CEOS_E_g.pdf
-
-We have :
-    IMG-{HH, HV, VH, VV}xxxxx__A
-    LED-xxxx.1__A : SAR Leader file
-    TRL-xxxx.1__A : SAR Trailer file
-    VOL-xxxx.1__a : Volume directory file
-
-    With ALOS2044980750-150324-HBQR1 as Sene ID - Product ID
-    SceneID : ALOS2044980750-150324
-        which stands for ALOS2 satelitte
-                         04498 : orbit accumulation number
-                         0750  : scene frame number
-                         150324 : 2015/03/24
-                            
-    ProductID : HBQR1.1__A
-        HBQ : High-sensitive mode Full (Quad.) polarimetry
-          R : Right looking
-          1.1 : Processing level
-          _ : processing option not specified
-          _ : map projection not specified
-          A : Ascending orbit direction
-
-In the format file, the San Francisco Data are described in Figure 3.1-5  p29
-
-Volume Directory file: 
-    Volume descriptor : 1 record of length 360 bytes
-    File pointer : Number of pola x numnber of scans + 2; 360 bytes
-    Text () : 1 record 360 bytes
-
-
-"""
+from torchcvnn.datasets import alos2
 
 
 def normalize(data):
@@ -55,111 +51,89 @@ def normalize(data):
     p2, p98 = np.percentile(mod, (2, 98))
 
     mod = exposure.rescale_intensity(mod, in_range=(p2, p98))
-    mod = skimage.img_as_float(mod)
+    # mod = skimage.img_as_float(mod)
     return mod
 
 
-def test1():
-    rootdir = Path("/home/fix_jer/Tools/SARData/SAN_FRANCISCO_ALOS2")
-    # rootdir = Path("/mounts/Datasets1/Polarimetric-SanFrancisco/SAN_FRANCISCO_ALOS2/")
+def get_volfile(rootdir):
+    vol_search_path = os.path.join(str(rootdir), "VOL-*")
+    vol_files = glob.glob(vol_search_path)
+    if len(vol_files) == 0:
+        raise RuntimeError(f"Cannot find any VOLUME files in {rootdir}")
 
-    print("===== Volume =====")
-    vol_filepath = rootdir / "VOL-ALOS2044980750-150324-HBQR1.1__A"
-    volFile = alos2.VolFile(vol_filepath)
-    print(volFile)
-
-    print("===== Trailer =====")
-    trailer_filepath = rootdir / "TRL-ALOS2044980750-150324-HBQR1.1__A"
-    trailFile = alos2.TrailerFile(trailer_filepath)
-    print(trailFile)
-
-    print("===== Leader =====")
-    leader_filepath = rootdir / "LED-ALOS2044980750-150324-HBQR1.1__A"
-    leaderFile = alos2.LeaderFile(leader_filepath)
-    print(leaderFile)
-
-    print("===== SAR HH Image =====")
-    hh_filepath = rootdir / "IMG-HH-ALOS2044980750-150324-HBQR1.1__A"
-    HH_Image = alos2.SARImage(hh_filepath, num_max_records=2000)
-    print(HH_Image.data[0, :5])
-
-    mod = normalize(HH_Image.data)
-
-    plt.figure()
-    plt.imshow(mod, cmap="gray")
-    plt.axis("off")
-    plt.savefig("HH.png", bbox_inches="tight", dpi=500)
-    plt.close()
-
-    print("===== SAR HV Image =====")
-    hv_filepath = rootdir / "IMG-HV-ALOS2044980750-150324-HBQR1.1__A"
-    HV_Image = alos2.SARImage(hv_filepath, num_max_records=2000)
-    print(HV_Image.data[0, :5])
-
-    mod = normalize(HV_Image.data)
-    plt.figure()
-    plt.imshow(mod, cmap="gray")
-    plt.axis("off")
-    plt.savefig("HV.png", bbox_inches="tight", dpi=500)
-    plt.close()
-
-    print("===== SAR VH Image =====")
-    vh_filepath = rootdir / "IMG-VH-ALOS2044980750-150324-HBQR1.1__A"
-    VH_Image = alos2.SARImage(vh_filepath, num_max_records=2000)
-    print(VH_Image.data[0, :5])
-
-    mod = normalize(VH_Image.data)
-    plt.figure()
-    plt.imshow(mod, cmap="gray")
-    plt.axis("off")
-    plt.savefig("VH.png", bbox_inches="tight", dpi=500)
-    plt.close()
-
-    print("=== Mean cross pol ===")
-    mean = 0.5 * (HV_Image.data + VH_Image.data)
-    print(mean[0, :5])
-
-    mod = normalize(mean)
-    plt.figure()
-    plt.imshow(mod, cmap="gray")
-    plt.axis("off")
-    plt.savefig("mean_cross.png", bbox_inches="tight", dpi=500)
-    plt.close()
-
-    print("===== SAR VV Image =====")
-    vv_filepath = rootdir / "IMG-VV-ALOS2044980750-150324-HBQR1.1__A"
-    VV_Image = alos2.SARImage(vv_filepath, num_max_records=2000)
-    print(VV_Image.data[0, :5])
-
-    mod = normalize(VV_Image.data)
-    plt.figure()
-    plt.imshow(mod, cmap="gray")
-    plt.axis("off")
-    plt.savefig("VV.png", bbox_inches="tight", dpi=500)
-    plt.close()
+    if len(vol_files) > 1:
+        print(f"Warning, multiple volume files found, I will be using {vol_files[0]}")
+    vol_filepath = Path(vol_files[0])
+    return vol_filepath
 
 
-def test2():
-    rootdir = Path("/home/fix_jer/Tools/SARData/SAN_FRANCISCO_ALOS2")
-    vol_filepath = rootdir / "VOL-ALOS2044980750-150324-HBQR1.1__A"
+def plot_summaries(rootdir):
+    """
+    Loads a ALOS-2 dataset and prints some informations extracted from the
+    Volume, Leader, Trailer and Image files
+    """
+    # Get and find a VOL file in the provided path
+    vol_filepath = get_volfile(rootdir)
+
+    # Parse the data
+    dataset = alos2.ALOSDataset(vol_filepath)
+
+    # And print some decoded infos
+    dataset.describe()
+
+
+def plot_patches(rootdir):
+    # Get and find a VOL file in the provided path
+    vol_filepath = get_volfile(rootdir)
+
+    # Limit to a subpart of the ALOS-2 data
+    # This corresponds to the annotated region of the PolSF dataset
     crop_coordinates = ((2832, 736), (7888, 3520))
     dataset = alos2.ALOSDataset(
         vol_filepath,
-        patch_size=(7888 - 2832, 3520 - 736),
+        patch_size=(512, 512),
+        patch_stride=(128, 128),
         crop_coordinates=crop_coordinates,
     )
 
+    # Plot consecutive samples
+    fig, axes = plt.subplots(1, 4, figsize=(10, 4))
+    for i, ax in enumerate(axes):
+        X = dataset[i]
+        X = X[:, ::-1, :]
+        xi = X[0]
+        norm_xi = normalize(xi)
+        ax.imshow(norm_xi, cmap="gray")
+        ax.set_title(f"Sample {i}")
+        ax.axis("off")
+    plt.tight_layout()
+
+    # Plot the four polarizations of the same patch
     X = dataset[0]
     X = X[:, ::-1, :]
-
     fig, axes = plt.subplots(1, 4, figsize=(10, 4))
-    for ax, xi in zip(axes, X):
+    for xi, ax, ax_title in zip(X, axes, ["HH", "HV", "VH", "VV"]):
         norm_xi = normalize(xi)
         ax.imshow(norm_xi, cmap="gray")
         ax.axis("off")
+        ax.set_title(ax_title)
+    plt.tight_layout()
+
     plt.show()
 
 
 if __name__ == "__main__":
-    # test1()
-    test2()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "rootdir",
+        type=Path,
+        help="The path to a directory containing raw binary ALOS-2 data",
+        nargs=1,
+        default=None,
+    )
+
+    args = parser.parse_args()
+    rootdir = args.rootdir[0]
+
+    plot_summaries(rootdir)
+    plot_patches(rootdir)

@@ -167,18 +167,9 @@ class SARImage:
                 fh_offset,
             )
 
-            # Rewind the head to the beginning of the data records
-            # fh.seek(descriptor_record_length)
-            # base_offset = descriptor_record_length
-            # if num_max_records == -1:
-            #     number_records = self.descriptor_records["number_data_records"]
-            # else:
-            #     number_records = num_max_records
-            # self.data = parse_image_data(fh, base_offset, number_records)
-
     @property
     def num_rows(self):
-        self.descriptor_records["number_data_records"]
+        return self.descriptor_records["number_data_records"]
 
     @property
     def num_cols(self):

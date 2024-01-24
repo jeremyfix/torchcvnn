@@ -25,8 +25,8 @@ jobs:
         id: download-artifact
         uses: dawidd6/action-download-artifact@v3
         with:
-          workflow: test.yml
-          branch: master
+          workflow: pytest
+          branch: test_cov_upload
           name: coverage_report
           path: htmlcov
       - name: Generate and deploy the documentation

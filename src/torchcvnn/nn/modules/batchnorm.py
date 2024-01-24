@@ -29,7 +29,7 @@ import torch.nn as nn
 import torch.nn.init as init
 
 
-def batch_cov(points: torch.Tensor, centered=False) -> torch.Tensor:
+def batch_cov(points: torch.Tensor, centered: bool = False) -> torch.Tensor:
     """
     Batched covariance computation
     Adapted from : https://stackoverflow.com/a/71357620/2164582

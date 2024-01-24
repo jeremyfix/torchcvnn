@@ -48,7 +48,8 @@ class ALOSDataset(Dataset):
         transform : the transform applied the cropped image
         crop_coordinates: the subpart of the image to consider as ((row_i, col_i), (row_j, col_j))
                           defining the corner coordinates
-        patch_size: the dimensions of the patches to consider
+        patch_size: the dimensions of the patches to consider (rows, cols)
+        patch_stride: the shift between two consecutive patches, default:patch_size
     """
 
     def __init__(
@@ -57,10 +58,14 @@ class ALOSDataset(Dataset):
         transform=None,
         crop_coordinates: tuple = None,
         patch_size: tuple = (128, 128),
+        patch_stride: tuple = None,
     ):
         super().__init__()
 
         self.patch_size = patch_size
+        self.patch_stride = patch_stride
+        if patch_stride is None:
+            self.patch_stride = patch_size
 
         self.volFile = VolFile(volpath)
 
@@ -85,9 +90,18 @@ class ALOSDataset(Dataset):
             (0, 0),
             (self.images[0].num_rows, self.images[0].num_cols),
         )
-        print(self.crop_coordinates)
         if crop_coordinates is not None:
             self.crop_coordinates = crop_coordinates
+
+        # Precompute the dimension of the grid of patches
+        nrows = self.crop_coordinates[1][0] - self.crop_coordinates[0][0]
+        ncols = self.crop_coordinates[1][1] - self.crop_coordinates[0][1]
+
+        nrows_patch, ncols_patch = self.patch_size
+        row_stride, col_stride = self.patch_stride
+
+        self.nsamples_per_rows = (nrows - nrows_patch) // row_stride
+        self.nsamples_per_cols = (ncols - ncols_patch) // col_stride
 
     def describe(self):
         print(
@@ -108,14 +122,23 @@ Trailer File
 
     def __len__(self) -> int:
         """
-        Returns the length of the dataset
+        Returns the length of the dataset according to the patch size, stride
+        and image size
+
+        Returns:
+            int: the total number of available patches
         """
-        return 0
+
+        return self.nsamples_per_rows * self.nsamples_per_cols
 
     def __getitem__(self, idx):
-        # TODO
-        start_row = self.crop_coordinates[0][0] + 0
-        start_col = self.crop_coordinates[0][1] + 0
+        row_stride, col_stride = self.patch_stride
+        start_row = (
+            self.crop_coordinates[0][0] + (idx // self.nsamples_per_cols) * row_stride
+        )
+        start_col = (
+            self.crop_coordinates[0][1] + (idx % self.nsamples_per_cols) * col_stride
+        )
         num_rows, num_cols = self.patch_size
         patches = [
             im.read_patch(start_row, num_rows, start_col, num_cols)

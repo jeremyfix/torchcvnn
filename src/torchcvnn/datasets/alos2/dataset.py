@@ -34,7 +34,7 @@ class ALOSDataset(Dataset):
     ALOSDataset
 
     The format is described in
-    https://www.eorc.jaxa.jp/ALOS/en/alos-2/pdf/product_format_description/PALSAR-2_xx_Format_CEOS_E_g.pdf
+    [https://www.eorc.jaxa.jp/ALOS/en/alos-2/pdf/product_format_description/PALSAR-2_xx_Format_CEOS_E_g.pdf]()
 
     The dataset is constructed from the volume file. If leader and trailer files
     are colocated, they are loaded as well.
@@ -132,7 +132,7 @@ Trailer File
 
         return self.nsamples_per_rows * self.nsamples_per_cols
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int):
         """
         Access and returns the subpatch specified by the index
 

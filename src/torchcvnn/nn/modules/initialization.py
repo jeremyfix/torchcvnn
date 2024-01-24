@@ -50,7 +50,7 @@ def complex_kaiming_normal_(
 
     Also known as He initialization.
 
-    Args:
+    Arguments:
         tensor: an n-dimensional `torch.Tensor`
         a: the negative slope of the rectifier used after this layer (only
             used with ``'leaky_relu'``)
@@ -93,7 +93,7 @@ def complex_kaiming_uniform_(
 
     Also known as He initialization.
 
-    Args:
+    Arguments:
         tensor: an n-dimensional `torch.Tensor`
         a: the negative slope of the rectifier used after this layer (only
             used with ``'leaky_relu'``)
@@ -139,13 +139,14 @@ def complex_xavier_uniform_(
 
     Also known as Glorot initialization.
 
-    Args:
+    Arguments:
         tensor: an n-dimensional `torch.Tensor`
-        gain: an optional scaling factor
+        a: an optional parameter to the non-linear function
+        nonlinearity: the non linearity to compute the gain
 
     Examples:
         >>> w = torch.empty(3, 5, dtype=torch.complex64)
-        >>> c_nn.init.complex_xavier_uniform_(w, gain=nn.init.calculate_gain('relu'))
+        >>> c_nn.init.complex_xavier_uniform_(w, nonlinearity='relu')
 
     This implementation is a minor adaptation of the torch.nn.init.xavier_uniform_ function
     """
@@ -174,13 +175,14 @@ def complex_xavier_normal_(
 
     Also known as Glorot initialization.
 
-    Args:
+    Arguments:
         tensor: an n-dimensional `torch.Tensor`
-        gain: an optional scaling factor
+        a: an optional parameter to the non-linear function
+        nonlinearity: the non linearity to compute the gain
 
     Examples:
         >>> w = torch.empty(3, 5, dtype=torch.complex64)
-        >>> nn.init.complex_xavier_normal_(w)
+        >>> nn.init.complex_xavier_normal_(w, nonlinearity='relu')
 
     This implementation is a minor adaptation of the torch.nn.init.xavier_normal_ function
     """

@@ -79,8 +79,21 @@ class PolSFDataset(Dataset):
 
     def __getitem__(self, idx):
         alos_patch = self.alos_dataset[idx]
+
         # TODO: get the labels
-        labels = None
+        row_stride, col_stride = self.alos_dataset.patch_stride
+        start_row = (
+            self.alos_dataset.crop_coordinates[0][0]
+            + (idx // self.alos_dataset.nsamples_per_cols) * row_stride
+        )
+        start_col = (
+            self.alos_dataset.crop_coordinates[0][1]
+            + (idx % self.alos_dataset.nsamples_per_cols) * col_stride
+        )
+        num_rows, num_cols = self.alos_dataset.patch_size
+        labels = self.labels[
+            start_row : (start_row + num_rows), start_col : (start_col + num_cols)
+        ]
 
         return alos_patch, labels
 

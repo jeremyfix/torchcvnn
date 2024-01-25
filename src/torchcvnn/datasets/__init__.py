@@ -20,5 +20,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .polsf import PolSFAlos2Dataset
+from .polsf import PolSFDataset
 from .alos2 import ALOSDataset

@@ -21,17 +21,11 @@
 # SOFTWARE.
 
 # Standard imports
-import os
-import zipfile
-import shutil
 import pathlib
+from typing import Tuple, Any
 
 # External imports
 import numpy as np
-import requests
-from tqdm import tqdm
-import torch
-import torch.utils.data
 from torch.utils.data import Dataset
 from PIL import Image
 
@@ -53,6 +47,16 @@ class PolSFDataset(Dataset):
         patch_stride: the shift between two consecutive patches, default:patch_size
     """
 
+    classes = [
+        "0 - unlabel",
+        "1 - Montain",
+        "2 - Water",
+        "3 - Vegetation",
+        "4 - High-Density Urban",
+        "5 - Low-Density Urban",
+        "6 - Developd",
+    ]
+
     def __init__(
         self,
         root: str,
@@ -73,11 +77,23 @@ class PolSFDataset(Dataset):
             root = pathlib.Path(root)
         self.labels = np.array(Image.open(root.parent / "SF-ALOS2-label2d.png"))
 
-    def __len__(self):
-        # Return the number of samples in dataset
+    def __len__(self) -> int:
+        """
+        Returns:
+            the total number of patches in the dataset
+        """
         return len(self.alos_dataset)
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx) -> Tuple[Any, Any]:
+        """
+        Args:
+            index (int): Index
+
+        Returns:
+            tuple: (patch, labels) where patch contains the 4 complex valued
+            polarization HH, HV, VH, VV and labels contains the aligned semantic
+            labels
+        """
         alos_patch = self.alos_dataset[idx]
 
         # TODO: get the labels

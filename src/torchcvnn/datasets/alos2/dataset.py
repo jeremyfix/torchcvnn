@@ -92,7 +92,6 @@ class ALOSDataset(Dataset):
         )
         if crop_coordinates is not None:
             self.crop_coordinates = crop_coordinates
-        print(self.crop_coordinates)
 
         # Precompute the dimension of the grid of patches
         nrows = self.crop_coordinates[1][0] - self.crop_coordinates[0][0]
@@ -101,8 +100,8 @@ class ALOSDataset(Dataset):
         nrows_patch, ncols_patch = self.patch_size
         row_stride, col_stride = self.patch_stride
 
-        self.nsamples_per_rows = (nrows - nrows_patch) // row_stride
-        self.nsamples_per_cols = (ncols - ncols_patch) // col_stride
+        self.nsamples_per_rows = (nrows - nrows_patch) // row_stride + 1
+        self.nsamples_per_cols = (ncols - ncols_patch) // col_stride + 1
 
     def describe(self):
         print(

@@ -62,6 +62,8 @@ class ALOSDataset(Dataset):
     ):
         super().__init__()
 
+        self.transform = transform
+
         self.patch_size = patch_size
         self.patch_stride = patch_stride
         if patch_stride is None:
@@ -150,4 +152,9 @@ Trailer File
             im.read_patch(start_row, num_rows, start_col, num_cols)
             for im in self.images
         ]
-        return np.stack(patches)
+
+        patches = np.stack(patches)
+        if self.transform is not None:
+            patches = self.transform(patches)
+
+        return patches

@@ -35,18 +35,40 @@ from .alos2 import ALOSDataset
 
 class PolSFDataset(Dataset):
     r"""
-    The Polarimetric SAR dataset provided by
+    The Polarimetric SAR dataset with the labels provided by
     [https://ietr-lab.univ-rennes1.fr/polsarpro-bio/san-francisco/]()
 
     We expect the data to be already downloaded and available on your drive.
 
     Arguments:
-        root: the top root dir where the data are downloaded and saved
+        root: the top root dir where the data are expected
         transform : the transform applied the cropped image
         patch_size: the dimensions of the patches to consider (rows, cols)
         patch_stride: the shift between two consecutive patches, default:patch_size
+
+    Note:
+        An example usage :
+
+        ```python
+        import torchcvnn
+        from torchcvnn.datasets import PolSFDataset
+
+        dataset = PolSFDataset(
+            rootdir, patch_size=((512, 512)), transform=lambda x: np.abs(x)
+        )
+        X, y = dataset[0]
+        ```
+
+        Displayed below are example patches with pache sizes $512 \times 512$
+        with the labels overlayed
+
+        ![Example patches](../../../images/polsf.png)
+
     """
 
+    """
+    Class names
+    """
     classes = [
         "0 - unlabel",
         "1 - Montain",
@@ -70,6 +92,7 @@ class PolSFDataset(Dataset):
         # labels_url = "https://raw.githubusercontent.com/liuxuvip/PolSF/master/SF-ALOS2/SF-ALOS2-label2d.png"
 
         crop_coordinates = ((2832, 736), (7888, 3520))
+        root = pathlib.Path(root) / "VOL-ALOS2044980750-150324-HBQR1.1__A"
         self.alos_dataset = ALOSDataset(
             root, transform, crop_coordinates, patch_size, patch_stride
         )
@@ -81,6 +104,8 @@ class PolSFDataset(Dataset):
 
     def __len__(self) -> int:
         """
+        Returns the total number of patches in the while image.
+
         Returns:
             the total number of patches in the dataset
         """
@@ -88,13 +113,13 @@ class PolSFDataset(Dataset):
 
     def __getitem__(self, idx) -> Tuple[Any, Any]:
         """
-        Args:
-            index (int): Index
+        Returns the indexes patch.
+
+        Arguments:
+            idx (int): Index
 
         Returns:
-            tuple: (patch, labels) where patch contains the 4 complex valued
-            polarization HH, HV, VH, VV and labels contains the aligned semantic
-            labels
+            tuple: (patch, labels) where patch contains the 4 complex valued polarization HH, HV, VH, VV and labels contains the aligned semantic labels
         """
         alos_patch = self.alos_dataset[idx]
 

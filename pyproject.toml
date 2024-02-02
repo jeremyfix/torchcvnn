@@ -27,4 +27,4 @@ classifiers = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "package.__version__"}
+version = {attr = "torchcvnn.__version__"}

@@ -131,6 +131,11 @@ class LeaderFile:
                 fh_offset,
             )
 
+    @property
+    def calibration_factor(self):
+        cf = self.radiometric_record["calibration_factor"]
+        return np.sqrt(10.0 ** ((cf - 32.0) / 10.0))
+
     def __repr__(self):
         descriptor_txt = parse_utils.format_dictionary(self.descriptor_record, 1)
         summary_txt = parse_utils.format_dictionary(self.summary_record, 1)

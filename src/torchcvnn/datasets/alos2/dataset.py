@@ -150,6 +150,7 @@ Trailer File
         num_rows, num_cols = self.patch_size
         patches = [
             im.read_patch(start_row, num_rows, start_col, num_cols)
+            * self.leaderFile.calibration_factor
             for im in self.images
         ]
 

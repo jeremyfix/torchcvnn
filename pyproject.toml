@@ -1,6 +1,5 @@
 [project]
 name = "torchcvnn"
-version = "0.3.7"
 
 dependencies = [
 	"torch >= 2.0",
@@ -25,3 +24,6 @@ classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python"
 ]
+
+[tool.setuptools.dynamic]
+version = {attr = "package.__version__"}

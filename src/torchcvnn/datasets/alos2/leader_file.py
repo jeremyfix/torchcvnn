@@ -20,9 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Standard imports
-import struct
-
 # External imports
 import numpy as np
 
@@ -130,6 +127,11 @@ class LeaderFile:
                 radiometric_data_record_length,
                 fh_offset,
             )
+
+    @property
+    def calibration_factor(self):
+        cf = self.radiometric_record["calibration_factor"]
+        return np.sqrt(10.0 ** ((cf - 32.0) / 10.0))
 
     def __repr__(self):
         descriptor_txt = parse_utils.format_dictionary(self.descriptor_record, 1)

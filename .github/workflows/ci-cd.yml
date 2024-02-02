@@ -28,7 +28,7 @@ jobs:
         path: dist/
 
   publish-to-pypi:
-    name: Publish Python 🐍 distribution 📦 to PyPI
+    name: Publish Release Python 🐍 distribution 📦 to PyPI
     if: startsWith(github.ref, 'refs/tags/')  # only publish to PyPI on tag pushes
     needs:
     - build
@@ -91,7 +91,7 @@ jobs:
         --repo '${{ github.repository }}'
 
   publish-to-testpypi:
-    name: Publish Python 🐍 distribution 📦 to TestPyPI
+    name: Publish Test Python 🐍 distribution 📦 to TestPyPI
     needs:
     - build
     runs-on: ubuntu-latest

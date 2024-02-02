@@ -1,5 +1,6 @@
 [project]
 name = "torchcvnn"
+dynamic = ["version"]
 
 dependencies = [
 	"torch >= 2.0",

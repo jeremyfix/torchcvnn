@@ -75,6 +75,8 @@ class Bretigny(Dataset):
             label_filename = self.root / "bretigny_seg_4ROI_balanced.npz"
         else:
             label_filename = self.root / "bretigny_seg_4ROI.npz"
+        if not label_filename.exists():
+            raise RuntimeError(f"Cannot find the label file {label_filename}")
         self.labels = np.load(label_filename)["arr_0"]
 
         if not fold in ["train", "valid", "test"]:

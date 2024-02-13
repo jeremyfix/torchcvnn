@@ -40,6 +40,26 @@ class Bretigny(Dataset):
         balanced: whether or not to use balanced labels
         patch_size: the dimensions of the patches to consider (rows, cols)
         patch_stride: the shift between two consecutive patches, default:patch_size
+
+    Note:
+        An example usage :
+
+        ```python
+        import torchcvnn
+        from torchcvnn.datasets import Bretigny
+
+        dataset = Bretigny(
+            rootdir, fold="train", patch_size=((128, 128)), transform=lambda x: np.abs(x)
+        )
+        X, y = dataset[0]
+        ```
+
+        Displayed below are the train, valid and test parts with the labels overlayed
+
+        ![Train patch ](../../../images/bretigny_train.png)
+        ![Valid patch ](../../../images/bretigny_valid.png)
+        ![Test patch ](../../../images/bretigny_test.png)
+
     """
 
     """

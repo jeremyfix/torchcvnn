@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "*"
 
 jobs:
   build:
@@ -29,10 +31,6 @@ jobs:
 
   publish-to-pypi:
     name: Publish Release Python 🐍 distribution 📦 to PyPI
-    on: 
-      push:
-        tags:
-          - '*'
     needs:
     - build
     runs-on: ubuntu-latest

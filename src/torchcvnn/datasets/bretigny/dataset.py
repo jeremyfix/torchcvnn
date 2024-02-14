@@ -56,9 +56,9 @@ class Bretigny(Dataset):
 
         Displayed below are the train, valid and test parts with the labels overlayed
 
-        ![Train patch ](../../../images/bretigny_train.png)
-        ![Valid patch ](../../../images/bretigny_valid.png)
-        ![Test patch ](../../../images/bretigny_test.png)
+        ![Train patch ](../../../../../images/bretigny_train.png)
+        ![Valid patch ](../../../../../images/bretigny_valid.png)
+        ![Test patch ](../../../../../images/bretigny_test.png)
 
     """
 

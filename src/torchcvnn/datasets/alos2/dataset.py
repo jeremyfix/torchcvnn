@@ -45,7 +45,8 @@ class ALOSDataset(Dataset):
 
     Arguments:
         volpath: the path to the VOLUME file
-        transform : the transform applied the cropped image
+        transform : the transform applied the cropped image. It applies
+                    on a dictionnary of patches {'HH': np.array, 'HV': np.array}
         crop_coordinates: the subpart of the image to consider as ((row_i, col_i), (row_j, col_j))
                           defining the corner coordinates
         patch_size: the dimensions of the patches to consider (rows, cols)
@@ -81,19 +82,26 @@ class ALOSDataset(Dataset):
         if trailer_filepath.exists():
             self.trailerFile = TrailerFile(trailer_filepath)
 
-        self.images = []
+        self.crop_coordinates = None
+        if crop_coordinates is not None:
+            self.crop_coordinates = crop_coordinates
+
+        self.images = {}
         for pol in ["HH", "HV", "VH", "VV"]:
             filepath = volpath.parents[0] / volpath.name.replace("VOL-", f"IMG-{pol}-")
             if not filepath.exists():
-                raise RuntimeError(f"The file {filepath} does not exist")
-            self.images.append(SARImage(filepath))
+                continue
+            self.images[pol] = SARImage(filepath)
+            if self.crop_coordinates is None:
+                self.crop_coordinates = (
+                    (0, 0),
+                    (self.images[pol].num_rows, self.images[pol].num_cols),
+                )
 
-        self.crop_coordinates = (
-            (0, 0),
-            (self.images[0].num_rows, self.images[0].num_cols),
-        )
-        if crop_coordinates is not None:
-            self.crop_coordinates = crop_coordinates
+        if len(self.images) != self.volFile.num_polarizations:
+            raise RuntimeError(
+                f"I was expecting {self.volFile.num_polarizations} data file but I found {len(self.images)} data file"
+            )
 
         # Precompute the dimension of the grid of patches
         nrows = self.crop_coordinates[1][0] - self.crop_coordinates[0][0]
@@ -104,6 +112,10 @@ class ALOSDataset(Dataset):
 
         self.nsamples_per_rows = (nrows - nrows_patch) // row_stride + 1
         self.nsamples_per_cols = (ncols - ncols_patch) // col_stride + 1
+
+    @property
+    def polarizations(self):
+        return self.images.keys()
 
     def describe(self):
         print(
@@ -148,14 +160,15 @@ Trailer File
             self.crop_coordinates[0][1] + (idx % self.nsamples_per_cols) * col_stride
         )
         num_rows, num_cols = self.patch_size
-        patches = [
-            im.read_patch(start_row, num_rows, start_col, num_cols)
+        patches = {
+            pol: im.read_patch(start_row, num_rows, start_col, num_cols)
             * self.leaderFile.calibration_factor
-            for im in self.images
-        ]
+            for pol, im in self.images.items()
+        }
 
-        patches = np.stack(patches)
         if self.transform is not None:
             patches = self.transform(patches)
+        else:
+            patches = np.stack([patchi for _, patchi in patches.items()])
 
         return patches

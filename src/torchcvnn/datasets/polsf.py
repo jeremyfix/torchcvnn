@@ -53,9 +53,16 @@ class PolSFDataset(Dataset):
         import torchcvnn
         from torchcvnn.datasets import PolSFDataset
 
+        def transform_patches(patches):
+            # We keep all the patches and get the spectrum
+            # from it
+            # If you wish, you could filter out some polarizations
+            # PolSF provides the four HH, HV, VH, VV
+            patches = [np.abs(patchi) for _, patchi in patches.items()]
+            return np.stack(patches)
+
         dataset = PolSFDataset(
-            rootdir, patch_size=((512, 512)), transform=lambda x: np.abs(x)
-        )
+            rootdir, patch_size=((512, 512)), transform=transform_patches
         X, y = dataset[0]
         ```
 

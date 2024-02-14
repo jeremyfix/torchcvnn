@@ -63,8 +63,11 @@ volume_descriptor_record_length = 360
 
 file_pointer_format = [
     ("record_number", 0, 4, "B", None),
+    ("record_type", 5, 1, "B", None),
     ("reference_id", 20, 16, "A", None),
     ("reference_file_class_code", 64, 4, "A", None),
+    # ("number_of_records", 100, 8, "I", None),
+    # ("number_of_physical", 140, 2, "I", None),
 ]
 file_pointer_record_length = 360
 
@@ -126,6 +129,16 @@ class VolFile:
                 text_record_length,
                 fh_offset,
             )
+
+    @property
+    def num_polarizations(self):
+        return len(
+            [
+                True
+                for fp in self.file_pointer_records
+                if fp["reference_file_class_code"] == "IMOP"
+            ]
+        )
 
     def __repr__(self):
         descriptor_txt = parse_utils.format_dictionary(self.descriptor_records, 1)

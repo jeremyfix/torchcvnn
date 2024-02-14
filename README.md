@@ -27,6 +27,22 @@ python -m pip install -e torchcvnn
 
 This will install torchcvnn in developper mode. 
 
+## Releasing a new version
+
+To trigger the pipeline for a new release, you have to tag a commit and to push
+it on the main branch 
+
+```
+[main] git tag x.x.x
+[main] git push --tags
+```
+
+This will trigger the `ci-cd.yml` pipeline which builds the distribution,
+release it on github and on pypi.
+
+Any commit that is not explicitely tagged with a version number does not trigger
+the release ci-cd pipeline.
+
 ## Other projects
 
 You might also be interested in some other projects: 

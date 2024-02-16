@@ -118,6 +118,18 @@ def test_cardioid():
     output = activation(x)
 
 
+def test_multiheadattention():
+    embed_dim = 10
+    num_heads = 3
+    mha = c_nn.MultiheadAttention(embed_dim, num_heads)
+
+    query = torch.randn((12, 3), dtype=torch.complex64)
+    key = torch.randn((12, 3), dtype=torch.complex64)
+    value = torch.randn((12, 10), dtype=torch.complex64)
+
+    output = mha(query, key, value)
+
+
 if __name__ == "__main__":
     test_crelu()
     test_cprelu()

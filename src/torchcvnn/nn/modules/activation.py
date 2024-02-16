@@ -317,3 +317,45 @@ class Cardioid(nn.Module):
             z: the input tensor on which to apply the activation function
         """
         return 0.5 * (1 + torch.cos(z.angle())) * z
+
+
+class MultiheadAttention(nn.Module):
+    r"""
+    Allows the model to jointly attend to information from different
+    representation subspaces as described in the paper
+    [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+
+    $$
+    \mbox{MultiHead}(Q, K, V) = [head_1, \dots, head_h] W^O
+    $$
+
+    where $head_i = \mbox{Attention}(Q W^Q_i, KW^K_i, VW^V_i)$
+
+    Arguments:
+        embed_dim:
+        num_heads: Number of parallel heads. Note that `embed_dim` will be split accross `num_heads` (i.e. each head will have dimension `embed_dim // num_heads`)
+        dropout: Dropout probability on `attn_output_weights`. Default: `0.0`
+        kdim: Total number of features for keys. Default `None` which uses `kdim=embed_dim`
+        vdim: Total number of features for keys. Default `None` which uses `vdim=embed_dim`
+        batch_first: If `True`, then the input and output tensors are provided as (batch, seq, feature). Default `False` with tensors as (seq, batch, feature)
+    """
+
+    def __init__(
+        self,
+        embed_dim: int,
+        num_heads: int,
+        dropout: float = 0.0,
+        kdim: int = None,
+        vdim: int = None,
+        batch_first: bool = False,
+        device: torch.device = None,
+        cdtype: torch.dtype = torch.complex64,
+    ):
+        super().__init__()
+        pass
+
+    def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor):
+        """
+        Performs the forward pass
+        """
+        pass

@@ -119,15 +119,51 @@ def test_cardioid():
 
 
 def test_multiheadattention():
+    batch_size = 16
+    source_seq_len = 9
+    target_seq_len = 11
+
     embed_dim = 10
+    kdim = 8
+    vdim = 9
     num_heads = 3
-    mha = c_nn.MultiheadAttention(embed_dim, num_heads)
+    batch_first = True
 
-    query = torch.randn((12, 3), dtype=torch.complex64)
-    key = torch.randn((12, 3), dtype=torch.complex64)
-    value = torch.randn((12, 10), dtype=torch.complex64)
+    mha = c_nn.MultiheadAttention(
+        embed_dim, num_heads, batch_first=batch_first, kdim=kdim, vdim=vdim
+    )
 
+    query = torch.randn(
+        (batch_size, target_seq_len, embed_dim)
+        if batch_first
+        else (target_seq_len, batch_size, embed_dim),
+        dtype=torch.complex64,
+    )
+    key = torch.randn(
+        (batch_size, source_seq_len, kdim)
+        if batch_first
+        else (source_seq_len, batch_size, kdim),
+        dtype=torch.complex64,
+    )
+    value = torch.randn(
+        (batch_size, source_seq_len, vdim)
+        if batch_first
+        else (source_seq_len, batch_size, vdim),
+        dtype=torch.complex64,
+    )
+
+    # Check for the forward pass
+    # Ensure it runs without exception
     output = mha(query, key, value)
+
+    expected_output_shape = (
+        [batch_size, target_seq_len, embed_dim]
+        if batch_first
+        else [target_seq_len, batch_size, embed_dim]
+    )
+
+    # Check for the shape
+    assert list(output.shape) == expected_output_shape
 
 
 if __name__ == "__main__":
@@ -144,3 +180,4 @@ if __name__ == "__main__":
     test_mod()
     test_modReLU()
     test_cardioid()
+    test_multiheadattention()

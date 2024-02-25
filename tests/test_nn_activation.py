@@ -123,11 +123,33 @@ def test_multiheadattention():
     source_seq_len = 9
     target_seq_len = 11
 
-    embed_dim = 10
+    embed_dim = 12
     kdim = 8
     vdim = 9
     num_heads = 3
     batch_first = True
+
+    rmha = torch.nn.MultiheadAttention(
+        embed_dim, num_heads, batch_first=batch_first, kdim=kdim, vdim=vdim
+    )
+
+    query = torch.randn(
+        (batch_size, target_seq_len, embed_dim)
+        if batch_first
+        else (target_seq_len, batch_size, embed_dim),
+    )
+    key = torch.randn(
+        (batch_size, source_seq_len, kdim)
+        if batch_first
+        else (source_seq_len, batch_size, kdim),
+    )
+    value = torch.randn(
+        (batch_size, source_seq_len, vdim)
+        if batch_first
+        else (source_seq_len, batch_size, vdim),
+    )
+    output = rmha(query, key, value)
+    print(output[0].shape)  # batch_size, target_seq_len, embed_dim
 
     mha = c_nn.MultiheadAttention(
         embed_dim, num_heads, batch_first=batch_first, kdim=kdim, vdim=vdim

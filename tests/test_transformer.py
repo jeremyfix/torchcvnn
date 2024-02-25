@@ -1,6 +1,6 @@
 # MIT License
 
-# Copyright (c) 2023 Jérémie Levi, Victor Dhédin, Jeremy Fix
+# Copyright (c) 2024 Jeremy Fix
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,26 +20,43 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .pooling import MaxPool2d, AvgPool2d
-from .dropout import Dropout, Dropout2d
-from .conv import ConvTranspose2d
-from .batchnorm import BatchNorm2d
-from .upsampling import Upsample
-from .transformer import TransformerEncoder, TransformerEncoderLayer
-from . import initialization as init
-from .activation import (
-    CReLU,
-    CPReLU,
-    CELU,
-    CCELU,
-    CGELU,
-    CSigmoid,
-    CTanh,
-    zReLU,
-    zAbsReLU,
-    zLeakyReLU,
-    Mod,
-    modReLU,
-    Cardioid,
-    MultiheadAttention,
-)
+# External imports
+import torch
+
+# Local imports
+import torchcvnn.nn as c_nn
+
+
+def test_transformer_encoder_layer():
+    nhead = 8
+    seq_len = 10
+    batch_size = 32
+    num_features = 512
+
+    encoder_layer = c_nn.TransformerEncoderLayer(d_model=num_features, nhead=nhead)
+    src = torch.rand(seq_len, batch_size, num_features)
+    out = encoder_layer(src)
+
+    assert out.shape(seq_len, batch_size, num_features)
+
+
+def test_transformer_encoder():
+    nhead = 8
+    seq_len = 10
+    batch_size = 32
+    num_features = 512
+
+    encoder_layer = c_nn.TransformerEncoderLayer(d_model=num_features, nhead=nhead)
+    transformer_encoder = c_nn.TransformerEncoder(encoder_layer, num_layers=4)
+
+    src = torch.randn((seq_len, batch_size, num_features), dtype=torch.complex64)
+    out = transformer_encoder(src)
+    assert out.shape == (
+        seq_len,
+        batch_size,
+    )
+
+
+if __name__ == "__main__":
+    test_transformer_encoder_layer()
+    test_transformer_encoder()

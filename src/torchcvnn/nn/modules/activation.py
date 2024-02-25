@@ -345,11 +345,12 @@ class MultiheadAttention(nn.Module):
         embed_dim: int,
         num_heads: int,
         dropout: float = 0.0,
+        bias: bool = True,
         kdim: int = None,
         vdim: int = None,
         batch_first: bool = False,
         device: torch.device = None,
-        cdtype: torch.dtype = torch.complex64,
+        dtype: torch.dtype = torch.complex64,
     ):
         super().__init__()
         pass
@@ -358,4 +359,4 @@ class MultiheadAttention(nn.Module):
         """
         Performs the forward pass
         """
-        pass
+        return torch.nn.functional.scaled_dot_product_attention(query, key, value)

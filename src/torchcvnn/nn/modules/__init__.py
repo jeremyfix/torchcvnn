@@ -25,6 +25,7 @@ from .dropout import Dropout, Dropout2d
 from .conv import ConvTranspose2d
 from .batchnorm import BatchNorm2d
 from .upsampling import Upsample
+from .normalization import LayerNorm
 from . import initialization as init
 from .activation import (
     CReLU,

@@ -43,18 +43,24 @@ class LayerNorm(nn.Module):
     def __init__(
         self,
         normalized_shape: _shape_t,
-        eps: float = 1e-5,
         elementwise_affine: bool = True,
         bias: bool = True,
         device: torch.device = None,
         dtype: torch.dtype = torch.complex64,
     ) -> None:
+        r"""
+        Implementation of the torch.nn.LayerNorm for complex numbers.
+
+        Arguments:
+            normalized_shape (int or list or torch.Size): input shape from an expected input of size $(*, normalized_shape[0], normalized_shape[1], ..., normalized_shape[-1])
+            elementwise_affine (bool): a boolean value that when set to `True`, this module has learnable per-element affine parameters initialized to a diagonal matrix with diagonal element $1/\sqrt{2}$ (for weights) and zeros (for biases). Default: `True`
+            bias (bool): if set to `False`, the layer will not learn an additive bias
+        """
         super().__init__()
         if isinstance(normalized_shape, numbers.Integral):
             normalized_shape = (normalized_shape,)
         self.normalized_shape = tuple(normalized_shape)
 
-        self.eps = eps
         self.elementwise_affine = elementwise_affine
 
         self.combined_dimensions = functools.reduce(operator.mul, self.normalized_shape)
@@ -74,6 +80,12 @@ class LayerNorm(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self) -> None:
+        r"""
+        Initialize the weight and bias. The weight is initialized to a diagonal
+        matrix with diagonal $\frac{1}{\sqrt{2}}$.
+
+        The bias is initialized to $0$.
+        """
         with torch.no_grad():
             if self.elementwise_affine:
                 # Initialize all the weights to zeros
@@ -86,6 +98,9 @@ class LayerNorm(nn.Module):
                 init.zeros_(self.bias)
 
     def forward(self, z: torch.Tensor) -> torch.Tensor:
+        """
+        Performs the forward pass
+        """
         # z: *, normalized_shape[0] , ..., normalized_shape[-1]
         z_ravel = z.view(-1, self.combined_dimensions).transpose(0, 1)
 

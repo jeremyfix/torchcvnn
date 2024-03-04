@@ -41,6 +41,9 @@ def test_layernorm_real():
     out = layer_norm(embedding)
 
     assert out.shape == embedding.shape
+
+    out = out.view(batch, sentence_length, -1)  # batch, sentence_length, embeddig_dim
+
     mus = out.mean(axis=-1)
     assert torch.allclose(mus, torch.zeros_like(mus), atol=1e-6)
     stds = out.std(axis=-1)
@@ -55,13 +58,16 @@ def test_layernorm_real():
     layer_norm.eval()
     out = layer_norm(x)
 
-    mus = out.view(N, -1).mean(axis=-1)
+    out = out.view(N, -1)  # N, C*H*W
+
+    mus = out.mean(axis=-1)
     assert torch.allclose(mus, torch.zeros_like(mus), atol=1e-6)
-    stds = out.view(N, -1).std(axis=-1)
+    stds = out.std(axis=-1)
     assert torch.allclose(stds, torch.ones_like(stds), atol=1e-1)
 
 
 def test_layernorm():
+    #############
     # NLP Example
     batch, sentence_length, embedding_dim = 20, 5, 10
     embedding = torch.randn(
@@ -69,43 +75,61 @@ def test_layernorm():
     )
     layer_norm = c_nn.LayerNorm(embedding_dim)
     layer_norm.eval()
+    # For the unit test, we randomly initialize the bias
+    # to avoid testing only the particular case bias = 0
+    torch.nn.init.normal_(layer_norm.bias)
+
     # Activate module
     out = layer_norm(embedding)
 
-    assert out.shape == embedding.shape
+    assert out.shape == embedding.shape  # batch x sentence_length x embedding_dim
+
+    # The out tensor is considered as a collection of batch x sentence_length
+    # vectors of size embedding_dim
+    out = out.view(-1, embedding_dim).transpose(0, 1)
 
     mus = out.mean(axis=-1)
-    assert torch.allclose(mus, torch.zeros_like(mus), atol=1e-6)
+    # Check the means equal zeros. Note that, in general, we expect
+    assert torch.allclose(mus, layer_norm.bias, atol=1e-6)
 
     out_real = torch.view_as_real(out)
-    print(out_real.shape)
     covs = bn.batch_cov(out_real)
+    id_cov = 0.5 * torch.eye(2).tile(embedding_dim, 1, 1)
 
-    stds = out.std(axis=-1)
-    assert torch.allclose(stds, torch.ones_like(stds), atol=1e-1)
+    assert torch.allclose(covs, id_cov, atol=1e-6)
 
+    ###############
     # Image Example
     N, C, H, W = 20, 5, 10, 10
+    embedding_dim = C * H * W
     x = torch.randn((N, C, H, W), dtype=torch.complex64)
+
     # Normalize over the last three dimensions (i.e. the channel and spatial dimensions)
     # as shown in the image below
     layer_norm = c_nn.LayerNorm([C, H, W])
     layer_norm.eval()
+    # For the unit test, we randomly initialize the bias
+    # to avoid testing only the particular case bias = 0
+    torch.nn.init.normal_(layer_norm.bias)
+
     # Activate module
     out = layer_norm(x)
 
-    # # Compute the variance/covariance
-    # xc = output.transpose(0, 1).reshape(C, -1)  # C, BxHxW
-    # mus = xc.mean(axis=-1)  # 16 means
-    # xc_real = torch.view_as_real(xc)
-    # covs = bn.batch_cov(xc_real)  # 16 covariances matrices
+    assert out.shape == x.shape  # N, C, H, W
 
-    # # All the mus must be 0's
-    # # For some reasons, this is not exactly 0
-    # assert torch.allclose(mus, torch.zeros_like(mus), atol=1e-7)
-    # # All the covs must be identities
-    # id_cov = 0.5 * torch.eye(2).tile(C, 1, 1)
-    # assert torch.allclose(covs, id_cov)
+    # The out tensor is considered as a collection of N
+    # vectors of size embedding_dim
+    out = out.view(-1, embedding_dim).transpose(0, 1)
+
+    mus = out.mean(axis=-1)
+    # Check the means equal zeros. Note that, in general, we expect
+    assert torch.allclose(mus, layer_norm.bias, atol=1e-6)
+
+    out_real = torch.view_as_real(out)
+    covs = bn.batch_cov(out_real)
+    id_cov = 0.5 * torch.eye(2).tile(embedding_dim, 1, 1)
+
+    assert torch.allclose(covs, id_cov, atol=1e-6)
 
 
 if __name__ == "__main__":

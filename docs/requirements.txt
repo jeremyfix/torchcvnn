@@ -9,3 +9,4 @@ mkdocs-material-extensions
 black
 numpy
 matplotlib
+griffe==0.41.1 

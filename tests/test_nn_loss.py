@@ -29,11 +29,12 @@ import torchcvnn.nn as c_nn
 
 
 def test_complex_mse_loss():
-    loss = c_nn.loss.ComplexMSELoss()
+    loss = c_nn.ComplexMSELoss()
     y_pred = torch.tensor([1 + 1j, 2 + 2j], dtype=torch.complex64)
     y_true = torch.tensor([1 + 2j, 2 + 3j], dtype=torch.complex64)
     output = loss(y_pred, y_true)
-    print(output)
+    expected_outputs = torch.ones_like(output)
+    assert torch.allclose(output, expected_outputs)
 
 
 if __name__ == "__main__":

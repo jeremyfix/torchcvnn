@@ -107,7 +107,8 @@ class PolSFDataset(Dataset):
             root = pathlib.Path(root)
         self.labels = np.array(Image.open(root.parent / "SF-ALOS2-label2d.png"))[
             ::-1, :
-        ]
+        ].copy()  # copy necessary as otherwise torch.from_numpy does not support
+        # negative stride
 
     def __len__(self) -> int:
         """

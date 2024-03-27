@@ -312,8 +312,44 @@ class _BatchNormNd(nn.Module):
 
 
 class BatchNorm1d(_BatchNormNd):
+    r"""
+    BatchNorm for complex valued neural networks. The same code applies for
+    BatchNorm1d, BatchNorm2d, the only condition being the input tensor must be
+    (batch_size, features, d1, d2, ..)
+
+    The statistics will be computed over the $batch\_size \times d_1 \times d_2 \times ..$
+    vectors of size $features$.
+
+    As defined by Trabelsi et al. (2018)
+
+    Arguments:
+        num_features: $C$ from an expected input of size $(B, C)$
+        eps: a value added to the denominator for numerical stability. Default $1e-5$.
+        momentum: the value used for the running mean and running var computation. Can be set to `None` for cumulative moving average (i.e. simple average). Default: $0.1$
+        affine: a boolean value that when set to `True`, this module has learnable affine parameters. Default: `True`
+        track_running_stats: a boolean value that when set to `True`, this module tracks the running mean and variance, and when set to`False`, this module does not track such statistics, and initializes statistics buffers running_mean and running_var as None. When these buffers are None, this module always uses batch statistics. in both training and eval modes. Default: `True`
+        cdtype: the dtype for complex numbers. Default torch.complex64
+    """
     pass
 
 
 class BatchNorm2d(_BatchNormNd):
+    r"""
+    BatchNorm for complex valued neural networks. The same code applies for
+    BatchNorm1d, BatchNorm2d, the only condition being the input tensor must be
+    (batch_size, features, d1, d2, ..)
+
+    The statistics will be computed over the $batch\_size \times d_1 \times d_2 \times ..$
+    vectors of size $features$.
+
+    As defined by Trabelsi et al. (2018)
+
+    Arguments:
+        num_features: $C$ from an expected input of size $(B, C)$
+        eps: a value added to the denominator for numerical stability. Default $1e-5$.
+        momentum: the value used for the running mean and running var computation. Can be set to `None` for cumulative moving average (i.e. simple average). Default: $0.1$
+        affine: a boolean value that when set to `True`, this module has learnable affine parameters. Default: `True`
+        track_running_stats: a boolean value that when set to `True`, this module tracks the running mean and variance, and when set to`False`, this module does not track such statistics, and initializes statistics buffers running_mean and running_var as None. When these buffers are None, this module always uses batch statistics. in both training and eval modes. Default: `True`
+        cdtype: the dtype for complex numbers. Default torch.complex64
+    """
     pass

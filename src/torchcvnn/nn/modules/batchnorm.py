@@ -148,14 +148,19 @@ def inv_sqrt_2x2(M: torch.Tensor) -> torch.Tensor:
     return M_sqrt_inv
 
 
-class BatchNorm2d(nn.Module):
+class _BatchNormNd(nn.Module):
     r"""
-    BatchNorm for complex valued neural networks.
+    BatchNorm for complex valued neural networks. The same code applies for
+    BatchNorm1d, BatchNorm2d, the only condition being the input tensor must be
+    (batch_size, features, d1, d2, ..)
+
+    The statistics will be computed over the $batch\_size \times d_1 \times d_2 \times ..$
+    vectors of size $features$.
 
     As defined by Trabelsi et al. (2018)
 
     Arguments:
-        num_features: $C$ from an expected input of size $(B, C, H, W)$
+        num_features: $C$ from an expected input of size $(B, C)$
         eps: a value added to the denominator for numerical stability. Default $1e-5$.
         momentum: the value used for the running mean and running var computation. Can be set to `None` for cumulative moving average (i.e. simple average). Default: $0.1$
         affine: a boolean value that when set to `True`, this module has learnable affine parameters. Default: `True`
@@ -236,9 +241,11 @@ class BatchNorm2d(nn.Module):
                 # Initialize all the biases to zero
                 init.zeros_(self.bias)
 
-    def forward(self, z: torch.Tensor):
-        # z : [B, C, H, W] (complex)
-        B, C, H, W = z.shape
+    def forward(self, z: torch.Tensor) -> torch.Tensor:
+        # z : [B, C, d1, d2, ..] (complex)
+        batch_size = z.shape[0]
+        dim1 = z.shape[1]
+        other_dims = z.shape[2:]
 
         xc = z.transpose(0, 1).reshape(self.num_features, -1)  # num_features, BxHxW
 
@@ -283,10 +290,11 @@ class BatchNorm2d(nn.Module):
         outz = torch.view_as_complex(outz)  # num_features, BxHxW
 
         # bias is (C, ) complex dtype
-        outz += self.bias.view((C, 1))
+        outz += self.bias.view((self.num_features, 1))
 
         # With the following operation, weight
-        outz = outz.reshape(C, B, H, W).transpose(0, 1)
+        # outz = outz.reshape(C, B, H, W).transpose(0, 1)
+        outz = outz.reshape(dim1, batch_size, *other_dims).transpose(0, 1)
 
         if self.training and self.track_running_stats:
             self.running_mean = (
@@ -300,5 +308,12 @@ class BatchNorm2d(nn.Module):
             ) * self.running_var + self.momentum * covs
             if torch.isnan(self.running_var).any():
                 raise RuntimeError("Running var divergence")
-
         return outz
+
+
+class BatchNorm1d(_BatchNormNd):
+    pass
+
+
+class BatchNorm2d(_BatchNormNd):
+    pass

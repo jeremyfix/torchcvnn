@@ -1,6 +1,6 @@
 # MIT License
 
-# Copyright (c) 2024 Quentin Gabot
+# Copyright (c) 2024 Jeremy Fix
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .polsf import PolSFDataset
-from .alos2 import ALOSDataset
-from .bretigny import Bretigny
-from .slc import SLCDataset
+"""
+Scripts to read and parse SLC data files
+
+"""
+
+from .dataset import SLCDataset

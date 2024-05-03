@@ -123,6 +123,26 @@ class SLCFile:
         self.nsamples_per_rows = (self.n_rows - nrows_patch) // row_stride + 1
         self.nsamples_per_cols = (self.n_cols - ncols_patch) // col_stride + 1
 
+    @property
+    def key(self):
+        return "_".join(
+            (
+                self.parameters["site_name"],
+                self.parameters["line_ID"],
+                self.parameters["flight_ID"],
+                self.parameters["data_take_counter"],
+                self.parameters["acquisition_date"],
+                self.parameters["band"],
+                self.parameters["steering"],
+                self.parameters["stack_version"],
+                self.parameters["baseline_correction"],
+            )
+        )
+
+    @property
+    def polarization(self):
+        return self.parameters["polarization"]
+
     def __len__(self):
         """
         Returns the number of patches that can be extracted from the SLC file

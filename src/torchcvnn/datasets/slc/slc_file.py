@@ -65,7 +65,7 @@ class SLCFile:
 
     The filenames contain interesting information:
 
-    {site name}_{line ID}_{flight ID}_{data take counter}_{acquisition date}_{stack number}_{band}{steering}{polarization}_{stack_version}... _{baseline correction}_{segment number}_{downsample factor}.slc
+    {site name}_{line ID}_{flight ID}_{data take counter}_{acquisition date}_{band}{steering}{polarization}_{stack_version}... _{baseline correction}_{segment number}_{downsample factor}.slc
 
     e.g. SSurge_15305_14170_007_141120_L090HH_01_BC_s1_1x1.slc is
 
@@ -74,9 +74,8 @@ class SLCFile:
     - flight ID : 14170
     - data take counter : 007
     - acquisition date : 141120, the date is in YYMMDD format (UTC time).
-    - stack number : L090
-    - band : HH
-    - steering : 01
+    - band : L
+    - steering : 090
     - polarization : HH
     - stack version : 01
     - baseline correction : BC, means the data is corrected for residual baseline

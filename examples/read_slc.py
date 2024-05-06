@@ -63,7 +63,7 @@ def get_pauli(data):
     beta = HH - VV
     gamma = HV + VH
 
-    return 1.0 / np.sqrt(2.0) * np.stack([alpha, beta, gamma], axis=-1)
+    return np.stack([beta, gamma, alpha], axis=-1)
 
 
 if __name__ == "__main__":

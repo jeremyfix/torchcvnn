@@ -84,6 +84,8 @@ if __name__ == "__main__":
 
     # Plot the magnitude of the patch
     plt.figure()
+    plt.axis("off")
     plt.imshow(normalize(patch))
+    plt.tight_layout()
     plt.savefig("patch.png", bbox_inches="tight")
     plt.show()

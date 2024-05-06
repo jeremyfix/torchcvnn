@@ -23,3 +23,4 @@
 from .polsf import PolSFDataset
 from .alos2 import ALOSDataset
 from .bretigny import Bretigny
+from .slc import SLCDataset

@@ -82,6 +82,12 @@ class SLCDataset(Dataset):
         )
         ```
 
+    Arguments:
+        rootdir: the path containing the SLC and ANN files
+        transform : the transform applied to the patches. It applies
+                    on a dictionnary of patches {'HH': np.array, 'HV': np.array, ...}
+        patch_size: the dimensions of the patches to consider (rows, cols)
+        patch_stride: the shift between two consecutive patches, default:patch_size
     """
 
     def __init__(

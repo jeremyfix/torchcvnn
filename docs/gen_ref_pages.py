@@ -44,9 +44,9 @@ for path in sorted(Path(rootdir).rglob("*.py")):
 
 # Add the examples
 tutorials = [
-    ("mnist.md", "MNIST", "examples.mnist"),
-    ("alos2.md", "ALOS2", "examples.read_alos2"),
-    ("slc.md", "SLC", "examples.read_slc"),
+    ("mnist.md", "MNIST", "mnist"),
+    ("alos2.md", "ALOS2", "read_alos2"),
+    ("slc.md", "SLC", "read_slc"),
 ]
 for md_path, tuto_name, py_path in tutorials:
     doc_path = f"examples/{md_path}"

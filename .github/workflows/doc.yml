@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: html-docs
-          path: $SHINX_DOC_DIR/_build/html/
+          path: sphinx_doc/_build/html/
 
       # - name: Deploy
       #   uses: peaceiris/actions-gh-pages@v4

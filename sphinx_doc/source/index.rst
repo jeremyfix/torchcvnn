@@ -1,17 +1,21 @@
-.. torchcvnn documentation master file, created by
-   sphinx-quickstart on Tue Nov 12 18:33:13 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Complex Valued Neural Networks
+==============================
 
-torchcvnn documentation
-=======================
+This is a library that uses `pytorch <https://pytorch.org>`_ as a back-end for complex valued neural networks.
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+It was initially developed by Victor Dhédin and Jérémie Levi during their third year project at `CentraleSupélec <https://www.centralesupelec.fr/>`_. 
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Getting started
+   :hidden:
+
+   getting_started/installing
 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Package Reference
+   :hidden:
 
+   modules/datasets

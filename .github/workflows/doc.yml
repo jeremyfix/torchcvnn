@@ -1,8 +1,5 @@
 name: sphinx
 
-env:
-  SPHINX_DOC_DIR: sphinx_doc # to be changed to docs once release and doc directory name changed
-
 on:
   push:
     branches:
@@ -28,7 +25,7 @@ jobs:
       - name: Build HTML
         uses: ammaraskar/sphinx-action@master
         with:
-          docs-folder: $SPHINX_DOC_DIR
+          docs-folder: sphinx_doc
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -40,4 +37,4 @@ jobs:
       #   uses: peaceiris/actions-gh-pages@v4
       #   with:
       #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: $SPHINX_DOC_DIR/_build/html
+      #     publish_dir: sphinx_doc/_build/html

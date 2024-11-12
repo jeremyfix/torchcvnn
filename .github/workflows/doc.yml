@@ -1,8 +1,12 @@
-name: mkdocs
+name: sphinx
+
+env:
+  SPHINX_DOC_DIR: sphinx_doc # to be changed to docs once release and doc directory name changed
+
 on:
   push:
     branches:
-      - main
+      - doc_refactor # To be changed to main once released
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -10,14 +14,30 @@ jobs:
       contents: write
       pages: write
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
         with:
           python-version: ">= 3.8 < 3.12"
-      - name: Install doc dependencies
+
+      - name: Install torchcvnn and its doc dependencies
         run: |
-          pip install -r docs/requirements.txt
-      - name: Install torchcvnn
-        run: pip install .
-      - name: Generate and deploy the documentation
-        run: mkdocs gh-deploy --force --clean --verbose
+          python -m pip install --upgrade pip
+          python -m pip install -e .[docs]
+
+      - name: Build HTML
+        uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: $SPHINX_DOC_DIR
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-docs
+          path: $SHINX_DOC_DIR/_build/html/
+
+      # - name: Deploy
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: $SPHINX_DOC_DIR/_build/html

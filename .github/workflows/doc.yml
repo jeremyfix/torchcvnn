@@ -6,7 +6,11 @@ on:
       - doc_refactor # To be changed to main once released
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    matrix:
+      os: [ubuntu-latest]
+      python: ["3.9"]      
+
     permissions:
       contents: write
       pages: write
@@ -15,7 +19,13 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: ">= 3.8 < 3.12"
+          python-version: ${{ matrix.python }}
+
+      - name: Cache python modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pkg-deps-${{ matrix.python }}-${{ hashFiles('pyproject.toml') }}-docs
 
       - name: Install torchcvnn and its doc dependencies
         run: |

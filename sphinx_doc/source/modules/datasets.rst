@@ -3,6 +3,17 @@ torchcvnn.datasets
 
 .. currentmodule:: torchcvnn.datasets
 
+Bretigny
+--------
+
+.. autoclass:: torchcvnn.datasets.Bretigny
+   :members:
+
+PolSF
+-----
+
+.. autoclass:: torchcvnn.datasets.PolSFDataset
+   :members:
 
 ALOS2
 -----

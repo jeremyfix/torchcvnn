@@ -19,6 +19,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
+    "sphinx_copybutton",
 ]
 
 templates_path = ["_templates"]

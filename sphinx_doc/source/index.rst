@@ -19,3 +19,5 @@ It was initially developed by Victor Dhédin and Jérémie Levi during their thi
    :hidden:
 
    modules/datasets
+   modules/nn
+   modules/init

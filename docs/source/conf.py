@@ -59,6 +59,6 @@ html_theme_options: Dict[str, Any] = {
         },
     ],
     "source_repository": "https://github.com/jeremyfix/torchcvnn/",
-    "source_branch": "doc_refactor",
-    "source_directory": "sphinx_doc/source/",
+    "source_branch": "main",
+    "source_directory": "docs/source/",
 }

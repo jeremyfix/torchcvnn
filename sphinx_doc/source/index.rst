@@ -43,3 +43,4 @@ Pytorch based :
    :hidden:
 
    tutorials/complex_mnist
+   tutorials/loading_remote

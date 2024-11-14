@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.Cardioid
+=====================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: Cardioid
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Cardioid.__init__
+      ~Cardioid.add_module
+      ~Cardioid.apply
+      ~Cardioid.bfloat16
+      ~Cardioid.buffers
+      ~Cardioid.children
+      ~Cardioid.compile
+      ~Cardioid.cpu
+      ~Cardioid.cuda
+      ~Cardioid.double
+      ~Cardioid.eval
+      ~Cardioid.extra_repr
+      ~Cardioid.float
+      ~Cardioid.forward
+      ~Cardioid.get_buffer
+      ~Cardioid.get_extra_state
+      ~Cardioid.get_parameter
+      ~Cardioid.get_submodule
+      ~Cardioid.half
+      ~Cardioid.ipu
+      ~Cardioid.load_state_dict
+      ~Cardioid.modules
+      ~Cardioid.mtia
+      ~Cardioid.named_buffers
+      ~Cardioid.named_children
+      ~Cardioid.named_modules
+      ~Cardioid.named_parameters
+      ~Cardioid.parameters
+      ~Cardioid.register_backward_hook
+      ~Cardioid.register_buffer
+      ~Cardioid.register_forward_hook
+      ~Cardioid.register_forward_pre_hook
+      ~Cardioid.register_full_backward_hook
+      ~Cardioid.register_full_backward_pre_hook
+      ~Cardioid.register_load_state_dict_post_hook
+      ~Cardioid.register_load_state_dict_pre_hook
+      ~Cardioid.register_module
+      ~Cardioid.register_parameter
+      ~Cardioid.register_state_dict_post_hook
+      ~Cardioid.register_state_dict_pre_hook
+      ~Cardioid.requires_grad_
+      ~Cardioid.set_extra_state
+      ~Cardioid.set_submodule
+      ~Cardioid.share_memory
+      ~Cardioid.state_dict
+      ~Cardioid.to
+      ~Cardioid.to_empty
+      ~Cardioid.train
+      ~Cardioid.type
+      ~Cardioid.xpu
+      ~Cardioid.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Cardioid.T_destination
+      ~Cardioid.call_super_init
+      ~Cardioid.dump_patches
+      ~Cardioid.training
+   
+   

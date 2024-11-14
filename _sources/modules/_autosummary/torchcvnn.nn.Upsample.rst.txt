@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.Upsample
+=====================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: Upsample
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Upsample.__init__
+      ~Upsample.add_module
+      ~Upsample.apply
+      ~Upsample.bfloat16
+      ~Upsample.buffers
+      ~Upsample.children
+      ~Upsample.compile
+      ~Upsample.cpu
+      ~Upsample.cuda
+      ~Upsample.double
+      ~Upsample.eval
+      ~Upsample.extra_repr
+      ~Upsample.float
+      ~Upsample.forward
+      ~Upsample.get_buffer
+      ~Upsample.get_extra_state
+      ~Upsample.get_parameter
+      ~Upsample.get_submodule
+      ~Upsample.half
+      ~Upsample.ipu
+      ~Upsample.load_state_dict
+      ~Upsample.modules
+      ~Upsample.mtia
+      ~Upsample.named_buffers
+      ~Upsample.named_children
+      ~Upsample.named_modules
+      ~Upsample.named_parameters
+      ~Upsample.parameters
+      ~Upsample.register_backward_hook
+      ~Upsample.register_buffer
+      ~Upsample.register_forward_hook
+      ~Upsample.register_forward_pre_hook
+      ~Upsample.register_full_backward_hook
+      ~Upsample.register_full_backward_pre_hook
+      ~Upsample.register_load_state_dict_post_hook
+      ~Upsample.register_load_state_dict_pre_hook
+      ~Upsample.register_module
+      ~Upsample.register_parameter
+      ~Upsample.register_state_dict_post_hook
+      ~Upsample.register_state_dict_pre_hook
+      ~Upsample.requires_grad_
+      ~Upsample.set_extra_state
+      ~Upsample.set_submodule
+      ~Upsample.share_memory
+      ~Upsample.state_dict
+      ~Upsample.to
+      ~Upsample.to_empty
+      ~Upsample.train
+      ~Upsample.type
+      ~Upsample.xpu
+      ~Upsample.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Upsample.T_destination
+      ~Upsample.call_super_init
+      ~Upsample.dump_patches
+      ~Upsample.training
+   
+   

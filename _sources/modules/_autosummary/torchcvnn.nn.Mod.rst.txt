@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.Mod
+================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: Mod
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Mod.__init__
+      ~Mod.add_module
+      ~Mod.apply
+      ~Mod.bfloat16
+      ~Mod.buffers
+      ~Mod.children
+      ~Mod.compile
+      ~Mod.cpu
+      ~Mod.cuda
+      ~Mod.double
+      ~Mod.eval
+      ~Mod.extra_repr
+      ~Mod.float
+      ~Mod.forward
+      ~Mod.get_buffer
+      ~Mod.get_extra_state
+      ~Mod.get_parameter
+      ~Mod.get_submodule
+      ~Mod.half
+      ~Mod.ipu
+      ~Mod.load_state_dict
+      ~Mod.modules
+      ~Mod.mtia
+      ~Mod.named_buffers
+      ~Mod.named_children
+      ~Mod.named_modules
+      ~Mod.named_parameters
+      ~Mod.parameters
+      ~Mod.register_backward_hook
+      ~Mod.register_buffer
+      ~Mod.register_forward_hook
+      ~Mod.register_forward_pre_hook
+      ~Mod.register_full_backward_hook
+      ~Mod.register_full_backward_pre_hook
+      ~Mod.register_load_state_dict_post_hook
+      ~Mod.register_load_state_dict_pre_hook
+      ~Mod.register_module
+      ~Mod.register_parameter
+      ~Mod.register_state_dict_post_hook
+      ~Mod.register_state_dict_pre_hook
+      ~Mod.requires_grad_
+      ~Mod.set_extra_state
+      ~Mod.set_submodule
+      ~Mod.share_memory
+      ~Mod.state_dict
+      ~Mod.to
+      ~Mod.to_empty
+      ~Mod.train
+      ~Mod.type
+      ~Mod.xpu
+      ~Mod.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Mod.T_destination
+      ~Mod.call_super_init
+      ~Mod.dump_patches
+      ~Mod.training
+   
+   

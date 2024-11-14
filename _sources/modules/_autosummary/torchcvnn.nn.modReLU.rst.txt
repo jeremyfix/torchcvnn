@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.modReLU
+====================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: modReLU
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~modReLU.__init__
+      ~modReLU.add_module
+      ~modReLU.apply
+      ~modReLU.bfloat16
+      ~modReLU.buffers
+      ~modReLU.children
+      ~modReLU.compile
+      ~modReLU.cpu
+      ~modReLU.cuda
+      ~modReLU.double
+      ~modReLU.eval
+      ~modReLU.extra_repr
+      ~modReLU.float
+      ~modReLU.forward
+      ~modReLU.get_buffer
+      ~modReLU.get_extra_state
+      ~modReLU.get_parameter
+      ~modReLU.get_submodule
+      ~modReLU.half
+      ~modReLU.ipu
+      ~modReLU.load_state_dict
+      ~modReLU.modules
+      ~modReLU.mtia
+      ~modReLU.named_buffers
+      ~modReLU.named_children
+      ~modReLU.named_modules
+      ~modReLU.named_parameters
+      ~modReLU.parameters
+      ~modReLU.register_backward_hook
+      ~modReLU.register_buffer
+      ~modReLU.register_forward_hook
+      ~modReLU.register_forward_pre_hook
+      ~modReLU.register_full_backward_hook
+      ~modReLU.register_full_backward_pre_hook
+      ~modReLU.register_load_state_dict_post_hook
+      ~modReLU.register_load_state_dict_pre_hook
+      ~modReLU.register_module
+      ~modReLU.register_parameter
+      ~modReLU.register_state_dict_post_hook
+      ~modReLU.register_state_dict_pre_hook
+      ~modReLU.requires_grad_
+      ~modReLU.set_extra_state
+      ~modReLU.set_submodule
+      ~modReLU.share_memory
+      ~modReLU.state_dict
+      ~modReLU.to
+      ~modReLU.to_empty
+      ~modReLU.train
+      ~modReLU.type
+      ~modReLU.xpu
+      ~modReLU.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~modReLU.T_destination
+      ~modReLU.call_super_init
+      ~modReLU.dump_patches
+      ~modReLU.training
+   
+   

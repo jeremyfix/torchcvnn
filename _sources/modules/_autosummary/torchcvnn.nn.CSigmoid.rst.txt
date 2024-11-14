@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.CSigmoid
+=====================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: CSigmoid
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CSigmoid.__init__
+      ~CSigmoid.add_module
+      ~CSigmoid.apply
+      ~CSigmoid.bfloat16
+      ~CSigmoid.buffers
+      ~CSigmoid.children
+      ~CSigmoid.compile
+      ~CSigmoid.cpu
+      ~CSigmoid.cuda
+      ~CSigmoid.double
+      ~CSigmoid.eval
+      ~CSigmoid.extra_repr
+      ~CSigmoid.float
+      ~CSigmoid.forward
+      ~CSigmoid.get_buffer
+      ~CSigmoid.get_extra_state
+      ~CSigmoid.get_parameter
+      ~CSigmoid.get_submodule
+      ~CSigmoid.half
+      ~CSigmoid.ipu
+      ~CSigmoid.load_state_dict
+      ~CSigmoid.modules
+      ~CSigmoid.mtia
+      ~CSigmoid.named_buffers
+      ~CSigmoid.named_children
+      ~CSigmoid.named_modules
+      ~CSigmoid.named_parameters
+      ~CSigmoid.parameters
+      ~CSigmoid.register_backward_hook
+      ~CSigmoid.register_buffer
+      ~CSigmoid.register_forward_hook
+      ~CSigmoid.register_forward_pre_hook
+      ~CSigmoid.register_full_backward_hook
+      ~CSigmoid.register_full_backward_pre_hook
+      ~CSigmoid.register_load_state_dict_post_hook
+      ~CSigmoid.register_load_state_dict_pre_hook
+      ~CSigmoid.register_module
+      ~CSigmoid.register_parameter
+      ~CSigmoid.register_state_dict_post_hook
+      ~CSigmoid.register_state_dict_pre_hook
+      ~CSigmoid.requires_grad_
+      ~CSigmoid.set_extra_state
+      ~CSigmoid.set_submodule
+      ~CSigmoid.share_memory
+      ~CSigmoid.state_dict
+      ~CSigmoid.to
+      ~CSigmoid.to_empty
+      ~CSigmoid.train
+      ~CSigmoid.type
+      ~CSigmoid.xpu
+      ~CSigmoid.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CSigmoid.T_destination
+      ~CSigmoid.call_super_init
+      ~CSigmoid.dump_patches
+      ~CSigmoid.training
+   
+   

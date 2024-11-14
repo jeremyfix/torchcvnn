@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.AvgPool2d
+======================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: AvgPool2d
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~AvgPool2d.__init__
+      ~AvgPool2d.add_module
+      ~AvgPool2d.apply
+      ~AvgPool2d.bfloat16
+      ~AvgPool2d.buffers
+      ~AvgPool2d.children
+      ~AvgPool2d.compile
+      ~AvgPool2d.cpu
+      ~AvgPool2d.cuda
+      ~AvgPool2d.double
+      ~AvgPool2d.eval
+      ~AvgPool2d.extra_repr
+      ~AvgPool2d.float
+      ~AvgPool2d.forward
+      ~AvgPool2d.get_buffer
+      ~AvgPool2d.get_extra_state
+      ~AvgPool2d.get_parameter
+      ~AvgPool2d.get_submodule
+      ~AvgPool2d.half
+      ~AvgPool2d.ipu
+      ~AvgPool2d.load_state_dict
+      ~AvgPool2d.modules
+      ~AvgPool2d.mtia
+      ~AvgPool2d.named_buffers
+      ~AvgPool2d.named_children
+      ~AvgPool2d.named_modules
+      ~AvgPool2d.named_parameters
+      ~AvgPool2d.parameters
+      ~AvgPool2d.register_backward_hook
+      ~AvgPool2d.register_buffer
+      ~AvgPool2d.register_forward_hook
+      ~AvgPool2d.register_forward_pre_hook
+      ~AvgPool2d.register_full_backward_hook
+      ~AvgPool2d.register_full_backward_pre_hook
+      ~AvgPool2d.register_load_state_dict_post_hook
+      ~AvgPool2d.register_load_state_dict_pre_hook
+      ~AvgPool2d.register_module
+      ~AvgPool2d.register_parameter
+      ~AvgPool2d.register_state_dict_post_hook
+      ~AvgPool2d.register_state_dict_pre_hook
+      ~AvgPool2d.requires_grad_
+      ~AvgPool2d.set_extra_state
+      ~AvgPool2d.set_submodule
+      ~AvgPool2d.share_memory
+      ~AvgPool2d.state_dict
+      ~AvgPool2d.to
+      ~AvgPool2d.to_empty
+      ~AvgPool2d.train
+      ~AvgPool2d.type
+      ~AvgPool2d.xpu
+      ~AvgPool2d.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~AvgPool2d.T_destination
+      ~AvgPool2d.call_super_init
+      ~AvgPool2d.dump_patches
+      ~AvgPool2d.training
+   
+   

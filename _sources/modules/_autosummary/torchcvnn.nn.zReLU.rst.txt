@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.zReLU
+==================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: zReLU
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~zReLU.__init__
+      ~zReLU.add_module
+      ~zReLU.apply
+      ~zReLU.bfloat16
+      ~zReLU.buffers
+      ~zReLU.children
+      ~zReLU.compile
+      ~zReLU.cpu
+      ~zReLU.cuda
+      ~zReLU.double
+      ~zReLU.eval
+      ~zReLU.extra_repr
+      ~zReLU.float
+      ~zReLU.forward
+      ~zReLU.get_buffer
+      ~zReLU.get_extra_state
+      ~zReLU.get_parameter
+      ~zReLU.get_submodule
+      ~zReLU.half
+      ~zReLU.ipu
+      ~zReLU.load_state_dict
+      ~zReLU.modules
+      ~zReLU.mtia
+      ~zReLU.named_buffers
+      ~zReLU.named_children
+      ~zReLU.named_modules
+      ~zReLU.named_parameters
+      ~zReLU.parameters
+      ~zReLU.register_backward_hook
+      ~zReLU.register_buffer
+      ~zReLU.register_forward_hook
+      ~zReLU.register_forward_pre_hook
+      ~zReLU.register_full_backward_hook
+      ~zReLU.register_full_backward_pre_hook
+      ~zReLU.register_load_state_dict_post_hook
+      ~zReLU.register_load_state_dict_pre_hook
+      ~zReLU.register_module
+      ~zReLU.register_parameter
+      ~zReLU.register_state_dict_post_hook
+      ~zReLU.register_state_dict_pre_hook
+      ~zReLU.requires_grad_
+      ~zReLU.set_extra_state
+      ~zReLU.set_submodule
+      ~zReLU.share_memory
+      ~zReLU.state_dict
+      ~zReLU.to
+      ~zReLU.to_empty
+      ~zReLU.train
+      ~zReLU.type
+      ~zReLU.xpu
+      ~zReLU.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~zReLU.T_destination
+      ~zReLU.call_super_init
+      ~zReLU.dump_patches
+      ~zReLU.training
+   
+   

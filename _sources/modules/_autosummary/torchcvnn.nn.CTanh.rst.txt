@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.CTanh
+==================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: CTanh
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CTanh.__init__
+      ~CTanh.add_module
+      ~CTanh.apply
+      ~CTanh.bfloat16
+      ~CTanh.buffers
+      ~CTanh.children
+      ~CTanh.compile
+      ~CTanh.cpu
+      ~CTanh.cuda
+      ~CTanh.double
+      ~CTanh.eval
+      ~CTanh.extra_repr
+      ~CTanh.float
+      ~CTanh.forward
+      ~CTanh.get_buffer
+      ~CTanh.get_extra_state
+      ~CTanh.get_parameter
+      ~CTanh.get_submodule
+      ~CTanh.half
+      ~CTanh.ipu
+      ~CTanh.load_state_dict
+      ~CTanh.modules
+      ~CTanh.mtia
+      ~CTanh.named_buffers
+      ~CTanh.named_children
+      ~CTanh.named_modules
+      ~CTanh.named_parameters
+      ~CTanh.parameters
+      ~CTanh.register_backward_hook
+      ~CTanh.register_buffer
+      ~CTanh.register_forward_hook
+      ~CTanh.register_forward_pre_hook
+      ~CTanh.register_full_backward_hook
+      ~CTanh.register_full_backward_pre_hook
+      ~CTanh.register_load_state_dict_post_hook
+      ~CTanh.register_load_state_dict_pre_hook
+      ~CTanh.register_module
+      ~CTanh.register_parameter
+      ~CTanh.register_state_dict_post_hook
+      ~CTanh.register_state_dict_pre_hook
+      ~CTanh.requires_grad_
+      ~CTanh.set_extra_state
+      ~CTanh.set_submodule
+      ~CTanh.share_memory
+      ~CTanh.state_dict
+      ~CTanh.to
+      ~CTanh.to_empty
+      ~CTanh.train
+      ~CTanh.type
+      ~CTanh.xpu
+      ~CTanh.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CTanh.T_destination
+      ~CTanh.call_super_init
+      ~CTanh.dump_patches
+      ~CTanh.training
+   
+   

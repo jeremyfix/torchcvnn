@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.ConvTranspose2d
+============================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: ConvTranspose2d
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ConvTranspose2d.__init__
+      ~ConvTranspose2d.add_module
+      ~ConvTranspose2d.apply
+      ~ConvTranspose2d.bfloat16
+      ~ConvTranspose2d.buffers
+      ~ConvTranspose2d.children
+      ~ConvTranspose2d.compile
+      ~ConvTranspose2d.cpu
+      ~ConvTranspose2d.cuda
+      ~ConvTranspose2d.double
+      ~ConvTranspose2d.eval
+      ~ConvTranspose2d.extra_repr
+      ~ConvTranspose2d.float
+      ~ConvTranspose2d.forward
+      ~ConvTranspose2d.get_buffer
+      ~ConvTranspose2d.get_extra_state
+      ~ConvTranspose2d.get_parameter
+      ~ConvTranspose2d.get_submodule
+      ~ConvTranspose2d.half
+      ~ConvTranspose2d.ipu
+      ~ConvTranspose2d.load_state_dict
+      ~ConvTranspose2d.modules
+      ~ConvTranspose2d.mtia
+      ~ConvTranspose2d.named_buffers
+      ~ConvTranspose2d.named_children
+      ~ConvTranspose2d.named_modules
+      ~ConvTranspose2d.named_parameters
+      ~ConvTranspose2d.parameters
+      ~ConvTranspose2d.register_backward_hook
+      ~ConvTranspose2d.register_buffer
+      ~ConvTranspose2d.register_forward_hook
+      ~ConvTranspose2d.register_forward_pre_hook
+      ~ConvTranspose2d.register_full_backward_hook
+      ~ConvTranspose2d.register_full_backward_pre_hook
+      ~ConvTranspose2d.register_load_state_dict_post_hook
+      ~ConvTranspose2d.register_load_state_dict_pre_hook
+      ~ConvTranspose2d.register_module
+      ~ConvTranspose2d.register_parameter
+      ~ConvTranspose2d.register_state_dict_post_hook
+      ~ConvTranspose2d.register_state_dict_pre_hook
+      ~ConvTranspose2d.requires_grad_
+      ~ConvTranspose2d.set_extra_state
+      ~ConvTranspose2d.set_submodule
+      ~ConvTranspose2d.share_memory
+      ~ConvTranspose2d.state_dict
+      ~ConvTranspose2d.to
+      ~ConvTranspose2d.to_empty
+      ~ConvTranspose2d.train
+      ~ConvTranspose2d.type
+      ~ConvTranspose2d.xpu
+      ~ConvTranspose2d.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ConvTranspose2d.T_destination
+      ~ConvTranspose2d.call_super_init
+      ~ConvTranspose2d.dump_patches
+      ~ConvTranspose2d.training
+   
+   

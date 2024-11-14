@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.zAbsReLU
+=====================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: zAbsReLU
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~zAbsReLU.__init__
+      ~zAbsReLU.add_module
+      ~zAbsReLU.apply
+      ~zAbsReLU.bfloat16
+      ~zAbsReLU.buffers
+      ~zAbsReLU.children
+      ~zAbsReLU.compile
+      ~zAbsReLU.cpu
+      ~zAbsReLU.cuda
+      ~zAbsReLU.double
+      ~zAbsReLU.eval
+      ~zAbsReLU.extra_repr
+      ~zAbsReLU.float
+      ~zAbsReLU.forward
+      ~zAbsReLU.get_buffer
+      ~zAbsReLU.get_extra_state
+      ~zAbsReLU.get_parameter
+      ~zAbsReLU.get_submodule
+      ~zAbsReLU.half
+      ~zAbsReLU.ipu
+      ~zAbsReLU.load_state_dict
+      ~zAbsReLU.modules
+      ~zAbsReLU.mtia
+      ~zAbsReLU.named_buffers
+      ~zAbsReLU.named_children
+      ~zAbsReLU.named_modules
+      ~zAbsReLU.named_parameters
+      ~zAbsReLU.parameters
+      ~zAbsReLU.register_backward_hook
+      ~zAbsReLU.register_buffer
+      ~zAbsReLU.register_forward_hook
+      ~zAbsReLU.register_forward_pre_hook
+      ~zAbsReLU.register_full_backward_hook
+      ~zAbsReLU.register_full_backward_pre_hook
+      ~zAbsReLU.register_load_state_dict_post_hook
+      ~zAbsReLU.register_load_state_dict_pre_hook
+      ~zAbsReLU.register_module
+      ~zAbsReLU.register_parameter
+      ~zAbsReLU.register_state_dict_post_hook
+      ~zAbsReLU.register_state_dict_pre_hook
+      ~zAbsReLU.requires_grad_
+      ~zAbsReLU.set_extra_state
+      ~zAbsReLU.set_submodule
+      ~zAbsReLU.share_memory
+      ~zAbsReLU.state_dict
+      ~zAbsReLU.to
+      ~zAbsReLU.to_empty
+      ~zAbsReLU.train
+      ~zAbsReLU.type
+      ~zAbsReLU.xpu
+      ~zAbsReLU.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~zAbsReLU.T_destination
+      ~zAbsReLU.call_super_init
+      ~zAbsReLU.dump_patches
+      ~zAbsReLU.training
+   
+   

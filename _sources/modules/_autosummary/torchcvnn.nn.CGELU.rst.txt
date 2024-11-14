@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.CGELU
+==================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: CGELU
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CGELU.__init__
+      ~CGELU.add_module
+      ~CGELU.apply
+      ~CGELU.bfloat16
+      ~CGELU.buffers
+      ~CGELU.children
+      ~CGELU.compile
+      ~CGELU.cpu
+      ~CGELU.cuda
+      ~CGELU.double
+      ~CGELU.eval
+      ~CGELU.extra_repr
+      ~CGELU.float
+      ~CGELU.forward
+      ~CGELU.get_buffer
+      ~CGELU.get_extra_state
+      ~CGELU.get_parameter
+      ~CGELU.get_submodule
+      ~CGELU.half
+      ~CGELU.ipu
+      ~CGELU.load_state_dict
+      ~CGELU.modules
+      ~CGELU.mtia
+      ~CGELU.named_buffers
+      ~CGELU.named_children
+      ~CGELU.named_modules
+      ~CGELU.named_parameters
+      ~CGELU.parameters
+      ~CGELU.register_backward_hook
+      ~CGELU.register_buffer
+      ~CGELU.register_forward_hook
+      ~CGELU.register_forward_pre_hook
+      ~CGELU.register_full_backward_hook
+      ~CGELU.register_full_backward_pre_hook
+      ~CGELU.register_load_state_dict_post_hook
+      ~CGELU.register_load_state_dict_pre_hook
+      ~CGELU.register_module
+      ~CGELU.register_parameter
+      ~CGELU.register_state_dict_post_hook
+      ~CGELU.register_state_dict_pre_hook
+      ~CGELU.requires_grad_
+      ~CGELU.set_extra_state
+      ~CGELU.set_submodule
+      ~CGELU.share_memory
+      ~CGELU.state_dict
+      ~CGELU.to
+      ~CGELU.to_empty
+      ~CGELU.train
+      ~CGELU.type
+      ~CGELU.xpu
+      ~CGELU.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CGELU.T_destination
+      ~CGELU.call_super_init
+      ~CGELU.dump_patches
+      ~CGELU.training
+   
+   

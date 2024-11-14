@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.MaxPool2d
+======================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: MaxPool2d
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MaxPool2d.__init__
+      ~MaxPool2d.add_module
+      ~MaxPool2d.apply
+      ~MaxPool2d.bfloat16
+      ~MaxPool2d.buffers
+      ~MaxPool2d.children
+      ~MaxPool2d.compile
+      ~MaxPool2d.cpu
+      ~MaxPool2d.cuda
+      ~MaxPool2d.double
+      ~MaxPool2d.eval
+      ~MaxPool2d.extra_repr
+      ~MaxPool2d.float
+      ~MaxPool2d.forward
+      ~MaxPool2d.get_buffer
+      ~MaxPool2d.get_extra_state
+      ~MaxPool2d.get_parameter
+      ~MaxPool2d.get_submodule
+      ~MaxPool2d.half
+      ~MaxPool2d.ipu
+      ~MaxPool2d.load_state_dict
+      ~MaxPool2d.modules
+      ~MaxPool2d.mtia
+      ~MaxPool2d.named_buffers
+      ~MaxPool2d.named_children
+      ~MaxPool2d.named_modules
+      ~MaxPool2d.named_parameters
+      ~MaxPool2d.parameters
+      ~MaxPool2d.register_backward_hook
+      ~MaxPool2d.register_buffer
+      ~MaxPool2d.register_forward_hook
+      ~MaxPool2d.register_forward_pre_hook
+      ~MaxPool2d.register_full_backward_hook
+      ~MaxPool2d.register_full_backward_pre_hook
+      ~MaxPool2d.register_load_state_dict_post_hook
+      ~MaxPool2d.register_load_state_dict_pre_hook
+      ~MaxPool2d.register_module
+      ~MaxPool2d.register_parameter
+      ~MaxPool2d.register_state_dict_post_hook
+      ~MaxPool2d.register_state_dict_pre_hook
+      ~MaxPool2d.requires_grad_
+      ~MaxPool2d.set_extra_state
+      ~MaxPool2d.set_submodule
+      ~MaxPool2d.share_memory
+      ~MaxPool2d.state_dict
+      ~MaxPool2d.to
+      ~MaxPool2d.to_empty
+      ~MaxPool2d.train
+      ~MaxPool2d.type
+      ~MaxPool2d.xpu
+      ~MaxPool2d.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MaxPool2d.T_destination
+      ~MaxPool2d.call_super_init
+      ~MaxPool2d.dump_patches
+      ~MaxPool2d.training
+   
+   

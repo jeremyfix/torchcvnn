@@ -1,0 +1,83 @@
+﻿torchcvnn.nn.BatchNorm2d
+========================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: BatchNorm2d
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BatchNorm2d.__init__
+      ~BatchNorm2d.add_module
+      ~BatchNorm2d.apply
+      ~BatchNorm2d.bfloat16
+      ~BatchNorm2d.buffers
+      ~BatchNorm2d.children
+      ~BatchNorm2d.compile
+      ~BatchNorm2d.cpu
+      ~BatchNorm2d.cuda
+      ~BatchNorm2d.double
+      ~BatchNorm2d.eval
+      ~BatchNorm2d.extra_repr
+      ~BatchNorm2d.float
+      ~BatchNorm2d.forward
+      ~BatchNorm2d.get_buffer
+      ~BatchNorm2d.get_extra_state
+      ~BatchNorm2d.get_parameter
+      ~BatchNorm2d.get_submodule
+      ~BatchNorm2d.half
+      ~BatchNorm2d.ipu
+      ~BatchNorm2d.load_state_dict
+      ~BatchNorm2d.modules
+      ~BatchNorm2d.mtia
+      ~BatchNorm2d.named_buffers
+      ~BatchNorm2d.named_children
+      ~BatchNorm2d.named_modules
+      ~BatchNorm2d.named_parameters
+      ~BatchNorm2d.parameters
+      ~BatchNorm2d.register_backward_hook
+      ~BatchNorm2d.register_buffer
+      ~BatchNorm2d.register_forward_hook
+      ~BatchNorm2d.register_forward_pre_hook
+      ~BatchNorm2d.register_full_backward_hook
+      ~BatchNorm2d.register_full_backward_pre_hook
+      ~BatchNorm2d.register_load_state_dict_post_hook
+      ~BatchNorm2d.register_load_state_dict_pre_hook
+      ~BatchNorm2d.register_module
+      ~BatchNorm2d.register_parameter
+      ~BatchNorm2d.register_state_dict_post_hook
+      ~BatchNorm2d.register_state_dict_pre_hook
+      ~BatchNorm2d.requires_grad_
+      ~BatchNorm2d.reset_parameters
+      ~BatchNorm2d.reset_running_stats
+      ~BatchNorm2d.set_extra_state
+      ~BatchNorm2d.set_submodule
+      ~BatchNorm2d.share_memory
+      ~BatchNorm2d.state_dict
+      ~BatchNorm2d.to
+      ~BatchNorm2d.to_empty
+      ~BatchNorm2d.train
+      ~BatchNorm2d.type
+      ~BatchNorm2d.xpu
+      ~BatchNorm2d.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BatchNorm2d.T_destination
+      ~BatchNorm2d.call_super_init
+      ~BatchNorm2d.dump_patches
+      ~BatchNorm2d.training
+   
+   

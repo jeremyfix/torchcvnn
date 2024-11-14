@@ -21,3 +21,10 @@ It was initially developed by Victor Dhédin and Jérémie Levi during their thi
    modules/datasets
    modules/nn
    modules/init
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Tutorials
+   :hidden:
+
+   tutorials/complex_mnist

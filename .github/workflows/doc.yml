@@ -3,7 +3,7 @@ name: sphinx
 on:
   push:
     branches:
-      - doc_refactor # To be changed to main once released
+      - main
 jobs:
   deploy:
     runs-on: ${{ matrix.os }}
@@ -35,16 +35,16 @@ jobs:
 
       - name: Build HTML
         run : |
-          cd sphinx_doc && make html
+          cd docs && make html
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: html-docs
-          path: sphinx_doc/_build/html/
+          path: docs/_build/html/
 
-      # - name: Deploy
-      #   uses: peaceiris/actions-gh-pages@v4
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: sphinx_doc/_build/html
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html

@@ -54,9 +54,9 @@ class CReLU(IndependentRealImag):
     """
     Applies a ReLU independently on both the real and imaginary parts
 
-    :math:`CReLU(z) = ReLU(Re[z]) + ReLU(Im[z])j`
+    :math:`CReLU(z) = ReLU(\\Re[z]) + ReLU(\\Im[z])j`
 
-    Only the quadrant where both `Re[z]` and `Im[z]` are negative is projected to
+    Only the quadrant where both `\\Re[z]` and `\\Im[z]` are negative is projected to
     :math:`0`. Otherwise either the real and/or the imaginary part is preserved.
 
     """
@@ -69,7 +69,7 @@ class CPReLU(IndependentRealImag):
     """
     Applies a PReLU independently on both the real and imaginary parts
 
-    :math:`CPReLU(z) = PReLU(Re[z]) + PReLU(Im[z])j`
+    :math:`CPReLU(z) = PReLU(\\Re[z]) + PReLU(\\Im[z])j`
     """
 
     def __init__(self) -> None:
@@ -81,9 +81,9 @@ class CELU(IndependentRealImag):
     Applies a ELU independently on both the real and imaginary parts
 
     Not to confuse with `torch.nn.CELU`. For the complex equivalent of
-    `torch.nn.CELU`, see [torchcvnn.nn.modules.activation.CCELU][]
+    :external:py:class:`torch.nn.CELU`, see :class:`torchcvnn.nn.modules.activation.CCELU`
 
-    :math:`CELU(z) = ELU(Re[z]) + ELU(Im[z])j`
+    :math:`CELU(z) = ELU(\\Re[z]) + ELU(\\Im[z])j`
     """
 
     def __init__(self) -> None:
@@ -94,7 +94,7 @@ class CCELU(IndependentRealImag):
     """
     Applies a CELU independently on both the real and imaginary parts
 
-    :math:`CCELU(z) = CELU(Re[z]) + CELU(Im[z])j`
+    :math:`CCELU(z) = CELU(\\Re[z]) + CELU(\\Im[z])j`
     """
 
     def __init__(self) -> None:
@@ -105,7 +105,7 @@ class CGELU(IndependentRealImag):
     """
     Applies a GELU independently on both the real and imaginary parts
 
-    :math:`CGELU(z) = GELU(Re[z]) + GELU(Im[z])j`
+    :math:`CGELU(z) = GELU(\\Re[z]) + GELU(\\Im[z])j`
     """
 
     def __init__(self) -> None:
@@ -118,7 +118,7 @@ class CSigmoid(IndependentRealImag):
 
     as used in Nitta Tohru. An extension of the back-propagation algorithm to complex numbers. Neural Networks, 10(9):1391–1415, November 1997.
 
-    :math:`CSigmoid(z) = Sigmoid(Re[z]) + Sigmoid(Im[z])j`
+    :math:`CSigmoid(z) = Sigmoid(\\Re[z]) + Sigmoid(\\Im[z])j`
 
     where the real valued sigmoid is applied in the right hand side terms.
     """
@@ -131,7 +131,7 @@ class CTanh(IndependentRealImag):
     """
     Applies a Tanh independently on both the real and imaginary parts
 
-    :math:`CTanh(z) = Tanh(Re[z]) + Tanh(Im[z])j`
+    :math:`CTanh(z) = \\tanh(\\Re[z]) + \\tanh(\\Im[z])j`
 
     where the real valued sigmoid is applied in the right hand side terms.
     """
@@ -144,9 +144,9 @@ class zReLU(nn.Module):
     r"""
     Applies a zReLU
 
-    :math:`zReLU(z) = \begin{cases} z & \mbox{if } Re[z] > 0 \mbox{ and } Im[z] > 0\\ 0 & \mbox{otherwise}  \end{cases}`
+    :math:`zReLU(z) = \begin{cases} z & \mbox{if } \Re[z] > 0 \mbox{ and } \Im[z] > 0\\ 0 & \mbox{otherwise}  \end{cases}`
 
-    All the quadrant where both `Re[z]` and `Im[z]` are non negative are
+    All the quadrant where both :math:`\Re[z]` and :math:`\Im[z]` are non negative are
     projected to :math:`0`. In other words, only one quadrant is preserved.
     """
 
@@ -194,9 +194,9 @@ class zAbsReLU(nn.Module):
 
 class zLeakyReLU(nn.Module):
     r"""
-    Applies a zReLU
+    Applies a zLeakyReLU
 
-    :math:`zLeakyReLU(z) = \begin{cases} z & \mbox{if } Re[z] > 0 \mbox{ and } Im[z] > 0\\ a.z & \mbox{otherwise}  \end{cases}`
+    :math:`zLeakyReLU(z) = \begin{cases} z & \mbox{if } \Re[z] > 0 \mbox{ and } \Im[z] > 0\\ a.z & \mbox{otherwise}  \end{cases}`
 
     """
 
@@ -220,7 +220,7 @@ class zLeakyReLU(nn.Module):
 
 class Mod(nn.Module):
     r"""
-    Extracts the magnitude of the complex input: maps to :math:`\mathbb{R}`
+    Extracts the magnitude of the complex input. It maps to :math:`\mathbb{R}`
 
     :math:`Mod(z) = |z|`
 
@@ -265,14 +265,13 @@ class modReLU(nn.Module):
 
 class Cardioid(nn.Module):
     r"""
-    Applies a ReLU with parametric offset on the amplitude, keeping the phase unchanged.
+    The cardioid activation function as proposed by Virtue et al. (2019) is given by :
 
     :math:`Cardioid(z) = \frac{1+\cos(\theta)}{2} z`
 
-    As proposed by Virtue et al. (2019). For real numbers, e.g. :math:`\theta \in \{0,
-    \pi\}`, it reduces to the ReLU :
+    For real numbers, e.g. :math:`\theta \in \{0, \pi\}`, it reduces to the ReLU :
 
-    :math:`\forall r \in \mathbb{R}, \theta \in \{0, \pi\}, Cardiod(r e^{\theta j}) = Relu(r)`
+    :math:`\forall r \in \mathbb{R}, \theta \in \{0, \pi\}, Cardioid(r e^{j \theta}) = ReLU(r) e^{j \theta} = ReLU(r)`
     """
 
     def __init__(self):

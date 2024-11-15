@@ -43,6 +43,7 @@ These activation functions apply the same function independently to both real an
    CCELU
    CELU
    CGELU
+   CReLU
    CPReLU
    CSigmoid
    CTanh

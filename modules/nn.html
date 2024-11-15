@@ -214,6 +214,7 @@
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/torchcvnn.nn.CCELU.html">torchcvnn.nn.CCELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/torchcvnn.nn.CELU.html">torchcvnn.nn.CELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/torchcvnn.nn.CGELU.html">torchcvnn.nn.CGELU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/torchcvnn.nn.CReLU.html">torchcvnn.nn.CReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/torchcvnn.nn.CPReLU.html">torchcvnn.nn.CPReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/torchcvnn.nn.CSigmoid.html">torchcvnn.nn.CSigmoid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/torchcvnn.nn.CTanh.html">torchcvnn.nn.CTanh</a></li>
@@ -336,13 +337,16 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.CGELU.html#torchcvnn.nn.CGELU" title="torchcvnn.nn.CGELU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CGELU</span></code></a>()</p></td>
 <td><p>Applies a GELU independently on both the real and imaginary parts</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.CPReLU.html#torchcvnn.nn.CPReLU" title="torchcvnn.nn.CPReLU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CPReLU</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.CReLU.html#torchcvnn.nn.CReLU" title="torchcvnn.nn.CReLU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CReLU</span></code></a>()</p></td>
+<td><p>Applies a ReLU independently on both the real and imaginary parts</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.CPReLU.html#torchcvnn.nn.CPReLU" title="torchcvnn.nn.CPReLU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CPReLU</span></code></a>()</p></td>
 <td><p>Applies a PReLU independently on both the real and imaginary parts</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.CSigmoid.html#torchcvnn.nn.CSigmoid" title="torchcvnn.nn.CSigmoid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CSigmoid</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.CSigmoid.html#torchcvnn.nn.CSigmoid" title="torchcvnn.nn.CSigmoid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CSigmoid</span></code></a>()</p></td>
 <td><p>Applies a Sigmoid independently on both the real and imaginary parts</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.CTanh.html#torchcvnn.nn.CTanh" title="torchcvnn.nn.CTanh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CTanh</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.CTanh.html#torchcvnn.nn.CTanh" title="torchcvnn.nn.CTanh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CTanh</span></code></a>()</p></td>
 <td><p>Applies a Tanh independently on both the real and imaginary parts</p></td>
 </tr>
 </tbody>
@@ -356,10 +360,10 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.Cardioid.html#torchcvnn.nn.Cardioid" title="torchcvnn.nn.Cardioid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Cardioid</span></code></a>()</p></td>
-<td><p>Applies a ReLU with parametric offset on the amplitude, keeping the phase unchanged.</p></td>
+<td><p>The cardioid activation function as proposed by Virtue et al. (2019) is given by :.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.Mod.html#torchcvnn.nn.Mod" title="torchcvnn.nn.Mod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Mod</span></code></a>()</p></td>
-<td><p>Extracts the magnitude of the complex input: maps to <span class="math notranslate nohighlight">\(\mathbb{R}\)</span></p></td>
+<td><p>Extracts the magnitude of the complex input.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.modReLU.html#torchcvnn.nn.modReLU" title="torchcvnn.nn.modReLU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">modReLU</span></code></a>()</p></td>
 <td><p>Applies a ReLU with parametric offset on the amplitude, keeping the phase unchanged.</p></td>
@@ -368,7 +372,7 @@
 <td><p>Applies a zAbsReLU</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.zLeakyReLU.html#torchcvnn.nn.zLeakyReLU" title="torchcvnn.nn.zLeakyReLU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zLeakyReLU</span></code></a>()</p></td>
-<td><p>Applies a zReLU</p></td>
+<td><p>Applies a zLeakyReLU</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_autosummary/torchcvnn.nn.zReLU.html#torchcvnn.nn.zReLU" title="torchcvnn.nn.zReLU"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zReLU</span></code></a>()</p></td>
 <td><p>Applies a zReLU</p></td>

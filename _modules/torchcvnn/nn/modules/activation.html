@@ -213,6 +213,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.CCELU.html">torchcvnn.nn.CCELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.CELU.html">torchcvnn.nn.CELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.CGELU.html">torchcvnn.nn.CGELU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.CReLU.html">torchcvnn.nn.CReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.CPReLU.html">torchcvnn.nn.CPReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.CSigmoid.html">torchcvnn.nn.CSigmoid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.CTanh.html">torchcvnn.nn.CTanh</a></li>
@@ -320,19 +321,25 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_real</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_imag</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
 
 
+<div class="viewcode-block" id="CReLU">
+<a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.CReLU.html#torchcvnn.nn.CReLU">[docs]</a>
 <span class="k">class</span> <span class="nc">CReLU</span><span class="p">(</span><span class="n">IndependentRealImag</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a ReLU independently on both the real and imaginary parts</span>
 
-<span class="sd">    :math:`CReLU(z) = ReLU(Re[z]) + ReLU(Im[z])j`</span>
+<span class="sd">    :math:`CReLU(z) = ReLU(\\Re[z]) + ReLU(\\Im[z])j`</span>
 
-<span class="sd">    Only the quadrant where both `Re[z]` and `Im[z]` are negative is projected to</span>
+<span class="sd">    Only the quadrant where both `\\Re[z]` and `\\Im[z]` are negative is projected to</span>
 <span class="sd">    :math:`0`. Otherwise either the real and/or the imaginary part is preserved.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="CReLU.__init__">
+<a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.CReLU.html#torchcvnn.nn.CReLU.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">)</span></div>
+</div>
+
 
 
 <div class="viewcode-block" id="CPReLU">
@@ -341,7 +348,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a PReLU independently on both the real and imaginary parts</span>
 
-<span class="sd">    :math:`CPReLU(z) = PReLU(Re[z]) + PReLU(Im[z])j`</span>
+<span class="sd">    :math:`CPReLU(z) = PReLU(\\Re[z]) + PReLU(\\Im[z])j`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="CPReLU.__init__">
@@ -359,9 +366,9 @@
 <span class="sd">    Applies a ELU independently on both the real and imaginary parts</span>
 
 <span class="sd">    Not to confuse with `torch.nn.CELU`. For the complex equivalent of</span>
-<span class="sd">    `torch.nn.CELU`, see [torchcvnn.nn.modules.activation.CCELU][]</span>
+<span class="sd">    :external:py:class:`torch.nn.CELU`, see :class:`torchcvnn.nn.modules.activation.CCELU`</span>
 
-<span class="sd">    :math:`CELU(z) = ELU(Re[z]) + ELU(Im[z])j`</span>
+<span class="sd">    :math:`CELU(z) = ELU(\\Re[z]) + ELU(\\Im[z])j`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="CELU.__init__">
@@ -378,7 +385,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a CELU independently on both the real and imaginary parts</span>
 
-<span class="sd">    :math:`CCELU(z) = CELU(Re[z]) + CELU(Im[z])j`</span>
+<span class="sd">    :math:`CCELU(z) = CELU(\\Re[z]) + CELU(\\Im[z])j`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="CCELU.__init__">
@@ -395,7 +402,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a GELU independently on both the real and imaginary parts</span>
 
-<span class="sd">    :math:`CGELU(z) = GELU(Re[z]) + GELU(Im[z])j`</span>
+<span class="sd">    :math:`CGELU(z) = GELU(\\Re[z]) + GELU(\\Im[z])j`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="CGELU.__init__">
@@ -414,7 +421,7 @@
 
 <span class="sd">    as used in Nitta Tohru. An extension of the back-propagation algorithm to complex numbers. Neural Networks, 10(9):1391–1415, November 1997.</span>
 
-<span class="sd">    :math:`CSigmoid(z) = Sigmoid(Re[z]) + Sigmoid(Im[z])j`</span>
+<span class="sd">    :math:`CSigmoid(z) = Sigmoid(\\Re[z]) + Sigmoid(\\Im[z])j`</span>
 
 <span class="sd">    where the real valued sigmoid is applied in the right hand side terms.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -433,7 +440,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a Tanh independently on both the real and imaginary parts</span>
 
-<span class="sd">    :math:`CTanh(z) = Tanh(Re[z]) + Tanh(Im[z])j`</span>
+<span class="sd">    :math:`CTanh(z) = \\tanh(\\Re[z]) + \\tanh(\\Im[z])j`</span>
 
 <span class="sd">    where the real valued sigmoid is applied in the right hand side terms.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -452,9 +459,9 @@
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a zReLU</span>
 
-<span class="sd">    :math:`zReLU(z) = \begin{cases} z &amp; \mbox{if } Re[z] &gt; 0 \mbox{ and } Im[z] &gt; 0\\ 0 &amp; \mbox{otherwise}  \end{cases}`</span>
+<span class="sd">    :math:`zReLU(z) = \begin{cases} z &amp; \mbox{if } \Re[z] &gt; 0 \mbox{ and } \Im[z] &gt; 0\\ 0 &amp; \mbox{otherwise}  \end{cases}`</span>
 
-<span class="sd">    All the quadrant where both `Re[z]` and `Im[z]` are non negative are</span>
+<span class="sd">    All the quadrant where both :math:`\Re[z]` and :math:`\Im[z]` are non negative are</span>
 <span class="sd">    projected to :math:`0`. In other words, only one quadrant is preserved.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -514,9 +521,9 @@
 <a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.zLeakyReLU.html#torchcvnn.nn.zLeakyReLU">[docs]</a>
 <span class="k">class</span> <span class="nc">zLeakyReLU</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Applies a zReLU</span>
+<span class="sd">    Applies a zLeakyReLU</span>
 
-<span class="sd">    :math:`zLeakyReLU(z) = \begin{cases} z &amp; \mbox{if } Re[z] &gt; 0 \mbox{ and } Im[z] &gt; 0\\ a.z &amp; \mbox{otherwise}  \end{cases}`</span>
+<span class="sd">    :math:`zLeakyReLU(z) = \begin{cases} z &amp; \mbox{if } \Re[z] &gt; 0 \mbox{ and } \Im[z] &gt; 0\\ a.z &amp; \mbox{otherwise}  \end{cases}`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -546,7 +553,7 @@
 <a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.Mod.html#torchcvnn.nn.Mod">[docs]</a>
 <span class="k">class</span> <span class="nc">Mod</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extracts the magnitude of the complex input: maps to :math:`\mathbb{R}`</span>
+<span class="sd">    Extracts the magnitude of the complex input. It maps to :math:`\mathbb{R}`</span>
 
 <span class="sd">    :math:`Mod(z) = |z|`</span>
 
@@ -603,14 +610,13 @@
 <a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.Cardioid.html#torchcvnn.nn.Cardioid">[docs]</a>
 <span class="k">class</span> <span class="nc">Cardioid</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Applies a ReLU with parametric offset on the amplitude, keeping the phase unchanged.</span>
+<span class="sd">    The cardioid activation function as proposed by Virtue et al. (2019) is given by :</span>
 
 <span class="sd">    :math:`Cardioid(z) = \frac{1+\cos(\theta)}{2} z`</span>
 
-<span class="sd">    As proposed by Virtue et al. (2019). For real numbers, e.g. :math:`\theta \in \{0,</span>
-<span class="sd">    \pi\}`, it reduces to the ReLU :</span>
+<span class="sd">    For real numbers, e.g. :math:`\theta \in \{0, \pi\}`, it reduces to the ReLU :</span>
 
-<span class="sd">    :math:`\forall r \in \mathbb{R}, \theta \in \{0, \pi\}, Cardiod(r e^{\theta j}) = Relu(r)`</span>
+<span class="sd">    :math:`\forall r \in \mathbb{R}, \theta \in \{0, \pi\}, Cardioid(r e^{j \theta}) = ReLU(r) e^{j \theta} = ReLU(r)`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Cardioid.__init__">

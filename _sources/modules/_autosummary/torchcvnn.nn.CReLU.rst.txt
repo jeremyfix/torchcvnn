@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.CReLU
+==================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: CReLU
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CReLU.__init__
+      ~CReLU.add_module
+      ~CReLU.apply
+      ~CReLU.bfloat16
+      ~CReLU.buffers
+      ~CReLU.children
+      ~CReLU.compile
+      ~CReLU.cpu
+      ~CReLU.cuda
+      ~CReLU.double
+      ~CReLU.eval
+      ~CReLU.extra_repr
+      ~CReLU.float
+      ~CReLU.forward
+      ~CReLU.get_buffer
+      ~CReLU.get_extra_state
+      ~CReLU.get_parameter
+      ~CReLU.get_submodule
+      ~CReLU.half
+      ~CReLU.ipu
+      ~CReLU.load_state_dict
+      ~CReLU.modules
+      ~CReLU.mtia
+      ~CReLU.named_buffers
+      ~CReLU.named_children
+      ~CReLU.named_modules
+      ~CReLU.named_parameters
+      ~CReLU.parameters
+      ~CReLU.register_backward_hook
+      ~CReLU.register_buffer
+      ~CReLU.register_forward_hook
+      ~CReLU.register_forward_pre_hook
+      ~CReLU.register_full_backward_hook
+      ~CReLU.register_full_backward_pre_hook
+      ~CReLU.register_load_state_dict_post_hook
+      ~CReLU.register_load_state_dict_pre_hook
+      ~CReLU.register_module
+      ~CReLU.register_parameter
+      ~CReLU.register_state_dict_post_hook
+      ~CReLU.register_state_dict_pre_hook
+      ~CReLU.requires_grad_
+      ~CReLU.set_extra_state
+      ~CReLU.set_submodule
+      ~CReLU.share_memory
+      ~CReLU.state_dict
+      ~CReLU.to
+      ~CReLU.to_empty
+      ~CReLU.train
+      ~CReLU.type
+      ~CReLU.xpu
+      ~CReLU.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CReLU.T_destination
+      ~CReLU.call_super_init
+      ~CReLU.dump_patches
+      ~CReLU.training
+   
+   

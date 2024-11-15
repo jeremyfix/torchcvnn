@@ -214,6 +214,7 @@
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CCELU.html">torchcvnn.nn.CCELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CELU.html">torchcvnn.nn.CELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CGELU.html">torchcvnn.nn.CGELU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CReLU.html">torchcvnn.nn.CReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CPReLU.html">torchcvnn.nn.CPReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CSigmoid.html">torchcvnn.nn.CSigmoid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CTanh.html">torchcvnn.nn.CTanh</a></li>
@@ -284,8 +285,8 @@
 <dt class="sig sig-object py" id="torchcvnn.nn.zReLU">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchcvnn.nn.</span></span><span class="sig-name descname"><span class="pre">zReLU</span></span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/activation.html#zReLU"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.zReLU" title="Link to this definition">¶</a></dt>
 <dd><p>Applies a zReLU</p>
-<p><span class="math notranslate nohighlight">\(zReLU(z) = \begin{cases} z &amp; \mbox{if } Re[z] &gt; 0 \mbox{ and } Im[z] &gt; 0\\ 0 &amp; \mbox{otherwise}  \end{cases}\)</span></p>
-<p>All the quadrant where both <cite>Re[z]</cite> and <cite>Im[z]</cite> are non negative are
+<p><span class="math notranslate nohighlight">\(zReLU(z) = \begin{cases} z &amp; \mbox{if } \Re[z] &gt; 0 \mbox{ and } \Im[z] &gt; 0\\ 0 &amp; \mbox{otherwise}  \end{cases}\)</span></p>
+<p>All the quadrant where both <span class="math notranslate nohighlight">\(\Re[z]\)</span> and <span class="math notranslate nohighlight">\(\Im[z]\)</span> are non negative are
 projected to <span class="math notranslate nohighlight">\(0\)</span>. In other words, only one quadrant is preserved.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchcvnn.nn.zReLU.__init__">

@@ -214,6 +214,7 @@
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CCELU.html">torchcvnn.nn.CCELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CELU.html">torchcvnn.nn.CELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CGELU.html">torchcvnn.nn.CGELU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CReLU.html">torchcvnn.nn.CReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CPReLU.html">torchcvnn.nn.CPReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CSigmoid.html">torchcvnn.nn.CSigmoid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CTanh.html">torchcvnn.nn.CTanh</a></li>
@@ -283,11 +284,10 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="torchcvnn.nn.Cardioid">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchcvnn.nn.</span></span><span class="sig-name descname"><span class="pre">Cardioid</span></span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/activation.html#Cardioid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.Cardioid" title="Link to this definition">¶</a></dt>
-<dd><p>Applies a ReLU with parametric offset on the amplitude, keeping the phase unchanged.</p>
+<dd><p>The cardioid activation function as proposed by Virtue et al. (2019) is given by :</p>
 <p><span class="math notranslate nohighlight">\(Cardioid(z) = \frac{1+\cos(\theta)}{2} z\)</span></p>
-<p>As proposed by Virtue et al. (2019). For real numbers, e.g. <span class="math notranslate nohighlight">\(\theta \in \{0,
-\pi\}\)</span>, it reduces to the ReLU :</p>
-<p><span class="math notranslate nohighlight">\(\forall r \in \mathbb{R}, \theta \in \{0, \pi\}, Cardiod(r e^{\theta j}) = Relu(r)\)</span></p>
+<p>For real numbers, e.g. <span class="math notranslate nohighlight">\(\theta \in \{0, \pi\}\)</span>, it reduces to the ReLU :</p>
+<p><span class="math notranslate nohighlight">\(\forall r \in \mathbb{R}, \theta \in \{0, \pi\}, Cardioid(r e^{j \theta}) = ReLU(r) e^{j \theta} = ReLU(r)\)</span></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchcvnn.nn.Cardioid.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/activation.html#Cardioid.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.Cardioid.__init__" title="Link to this definition">¶</a></dt>

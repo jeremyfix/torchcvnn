@@ -214,6 +214,7 @@
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CCELU.html">torchcvnn.nn.CCELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CELU.html">torchcvnn.nn.CELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CGELU.html">torchcvnn.nn.CGELU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CReLU.html">torchcvnn.nn.CReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CPReLU.html">torchcvnn.nn.CPReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CSigmoid.html">torchcvnn.nn.CSigmoid</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">torchcvnn.nn.CTanh</a></li>
@@ -284,7 +285,7 @@
 <dt class="sig sig-object py" id="torchcvnn.nn.CTanh">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchcvnn.nn.</span></span><span class="sig-name descname"><span class="pre">CTanh</span></span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/activation.html#CTanh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.CTanh" title="Link to this definition">¶</a></dt>
 <dd><p>Applies a Tanh independently on both the real and imaginary parts</p>
-<p><span class="math notranslate nohighlight">\(CTanh(z) = Tanh(Re[z]) + Tanh(Im[z])j\)</span></p>
+<p><span class="math notranslate nohighlight">\(CTanh(z) = \tanh(\Re[z]) + \tanh(\Im[z])j\)</span></p>
 <p>where the real valued sigmoid is applied in the right hand side terms.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="torchcvnn.nn.CTanh.__init__">

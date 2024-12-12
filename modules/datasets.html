@@ -545,6 +545,62 @@ just a carriage return or spaces and a carriage return.</p>
 </dd></dl>
 
 </section>
+<section id="mstar">
+<h2>MSTAR<a class="headerlink" href="#mstar" title="Link to this heading">¶</a></h2>
+<p>MSTAR is a popular radar dataset where the task is to classify military vehicles (tanks, trucks, guns, bulldozer, etc).
+To use this dataset, you need to manually download the data before hand and to unpack them into the same directory :</p>
+<ul class="simple">
+<li><p>MSTAR_PUBLIC_T_72_VARIANTS_CD1 : <a class="reference external" href="https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=variants">https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=variants</a></p></li>
+<li><p>MSTAR_PUBLIC_MIXED_TARGETS_CD1 : <a class="reference external" href="https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=mixed">https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=mixed</a></p></li>
+<li><p>MSTAR_PUBLIC_MIXED_TARGETS_CD2 : <a class="reference external" href="https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=mixed">https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=mixed</a></p></li>
+<li><p>MSTAR_PUBLIC_TARGETS_CHIPS_T72_BMP2_BTR70_SLICY : <a class="reference external" href="https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=targets">https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=targets</a></p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="torchcvnn.datasets.MSTARTargets">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchcvnn.datasets.</span></span><span class="sig-name descname"><span class="pre">MSTARTargets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/torchcvnn/datasets/mstar/dataset.html#MSTARTargets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.datasets.MSTARTargets" title="Link to this definition">¶</a></dt>
+<dd><p>This class implements a PyTorch Dataset for the MSTAR dataset.</p>
+<p>The MSTAR dataset is composed of several sub-datasets. The datasets must
+be downloaded manually because they require authentication.</p>
+<p>To download these datasets, you must register at the following address: <a class="reference external" href="https://www.sdms.afrl.af.mil/index.php?collection=mstar">https://www.sdms.afrl.af.mil/index.php?collection=mstar</a></p>
+<p>This dataset object expects all the datasets to be unpacked in the same directory. We can parse the following :</p>
+<ul class="simple">
+<li><p>MSTAR_PUBLIC_T_72_VARIANTS_CD1 : <a class="reference external" href="https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=variants">https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=variants</a></p></li>
+<li><p>MSTAR_PUBLIC_MIXED_TARGETS_CD1 : <a class="reference external" href="https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=mixed">https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=mixed</a></p></li>
+<li><p>MSTAR_PUBLIC_MIXED_TARGETS_CD2 : <a class="reference external" href="https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=mixed">https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=mixed</a></p></li>
+<li><p>MSTAR_PUBLIC_TARGETS_CHIPS_T72_BMP2_BTR70_SLICY :
+<a class="reference external" href="https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=targets">https://www.sdms.afrl.af.mil/index.php?collection=mstar&amp;page=targets</a></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rootdir</strong> – str</p></li>
+<li><p><strong>transform</strong> – the transform applied on the input complex valued array</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An example usage :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchcvnn</span>
+<span class="kn">from</span> <span class="nn">torchcvnn.datasets</span> <span class="kn">import</span> <span class="n">MSTARTargets</span>
+
+<span class="n">transform</span> <span class="o">=</span> <span class="n">v2</span><span class="o">.</span><span class="n">Compose</span><span class="p">(</span>
+    <span class="n">transforms</span><span class="o">=</span><span class="p">[</span><span class="n">v2</span><span class="o">.</span><span class="n">ToImage</span><span class="p">(),</span> <span class="n">v2</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">v2</span><span class="o">.</span><span class="n">CenterCrop</span><span class="p">(</span><span class="mi">128</span><span class="p">)]</span>
+<span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">MSTARTargets</span><span class="p">(</span>
+    <span class="n">rootdir</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">transform</span>
+<span class="p">)</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Displayed below are some examples for every class in the dataset. To plot them, we extracted
+only the magnitude of the signals although the data are indeed complex valued.</p>
+<a class="reference internal image-reference" href="../_images/mstar.png"><img alt="Samples from MSTAR" src="../_images/mstar.png" style="width: 60%;" />
+</a>
+</div>
+</dd></dl>
+
+</section>
 </section>
 
         </article>
@@ -630,6 +686,10 @@ just a carriage return or spaces and a carriage return.</p>
 <li><a class="reference internal" href="#torchcvnn.datasets.SLCDataset"><code class="docutils literal notranslate"><span class="pre">SLCDataset</span></code></a></li>
 <li><a class="reference internal" href="#torchcvnn.datasets.slc.ann_file.AnnFile"><code class="docutils literal notranslate"><span class="pre">AnnFile</span></code></a></li>
 <li><a class="reference internal" href="#torchcvnn.datasets.slc.slc_file.SLCFile"><code class="docutils literal notranslate"><span class="pre">SLCFile</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mstar">MSTAR</a><ul>
+<li><a class="reference internal" href="#torchcvnn.datasets.MSTARTargets"><code class="docutils literal notranslate"><span class="pre">MSTARTargets</span></code></a></li>
 </ul>
 </li>
 </ul>

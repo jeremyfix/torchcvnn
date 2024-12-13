@@ -27,18 +27,17 @@ import re
 
 SAMPLE_base_link = "https://github.com/benjaminlewis-afrl/SAMPLE_dataset_public/blob/refs/heads/master/mat_files/"
 
-# SAMPLE_classes = ["2s1", "bmp2"]
 SAMPLE_classes = [
-    # "2s1",
-    # "bmp2",
-    # "btr70",
-    # "m1",
-    # "m2",
-    # "m35",
-    # "m548",
+    "2s1",
+    "bmp2",
+    "btr70",
+    "m1",
+    "m2",
+    "m35",
+    "m548",
     "m60",
-    # "t72",
-    # "zsu23",
+    "t72",
+    "zsu23",
 ]
 
 

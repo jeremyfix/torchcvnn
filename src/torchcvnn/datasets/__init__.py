@@ -25,3 +25,4 @@ from .alos2 import ALOSDataset
 from .bretigny import Bretigny
 from .slc import SLCDataset
 from .mstar import MSTARTargets
+from .sample import SAMPLE

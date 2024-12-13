@@ -51,6 +51,30 @@ class SAMPLE(Dataset):
         rootdir (str): Path to the root directory where the dataset is stored or will be downloaded
         transform (torchvision.transforms.Compose): A list of torchvision transforms to apply to the complex image
         download (bool): Whether to download the data if missing on disk
+
+    Note:
+        An example usage :
+
+        .. code-block:: python
+
+            import torchcvnn
+            from torchcvnn.datasets import SAMPLE
+
+            transform = v2.Compose(
+                transforms=[v2.ToImage(), v2.Resize(128), v2.CenterCrop(128)]
+            )
+            dataset = SAMPLE(
+                rootdir, transform=transform, download=True
+            )
+            X, y = dataset[0]
+
+        Displayed below are some examples drawn randomly from SAMPLE. To plot them, we extracted
+        only the magnitude of the signals although the data are indeed complex valued.
+
+        .. image:: ../assets/datasets/SAMPLE.png
+           :alt: Samples from MSTAR
+           :width: 60%
+
     """
 
     def __init__(self, rootdir: str, transform=None, download: bool = False):

@@ -79,3 +79,13 @@ To use this dataset, you need to manually download the data before hand and to u
 
 .. autoclass:: MSTARTargets
    :members:
+
+SAMPLE
+------
+
+SAMPLE is a dataset built from real SAR data as provided by the MSTAR dataset as well a synthetic data. As the original
+MSTAR dataset, it contains military vehicles and actually a subset of 10 classes : 2s1, bmp2, btr70, m1, m2, m35, m548, m60, t72, zsu23 . It contains a total of 3968 samples. The SAMPLE dataset is provided by https://github.com/benjaminlewis-afrl/SAMPLE_dataset_public .
+
+.. autoclass:: SAMPLE
+   :members:
+

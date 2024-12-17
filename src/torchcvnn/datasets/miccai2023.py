@@ -29,7 +29,7 @@ import logging
 
 # External imports
 from torch.utils.data import Dataset
-import scipy.io
+import h5py  # Required because the data are matlab v7.3 files
 
 
 class CINEView(Enum):
@@ -41,6 +41,16 @@ class AccFactor(Enum):
     ACC4 = 4
     ACC8 = 8
     ACC10 = 10
+
+
+def load_matlab_file(filename, key):
+    """
+    Load a matlab file in HDF5 format
+    """
+    with h5py.File(filename, "r") as f:
+        logging.debug(f"Got the keys {f.keys()} from {filename}")
+        data = f[key][()]
+    return data
 
 
 class MICCAI2023(Dataset):
@@ -97,6 +107,7 @@ class MICCAI2023(Dataset):
 
         # List all the available data
         self.fullsampled_rootdir = self.rootdir / "MultiCoil" / "cine" / "TrainingSet"
+        self.fullsampled_key = "kspace_full"
         self.subsampled_rootdir = (
             self.rootdir
             / "MultiCoil"
@@ -104,6 +115,9 @@ class MICCAI2023(Dataset):
             / "TrainingSet"
             / f"AccFactor{acc_factor.value:02d}"
         )
+        self.subsampled_key = f"kspace_sub{acc_factor.value:02d}"
+        self.mask_key = f"mask{acc_factor.value:02d}"
+
         logging.info(f"Loading data from {self.subsampled_rootdir}")
 
         # We list all the patients in the subsampled data directory
@@ -138,4 +152,17 @@ class MICCAI2023(Dataset):
         return len(self.patients)
 
     def __getitem__(self, idx):
-        pass
+        patient = self.patients[idx]
+
+        # Load the subsampled data
+        subsampled_data = load_matlab_file(
+            patient / self.input_filename, self.subsampled_key
+        )
+        # print(subsampled_data)
+        # print(subsampled_data.shape)
+        subsampled_mask = load_matlab_file(patient / self.mask_filename, self.mask_key)
+
+        fullsampled_data = load_matlab_file(
+            self.fullsampled_rootdir / patient.name / self.input_filename,
+            self.fullsampled_key,
+        )

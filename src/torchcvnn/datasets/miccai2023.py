@@ -93,6 +93,8 @@ class MICCAI2023(Dataset):
     - :math:`s_z`: slice number for short axis view, or slice group for long axis (i.e., 3ch, 2ch and 4ch views)
     - :math:`t`: time frame.
 
+    Note the k-space dimensions (in x/y axis) are not the same depending on the patient.
+
     This is a recontruction dataset. The goal is to reconstruct the fully sampled k-space
     from the subsampled k-space. The acceleratation factor specifies the subsampling rate.
 
@@ -141,6 +143,25 @@ class MICCAI2023(Dataset):
         .. figure:: ../assets/datasets/miccai2023_lax4.png
            :alt: Example patient from the MICCAI2023 dataset with both the full sampled and under sampled k-space and images
            :width: 100%
+           :align: center
+
+        You can combine the coils using the root sum of squares
+        to get a magnitude image (real valued) with all the
+        coil contributions.
+
+
+        Below are examples combining the coils for a given
+        frame and slice, for LAX (top) and SAX (bottom). It uses
+        the function :py:func:`torchcvnn.datasets.miccai2023.combine_coils_from_kspace`
+
+        .. figure:: ../assets/datasets/miccai2023_combined_lax.png
+           :alt: Example LAX, combining the coils
+           :width: 50%
+           :align: center
+
+        .. figure:: ../assets/datasets/miccai2023_combined_sax.png
+           :alt: Example SAX, combining the coils
+           :width: 50%
            :align: center
 
     """

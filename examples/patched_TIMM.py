@@ -137,7 +137,7 @@ def init_weights(m: nn.Module) -> None:
     """
     Initialize weights for the given module.
     """
-    if isinstance(m, (nn.Linear, nn.Conv2d, c_nn.BatchNorm2d)):
+    if isinstance(m, (nn.Linear, nn.Conv2d)):
         c_nn.init.complex_kaiming_normal_(m.weight, nonlinearity="relu")
         if m.bias is not None:
             m.bias.data.fill_(0.01)

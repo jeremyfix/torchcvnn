@@ -26,3 +26,4 @@ from .bretigny import Bretigny
 from .slc import SLCDataset
 from .mstar import MSTARTargets
 from .sample import SAMPLE
+from .miccai2023 import MICCAI2023

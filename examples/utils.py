@@ -59,8 +59,11 @@ def train_epoch(
     loss_avg = 0
     acc_avg = 0
     num_samples = 0
-    for inputs, outputs in tqdm.tqdm(loader):
-        inputs = inputs.to(device)
+    for minibatch in tqdm.tqdm(loader):
+        inputs = minibatch[0]
+        outputs = minibatch[1]
+
+        inputs = inputs.cfloat().to(device)
         outputs = outputs.to(device)
 
         # Forward propagate through the model
@@ -111,8 +114,11 @@ def test_epoch(
     acc_avg = 0
     num_samples = 0
     with torch.no_grad():
-        for inputs, outputs in loader:
-            inputs = inputs.to(device)
+        for minibatch in loader:
+            inputs = minibatch[0]
+            outputs = minibatch[1]
+
+            inputs = inputs.cfloat().to(device)
             outputs = outputs.to(device)
 
             # Forward propagate through the model

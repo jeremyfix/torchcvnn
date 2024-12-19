@@ -26,10 +26,13 @@
 from enum import Enum
 import pathlib
 import logging
+from typing import Union
 
 # External imports
+import torch
 from torch.utils.data import Dataset
 import h5py  # Required because the data are matlab v7.3 files
+import numpy as np
 
 
 class CINEView(Enum):
@@ -43,7 +46,7 @@ class AccFactor(Enum):
     ACC10 = 10
 
 
-def load_matlab_file(filename, key):
+def load_matlab_file(filename: str, key: str) -> np.ndarray:
     """
     Load a matlab file in HDF5 format
     """
@@ -51,6 +54,69 @@ def load_matlab_file(filename, key):
         logging.debug(f"Got the keys {f.keys()} from {filename}")
         data = f[key][()]
     return data
+
+
+def kspace_to_image(kspace: Union[torch.Tensor, np.ndarray]) -> torch.Tensor:
+    """
+    Convert k-space data to image data. The returned kspace is
+    of the same type than the the provided image (np.ndarray or torch.Tensor).
+
+    Arguments:
+        kspace : torch.Tensor or np.ndarray
+            k-space data
+
+    Returns:
+        torch.Tensor or np.ndarray
+            image data
+    """
+    if isinstance(kspace, torch.Tensor):
+        img = torch.fft.fftshift(torch.fft.ifft2(torch.fft.ifftshift(kspace)))
+    else:
+        img = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(kspace)))
+    return img
+
+
+def image_to_kspace(
+    img: Union[torch.Tensor, np.ndarray]
+) -> Union[torch.Tensor, np.ndarray]:
+    """
+    Convert image data to k-space data. The returned kspace is
+    of the same type than the the provided image (np.ndarray or torch.Tensor)
+
+    Arguments:
+        img : torch.Tensor or np.ndarray
+            Image data
+
+    Returns:
+        torch.Tensor or np.ndarray
+            k-space data
+
+    """
+    if isinstance(img, torch.Tensor):
+        kspace = torch.fft.fftshift(torch.fft.fft2(torch.fft.ifftshift(img)))
+    else:
+        kspace = np.fft.fftshift(np.fft.fft2(np.fft.ifftshift(img)))
+    return kspace
+
+
+def combine_coils_from_kspace(kspace: np.ndarray) -> np.ndarray:
+    """
+    Combine the coils of the k-space data using the root sum of squares
+
+    Arguments:
+        kspace : np.ndarray
+            k-space data of shape (sc, ky, kx)
+
+    Returns:
+        np.ndarray
+            Image data with coils combined, of shape (ky, kx), real valued, positive
+    """
+    if kspace.ndim != 3:
+        raise ValueError(
+            f"kspace should have 3 dimensions, got {kspace.ndim}. Expected dimensions (sc, ky, kx)"
+        )
+    images = np.fft.ifft2(np.fft.ifftshift(kspace))
+    return np.fft.fftshift(np.sqrt(np.sum(np.abs(images) ** 2, axis=0)))
 
 
 class MICCAI2023(Dataset):
@@ -83,6 +149,7 @@ class MICCAI2023(Dataset):
                                     - cine_sax_mask.mat
                                     - cin_lax.mat
                                     - cine_lax_mask.mat
+
     The cine_sax or sine_lax files are :math:`(k_x, k_y, s_c, s_z, t)` where :
 
     - :math:`k_x`: matrix size in x-axis (k-space)
@@ -131,6 +198,7 @@ class MICCAI2023(Dataset):
             # Plot the above magnitudes
             ...
 
+
         Displayed below is an example patient with the SAX view and acceleration of 8:
 
         .. figure:: ../assets/datasets/miccai2023_sax8.png
@@ -170,11 +238,9 @@ class MICCAI2023(Dataset):
         self,
         rootdir: str,
         view: CINEView = CINEView.SAX,
-        transform=None,
         acc_factor: AccFactor = AccFactor.ACC4,
     ):
         self.rootdir = pathlib.Path(rootdir)
-        self.transform = transform
 
         if view == CINEView.SAX:
             self.input_filename = "cine_sax.mat"
@@ -230,17 +296,40 @@ class MICCAI2023(Dataset):
         return len(self.patients)
 
     def __getitem__(self, idx):
+        """
+        Returns the subsampled k-space data, the mask and the fully sampled k-space data
+        """
         patient = self.patients[idx]
 
+        subsampled_data = None
+        subsampled_mask = None
+        fullsampled_data = None
+
         # Load the subsampled data
+        logging.info(f"Loading {patient / self.input_filename}")
         subsampled_data = load_matlab_file(
             patient / self.input_filename, self.subsampled_key
-        )
-        # print(subsampled_data)
-        # print(subsampled_data.shape)
-        subsampled_mask = load_matlab_file(patient / self.mask_filename, self.mask_key)
+        ).transpose(3, 4, 2, 1, 0)
+        subsampled_data = subsampled_data["real"] + 1j * subsampled_data["imag"]
+        # (kx, ky, sc, sz, t) for multi-coil data
+        # e.g. (246, 512, 10, 10, 12)
 
+        logging.info(f"Loading {patient / self.mask_filename}")
+        subsampled_mask = load_matlab_file(
+            patient / self.mask_filename, self.mask_key
+        ).transpose(0, 1)
+        # (kx, ky)
+        # e.g. (246, 512)
+
+        logging.info(
+            f"Loading {self.fullsampled_rootdir / patient.name / self.input_filename}"
+        )
         fullsampled_data = load_matlab_file(
             self.fullsampled_rootdir / patient.name / self.input_filename,
             self.fullsampled_key,
-        )
+        ).transpose(3, 4, 2, 1, 0)
+        fullsampled_data = fullsampled_data["real"] + 1j * fullsampled_data["imag"]
+        # kx, ky, sc, sz, t
+        # e.g. (246, 512, 10, 10, 12)
+
+        return subsampled_data, subsampled_mask, fullsampled_data

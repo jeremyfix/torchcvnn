@@ -89,3 +89,12 @@ MSTAR dataset, it contains military vehicles and actually a subset of 10 classes
 .. autoclass:: SAMPLE
    :members:
 
+
+MICCAI2023
+----------
+
+The MICCAI2023 challenge invovled the task of cine reconstruction where the objective is to predict a full sampled
+k-space from an under-sampled k-space. The data come from cardiac MRI.
+
+.. autoclass:: MICCAI2023
+   :members:

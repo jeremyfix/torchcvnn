@@ -61,6 +61,8 @@ class MICCAI2023(Dataset):
 
     You need to download the data before hand in order to use this class.
 
+    For loading the data, you may want to alternatively consider the fastmri library, see https://github.com/facebookresearch/fastMRI/
+
     The structure of the dataset is as follows:
 
         rootdir/ChallengeData/MultiCoil/cine/TrainingSet/P{id}/
@@ -81,11 +83,66 @@ class MICCAI2023(Dataset):
                                     - cine_sax_mask.mat
                                     - cin_lax.mat
                                     - cine_lax_mask.mat
+    The cine_sax or sine_lax files are :math:`(k_x, k_y, s_c, s_z, t)` where :
 
-    There are also the Single-Coil data which is not yet considered by this implementation
+    - :math:`k_x`: matrix size in x-axis (k-space)
+    - :math:`k_y``: matrix size in y-axis (k-space)
+    - :math:`s_c`: coil array number (compressed to 10)
+    - :math:`s_x`: matrix size in x-axis (image)
+    - :math:`s_y`: matrix size in y-axis (image) , used in single-coil data
+    - :math:`s_z`: slice number for short axis view, or slice group for long axis (i.e., 3ch, 2ch and 4ch views)
+    - :math:`t`: time frame.
 
     This is a recontruction dataset. The goal is to reconstruct the fully sampled k-space
     from the subsampled k-space. The acceleratation factor specifies the subsampling rate.
+
+    There are also the Single-Coil data which is not yet considered by this implementation
+
+    Note:
+        An example usage :
+
+        .. code-block:: python
+
+            import torchcvnn
+            from torchcvnn.datasets.miccai2023 import MICCAI2023, CINEView, AccFactor
+
+            def process_kspace(kspace, coil_idx, slice_idx, frame_idx):
+                coil_kspace = kspace[:, :, coil_idx, slice_idx, frame_idx]
+                mod_kspace = np.log(np.abs(coil_kspace) + 1e-9)
+
+                img = kspace_to_image(coil_kspace)
+                img = np.abs(img)
+                img = img / img.max()
+
+                return mod_kspace, img
+
+            dataset = MICCAI2023(rootdir, view=CINEView.SAX, acc_factor=AccFactor.ACC8)
+            subsampled_kspace, subsampled_mask, full_kspace = dataset[0]
+
+            frame_idx = 5
+            slice_idx = 0
+            coil_idx = 9
+
+            mod_full, img_full = process_kspace(full_kspace, coil_idx, slice_idx, frame_idx)
+            mod_sub, img_sub = process_kspace(subsampled_kspace, coil_idx, slice_idx, frame_idx)
+
+            # Plot the above magnitudes
+            ...
+
+        Displayed below is an example patient with the SAX view and acceleration of 8:
+
+        .. figure:: ../assets/datasets/miccai2023_sax8.png
+           :alt: Example patient from the MICCAI2023 dataset with both the full sampled and under sampled k-space and images
+           :width: 100%
+           :align: center
+
+        Displayed below is an example patient with the LAX view and acceleration of 4:
+
+        .. figure:: ../assets/datasets/miccai2023_lax4.png
+           :alt: Example patient from the MICCAI2023 dataset with both the full sampled and under sampled k-space and images
+           :width: 100%
+           :align: center
+
     """
 
     def __init__(

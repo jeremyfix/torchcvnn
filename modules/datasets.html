@@ -657,6 +657,179 @@ only the magnitude of the signals although the data are indeed complex valued.</
 </dd></dl>
 
 </section>
+<section id="miccai2023">
+<h2>MICCAI2023<a class="headerlink" href="#miccai2023" title="Link to this heading">¶</a></h2>
+<p>The MICCAI2023 challenge invovled the task of cine reconstruction where the objective is to predict a full sampled
+k-space from an under-sampled k-space. The data come from cardiac MRI.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="torchcvnn.datasets.miccai2023.kspace_to_image">
+<span class="sig-prename descclassname"><span class="pre">torchcvnn.datasets.miccai2023.</span></span><span class="sig-name descname"><span class="pre">kspace_to_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kspace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.5)"><span class="pre">Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.5)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/torchcvnn/datasets/miccai2023.html#kspace_to_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.datasets.miccai2023.kspace_to_image" title="Link to this definition">¶</a></dt>
+<dd><p>Convert k-space data to image data. The returned kspace is
+of the same type than the the provided image (np.ndarray or torch.Tensor).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kspace</strong> – torch.Tensor or np.ndarray
+k-space data</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>torch.Tensor or np.ndarray</dt><dd><p>image data</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="torchcvnn.datasets.miccai2023.image_to_kspace">
+<span class="sig-prename descclassname"><span class="pre">torchcvnn.datasets.miccai2023.</span></span><span class="sig-name descname"><span class="pre">image_to_kspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.5)"><span class="pre">Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.5)"><span class="pre">Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/torchcvnn/datasets/miccai2023.html#image_to_kspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.datasets.miccai2023.image_to_kspace" title="Link to this definition">¶</a></dt>
+<dd><p>Convert image data to k-space data. The returned kspace is
+of the same type than the the provided image (np.ndarray or torch.Tensor)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>img</strong> – torch.Tensor or np.ndarray
+Image data</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>torch.Tensor or np.ndarray</dt><dd><p>k-space data</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="torchcvnn.datasets.miccai2023.combine_coils_from_kspace">
+<span class="sig-prename descclassname"><span class="pre">torchcvnn.datasets.miccai2023.</span></span><span class="sig-name descname"><span class="pre">combine_coils_from_kspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kspace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/torchcvnn/datasets/miccai2023.html#combine_coils_from_kspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.datasets.miccai2023.combine_coils_from_kspace" title="Link to this definition">¶</a></dt>
+<dd><p>Combine the coils of the k-space data using the root sum of squares</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kspace</strong> – np.ndarray
+k-space data of shape (sc, ky, kx)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>np.ndarray</dt><dd><p>Image data with coils combined, of shape (ky, kx), real valued, positive</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="torchcvnn.datasets.MICCAI2023">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchcvnn.datasets.</span></span><span class="sig-name descname"><span class="pre">MICCAI2023</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rootdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CINEView</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">CINEView.SAX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acc_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AccFactor</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">AccFactor.ACC4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/torchcvnn/datasets/miccai2023.html#MICCAI2023"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.datasets.MICCAI2023" title="Link to this definition">¶</a></dt>
+<dd><p>Loads the MICCAI2023 challenge data for the reconstruction task Task 1</p>
+<p>The data are described on <a class="reference external" href="https://cmrxrecon.github.io/Task1-Cine-reconstruction.html">https://cmrxrecon.github.io/Task1-Cine-reconstruction.html</a></p>
+<p>You need to download the data before hand in order to use this class.</p>
+<p>For loading the data, you may want to alternatively consider the fastmri library, see <a class="reference external" href="https://github.com/facebookresearch/fastMRI/">https://github.com/facebookresearch/fastMRI/</a></p>
+<p>The structure of the dataset is as follows:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>rootdir/ChallengeData/MultiCoil/cine/TrainingSet/P{id}/</dt><dd><ul class="simple">
+<li><p>cine_sax.mat</p></li>
+<li><p>cin_lax.mat</p></li>
+</ul>
+</dd>
+<dt>rootdir/ChallengeData/MultiCoil/cine/TrainingSet/AccFactor04/P{id}/</dt><dd><ul class="simple">
+<li><p>cine_sax.mat</p></li>
+<li><p>cine_sax_mask.mat</p></li>
+<li><p>cin_lax.mat</p></li>
+<li><p>cine_lax_mask.mat</p></li>
+</ul>
+</dd>
+<dt>rootdir/ChallengeData/MultiCoil/cine/TrainingSet/AccFactor08/P{id}/</dt><dd><ul class="simple">
+<li><p>cine_sax.mat</p></li>
+<li><p>cine_sax_mask.mat</p></li>
+<li><p>cin_lax.mat</p></li>
+<li><p>cine_lax_mask.mat</p></li>
+</ul>
+</dd>
+<dt>rootdir/ChallengeData/MultiCoil/cine/TrainingSet/AccFactor10/P{id}/</dt><dd><ul class="simple">
+<li><p>cine_sax.mat</p></li>
+<li><p>cine_sax_mask.mat</p></li>
+<li><p>cin_lax.mat</p></li>
+<li><p>cine_lax_mask.mat</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<p>The cine_sax or sine_lax files are <span class="math notranslate nohighlight">\((k_x, k_y, s_c, s_z, t)\)</span> where :</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(k_x\)</span>: matrix size in x-axis (k-space)</p></li>
+<li><p><span class="math notranslate nohighlight">\(k_y`\)</span>: matrix size in y-axis (k-space)</p></li>
+<li><p><span class="math notranslate nohighlight">\(s_c\)</span>: coil array number (compressed to 10)</p></li>
+<li><p><span class="math notranslate nohighlight">\(s_x\)</span>: matrix size in x-axis (image)</p></li>
+<li><p><span class="math notranslate nohighlight">\(s_y\)</span>: matrix size in y-axis (image) , used in single-coil data</p></li>
+<li><p><span class="math notranslate nohighlight">\(s_z\)</span>: slice number for short axis view, or slice group for long axis (i.e., 3ch, 2ch and 4ch views)</p></li>
+<li><p><span class="math notranslate nohighlight">\(t\)</span>: time frame.</p></li>
+</ul>
+<p>Note the k-space dimensions (in x/y axis) are not the same depending on the patient.</p>
+<p>This is a recontruction dataset. The goal is to reconstruct the fully sampled k-space
+from the subsampled k-space. The acceleratation factor specifies the subsampling rate.</p>
+<p>There are also the Single-Coil data which is not yet considered by this implementation</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An example usage :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchcvnn</span>
+<span class="kn">from</span> <span class="nn">torchcvnn.datasets.miccai2023</span> <span class="kn">import</span> <span class="n">MICCAI2023</span><span class="p">,</span> <span class="n">CINEView</span><span class="p">,</span> <span class="n">AccFactor</span>
+
+<span class="k">def</span> <span class="nf">process_kspace</span><span class="p">(</span><span class="n">kspace</span><span class="p">,</span> <span class="n">coil_idx</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="n">frame_idx</span><span class="p">):</span>
+    <span class="n">coil_kspace</span> <span class="o">=</span> <span class="n">kspace</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">coil_idx</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="n">frame_idx</span><span class="p">]</span>
+    <span class="n">mod_kspace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">coil_kspace</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+
+    <span class="n">img</span> <span class="o">=</span> <span class="n">kspace_to_image</span><span class="p">(</span><span class="n">coil_kspace</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">img</span> <span class="o">/</span> <span class="n">img</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">mod_kspace</span><span class="p">,</span> <span class="n">img</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">MICCAI2023</span><span class="p">(</span><span class="n">rootdir</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="n">CINEView</span><span class="o">.</span><span class="n">SAX</span><span class="p">,</span> <span class="n">acc_factor</span><span class="o">=</span><span class="n">AccFactor</span><span class="o">.</span><span class="n">ACC8</span><span class="p">)</span>
+<span class="n">subsampled_kspace</span><span class="p">,</span> <span class="n">subsampled_mask</span><span class="p">,</span> <span class="n">full_kspace</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">frame_idx</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">slice_idx</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">coil_idx</span> <span class="o">=</span> <span class="mi">9</span>
+
+<span class="n">mod_full</span><span class="p">,</span> <span class="n">img_full</span> <span class="o">=</span> <span class="n">process_kspace</span><span class="p">(</span><span class="n">full_kspace</span><span class="p">,</span> <span class="n">coil_idx</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="n">frame_idx</span><span class="p">)</span>
+<span class="n">mod_sub</span><span class="p">,</span> <span class="n">img_sub</span> <span class="o">=</span> <span class="n">process_kspace</span><span class="p">(</span><span class="n">subsampled_kspace</span><span class="p">,</span> <span class="n">coil_idx</span><span class="p">,</span> <span class="n">slice_idx</span><span class="p">,</span> <span class="n">frame_idx</span><span class="p">)</span>
+
+<span class="c1"># Plot the above magnitudes</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Displayed below is an example patient with the SAX view and acceleration of 8:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/miccai2023_sax8.png"><img alt="Example patient from the MICCAI2023 dataset with both the full sampled and under sampled k-space and images" src="../_images/miccai2023_sax8.png" style="width: 100%;" />
+</a>
+</figure>
+<p>Displayed below is an example patient with the LAX view and acceleration of 4:</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/miccai2023_lax4.png"><img alt="Example patient from the MICCAI2023 dataset with both the full sampled and under sampled k-space and images" src="../_images/miccai2023_lax4.png" style="width: 100%;" />
+</a>
+</figure>
+<p>You can combine the coils using the root sum of squares
+to get a magnitude image (real valued) with all the
+coil contributions.</p>
+<p>Below are examples combining the coils for a given
+frame and slice, for LAX (top) and SAX (bottom). It uses
+the function <a class="reference internal" href="#torchcvnn.datasets.miccai2023.combine_coils_from_kspace" title="torchcvnn.datasets.miccai2023.combine_coils_from_kspace"><code class="xref py py-func docutils literal notranslate"><span class="pre">torchcvnn.datasets.miccai2023.combine_coils_from_kspace()</span></code></a></p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/miccai2023_combined_lax.png"><img alt="Example LAX, combining the coils" src="../_images/miccai2023_combined_lax.png" style="width: 50%;" />
+</a>
+</figure>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/miccai2023_combined_sax.png"><img alt="Example SAX, combining the coils" src="../_images/miccai2023_combined_sax.png" style="width: 50%;" />
+</a>
+</figure>
+</div>
+</dd></dl>
+
+</section>
 </section>
 
         </article>
@@ -753,6 +926,13 @@ only the magnitude of the signals although the data are indeed complex valued.</
 <li><a class="reference internal" href="#torchcvnn.datasets.SAMPLE.download_file"><code class="docutils literal notranslate"><span class="pre">SAMPLE.download_file()</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a class="reference internal" href="#miccai2023">MICCAI2023</a><ul>
+<li><a class="reference internal" href="#torchcvnn.datasets.miccai2023.kspace_to_image"><code class="docutils literal notranslate"><span class="pre">kspace_to_image()</span></code></a></li>
+<li><a class="reference internal" href="#torchcvnn.datasets.miccai2023.image_to_kspace"><code class="docutils literal notranslate"><span class="pre">image_to_kspace()</span></code></a></li>
+<li><a class="reference internal" href="#torchcvnn.datasets.miccai2023.combine_coils_from_kspace"><code class="docutils literal notranslate"><span class="pre">combine_coils_from_kspace()</span></code></a></li>
+<li><a class="reference internal" href="#torchcvnn.datasets.MICCAI2023"><code class="docutils literal notranslate"><span class="pre">MICCAI2023</span></code></a></li>
 </ul>
 </li>
 </ul>

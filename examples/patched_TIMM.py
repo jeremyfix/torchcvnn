@@ -101,7 +101,7 @@ def convert_to_complex(module: nn.Module) -> nn.Module:
             )
 
         elif isinstance(child, nn.ReLU):
-            setattr(module, name, c_nn.CReLU())
+            setattr(module, name, c_nn.modReLU())
 
         elif isinstance(child, nn.BatchNorm2d):
             setattr(module, name, c_nn.BatchNorm2d(child.num_features))
@@ -133,6 +133,16 @@ def convert_to_complex(module: nn.Module) -> nn.Module:
     return module
 
 
+def init_weights(m: nn.Module) -> None:
+    """
+    Initialize weights for the given module.
+    """
+    if isinstance(m, (nn.Linear, nn.Conv2d, c_nn.BatchNorm2d)):
+        c_nn.init.complex_kaiming_normal_(m.weight, nonlinearity="relu")
+        if m.bias is not None:
+            m.bias.data.fill_(0.01)
+
+
 def train(datadir):
     """
     Train function
@@ -140,8 +150,8 @@ def train(datadir):
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     valid_ratio = 0.1
-    batch_size = 100
-    epochs = 10
+    batch_size = 64
+    epochs = 100
 
     # Dataloading
     train_loader, valid_loader, num_classes = get_dataloaders(
@@ -163,6 +173,10 @@ def train(datadir):
         model,
         c_nn.Mod(),
     )
+
+    # Initialize the weights
+    model.apply(init_weights)
+
     model.to(device)
 
     # Loss, optimizer, callbacks

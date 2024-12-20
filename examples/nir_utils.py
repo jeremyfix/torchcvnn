@@ -53,10 +53,9 @@ class ComplexNGP(nn.Module):
         n_inputs (int): Number of input coordinates (e.g. 3 for x, y, t)
     """
 
-    def __init__(self, encoding_cfg, n_inputs=3):
+    def __init__(self, encoding_cfg, n_inputs, n_outputs):
         super().__init__()
 
-        n_outputs = 1  # one complex value
         n_hidden_units = 64
         n_hidden_layers = 4
         self.cdtype = torch.complex64
@@ -92,6 +91,8 @@ def test_ngp():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    n_inputs = 3
+    n_outputs = 4
     model = ComplexNGP(
         encoding_cfg={
             "otype": "Grid",
@@ -102,7 +103,9 @@ def test_ngp():
             "base_resolution": 16,
             "per_level_scale": 2,
             "interpolation": "Linear",
-        }
+        },
+        n_inputs=n_inputs,
+        n_outputs=n_outputs,
     )
     model = model.to(device)
 
@@ -111,7 +114,7 @@ def test_ngp():
     coords = build_coordinate_2Dt(Nx, Ny, Nt, device=device).view(-1, 3)
 
     # Sample the volume
-    outputs = model(coords).reshape(Nx, Ny, Nt)
+    outputs = model(coords).reshape(Nx, Ny, Nt, n_outputs)
 
 
 if __name__ == "__main__":

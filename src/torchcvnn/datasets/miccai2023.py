@@ -311,14 +311,14 @@ class MICCAI2023(Dataset):
             patient / self.input_filename, self.subsampled_key
         ).transpose(3, 4, 2, 1, 0)
         subsampled_data = subsampled_data["real"] + 1j * subsampled_data["imag"]
-        # (kx, ky, sc, sz, t) for multi-coil data
+        # (ky, kx, sc, sz, t) for multi-coil data
         # e.g. (246, 512, 10, 10, 12)
 
         logging.info(f"Loading {patient / self.mask_filename}")
         subsampled_mask = load_matlab_file(
             patient / self.mask_filename, self.mask_key
         ).transpose(0, 1)
-        # (kx, ky)
+        # (ky, kx)
         # e.g. (246, 512)
 
         logging.info(
@@ -329,7 +329,7 @@ class MICCAI2023(Dataset):
             self.fullsampled_key,
         ).transpose(3, 4, 2, 1, 0)
         fullsampled_data = fullsampled_data["real"] + 1j * fullsampled_data["imag"]
-        # kx, ky, sc, sz, t
+        # ky, kx, sc, sz, t
         # e.g. (246, 512, 10, 10, 12)
 
         return subsampled_data, subsampled_mask, fullsampled_data

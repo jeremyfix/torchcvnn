@@ -82,7 +82,6 @@ class ComplexNGP(nn.Module):
 
     def forward(self, x):
         x = self.hash_encoder(x).to(self.cdtype)
-        print(x.shape)
         x = self.ffnn(x)
         return x
 

@@ -96,7 +96,7 @@ class TVLoss(nn.Module):
         return tv
 
 
-def infer_on_slice(subsampled_slice, subsampled_mask):
+def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx):
     """
     Perform inference on a single slice for all the frames and all the coils
 
@@ -165,47 +165,49 @@ def infer_on_slice(subsampled_slice, subsampled_mask):
     kspace_loss = torch.nn.HuberLoss()
 
     # Loop for max_iter
-    for _ in tqdm.tqdm(range(max_iter)):
+    with tqdm.tqdm(range(max_iter)) as pbar:
+        for _ in pbar:
 
-        # Switch the models in training mode
-        image_model.train()
-        csm_model.train()
+            # Switch the models in training mode
+            image_model.train()
+            csm_model.train()
 
-        # Compute the forward pass
-        pre_intensity = image_model(coor).view(
-            nrows, ncols, nframes
-        )  # Nrows, Ncols, Nframes
-        csm = csm_model(coor).view(
-            nrows, ncols, nframes, ncoils
-        )  # Nrows, Ncols, Nframes, Ncoils
+            # Compute the forward pass
+            pre_intensity = image_model(coor).view(
+                nrows, ncols, nframes
+            )  # Nrows, Ncols, Nframes
+            csm = csm_model(coor).view(
+                nrows, ncols, nframes, ncoils
+            )  # Nrows, Ncols, Nframes, Ncoils
 
-        # Compute the RSS over the coils
-        csm_norm = torch.sqrt((csm.conj() * csm).sum(axis=-1))
-        # Unsqueeze over the coil dimension to apply the same scaling for every coil
-        csm = csm / (csm_norm.unsqueeze(-1) + 1e-12)
+            # Compute the RSS over the coils
+            csm_norm = torch.sqrt((csm.conj() * csm).sum(axis=-1))
+            # Unsqueeze over the coil dimension to apply the same scaling for every coil
+            csm = csm / (csm_norm.unsqueeze(-1) + 1e-12)
 
-        # Apply the same pre-instensity through every coil specific sensitivity
-        fft_pre_intensity = FFT(pre_intensity.unsqueeze(axis=-1) * csm).transpose(
-            3, 2
-        )  # (Nrows, Ncols, Ncoils, Nframes)
+            # Apply the same pre-instensity through every coil specific sensitivity
+            fft_pre_intensity = FFT(pre_intensity.unsqueeze(axis=-1) * csm).transpose(
+                3, 2
+            )  # (Nrows, Ncols, Ncoils, Nframes)
 
-        # Compute the loss with the reconstruction loss
-        # and the regularization loss
-        masked_pred_kspace = torch.view_as_real(fft_pre_intensity[subsampled_mask == 1])
-        masked_kspace = torch.view_as_real(subsampled_slice[subsampled_mask == 1])
+            # Compute the loss with the reconstruction loss
+            # and the regularization loss
+            masked_pred_kspace = torch.view_as_real(fft_pre_intensity[subsampled_mask == 1])
+            masked_kspace = torch.view_as_real(subsampled_slice[subsampled_mask == 1])
 
-        loss = kspace_loss(masked_pred_kspace, masked_kspace) + reg_weight * reg_loss(
-            pre_intensity
-        )
+            kspace_loss_value = kspace_loss(masked_pred_kspace, masked_kspace)
+            reg_loss_value = reg_loss(pre_intensity)
+            loss = kspace_loss_value + reg_weight * reg_loss_value
+            pbar.set_postfix({"TV": reg_loss_value.item(), "Kspace Loss": kspace_loss_value.item()})
 
-        # Zero grad, backward and update
-        optim_image.zero_grad()
-        optim_csm.zero_grad()
+            # Zero grad, backward and update
+            optim_image.zero_grad()
+            optim_csm.zero_grad()
 
-        loss.backward()
+            loss.backward()
 
-        optim_image.step()
-        optim_csm.step()
+            optim_image.step()
+            optim_csm.step()
 
     # Inference
     logging.info("Performing inference")
@@ -224,21 +226,38 @@ def infer_on_slice(subsampled_slice, subsampled_mask):
         # Unsqueeze over the coil dimension to apply the same scaling for every coil
         csm = csm / (csm_norm.unsqueeze(-1) + 1e-12)
 
-        fft_pre_intensity = FFT(pre_intensity.unsqueeze(axis=-1) * csm).transpose(
-            3, 2
-        )  # (Nrows, Ncols, Ncoils, Nframes)
+        fft_pre_intensity = FFT(pre_intensity.unsqueeze(axis=-1) * csm)  # (Nrows, Ncols, Nframes, Ncoils)
 
-        recon_kspace = torch.clone(subsampled_slice)
-        recon_kspace[subsampled_mask == 0] = fft_pre_intensity[subsampled_mask == 0]
+        recon_kspace = torch.clone(fft_pre_intensity)
+        # Keep the input k-space untouched
+        recon_kspace[subsampled_mask == 1] = subsampled_slice[subsampled_mask == 1].transpose(1, 2)
+        # Compute the image for the reconstructed k-space
         recon_img = IFFT(recon_kspace)
 
-        for coil_idx in range(recon_img.shape[2]):
-            img = recon_img[:, :, coil_idx, 0].cpu()
-            img = img.abs()
-            print(img.min(), img.max())
+        # Merge all the coils, each contribution being modulated by the CSM
+        fused_recon_img = (recon_img * torch.conj(csm)).sum(axis=-1)
+
+        # Plot the reconstruction with the contributions of all the coils
+        img = fused_recon_img.abs() / fused_recon_img.abs().max()
+        img = img.cpu() #  (Nrows, Ncols, Nframes)
+
+        frame_idx = 0
+
+        h = plt.figure()
+        plt.imshow(img[:,:, frame_idx], cmap="gray")
+        plt.savefig(f"slice_{slice_idx}_frame_{frame_idx}.png", bbox_inches="tight")
+        plt.close(h)
+
+        # Plot, for evey coil, side by side, the k-space to 
+        # predict and the predicted k-space
+        # TODO
+
+        # Plot, for evey coil, the predicted image
+        for coil_idx in range(recon_img.shape[3]):
+            img = recon_img[:, :, frame_idx, coil_idx].abs().cpu()
             h = plt.figure()
             plt.imshow(img, cmap="gray")
-            plt.savefig(f"coil_{coil_idx}.png", bbox_inches="tight")
+            plt.savefig(f"slice_{slice_idx}_frame_{frame_idx}_coil_{coil_idx}.png", bbox_inches="tight")
             plt.close(h)
 
 
@@ -254,7 +273,6 @@ def train(rootdir, acc_factor, view):
     sample_idx = 0
 
     subsampled_data, subsampled_mask, fullsampled_data = dataset[sample_idx]
-    print(np.unique(subsampled_mask))
     # Subsampled_data and fullsampled_data are (kx, ky, sc, sz, t)
     n_coils = subsampled_data.shape[-3]
     n_slices = subsampled_data.shape[-2]
@@ -269,10 +287,19 @@ def train(rootdir, acc_factor, view):
         subsampled_slice = subsampled_data[:, :, :, slice_idx, :]
         fullsampled_slice = fullsampled_data[:, :, :, slice_idx, :]
 
-        # TODO: maybe use the normalization factor ?
+        # Compute the normalization factor by computing the max RSS
+        # of the images
+        # This step is super important for the training to work properly
+        images = IFFT(torch.tensor(subsampled_slice, dtype=torch.complex64))
+        # Combine the coils in the image space with the RSS
+        coils_combined = (images.abs()**2).sum(axis=2).sqrt()
+        norm_factor = coils_combined.max()
+        logging.info(f"For slice {slice_idx}, using the normalization factor {norm_factor}")
+
+        subsampled_slice = subsampled_slice / norm_factor
 
         # Perform inference on this slice
-        pred_fullsampled_slice = infer_on_slice(subsampled_slice, subsampled_mask)
+        pred_fullsampled_slice = infer_on_slice(subsampled_slice, subsampled_mask, slice_idx)
 
         # TODO: Compute the metrics (SNR/SSIM)
 

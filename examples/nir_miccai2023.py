@@ -40,6 +40,7 @@ And you need some data.
 import argparse
 import logging
 import random
+import pathlib
 
 # External imports
 import tqdm
@@ -96,7 +97,7 @@ class TVLoss(nn.Module):
         return tv
 
 
-def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx):
+def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx, results_dir):
     """
     Perform inference on a single slice for all the frames and all the coils
 
@@ -107,7 +108,7 @@ def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     reg_weight = 5
-    max_iter = 100
+    max_iter = 500
     lr = 0.01
 
     # Put the slices on the right device
@@ -198,7 +199,7 @@ def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx):
             kspace_loss_value = kspace_loss(masked_pred_kspace, masked_kspace)
             reg_loss_value = reg_loss(pre_intensity)
             loss = kspace_loss_value + reg_weight * reg_loss_value
-            pbar.set_postfix({"TV": reg_loss_value.item(), "Kspace Loss": kspace_loss_value.item()})
+            pbar.set_postfix({"TV": reg_loss_value.item(), "Data consistency Loss": kspace_loss_value.item()})
 
             # Zero grad, backward and update
             optim_image.zero_grad()
@@ -268,11 +269,18 @@ def train(rootdir, acc_factor, view):
         acc_factor=acc_factor,
     )
 
+
     # Take a random sample
     # sample_idx = random.randint(0, len(dataset) - 1)
     sample_idx = 0
 
+    # Prepare the directory in which to store the results
+    patient_path = dataset.patients[sample_idx]
+    results_dir = pathlib.Path('./results') / patient_path.name
+    logging.info(f"I will save the results into {results_dir}")
+
     subsampled_data, subsampled_mask, fullsampled_data = dataset[sample_idx]
+
     # Subsampled_data and fullsampled_data are (kx, ky, sc, sz, t)
     n_coils = subsampled_data.shape[-3]
     n_slices = subsampled_data.shape[-2]
@@ -291,15 +299,16 @@ def train(rootdir, acc_factor, view):
         # of the images
         # This step is super important for the training to work properly
         images = IFFT(torch.tensor(subsampled_slice, dtype=torch.complex64))
+
         # Combine the coils in the image space with the RSS
         coils_combined = (images.abs()**2).sum(axis=2).sqrt()
         norm_factor = coils_combined.max()
-        logging.info(f"For slice {slice_idx}, using the normalization factor {norm_factor}")
+        logging.debug(f"For slice {slice_idx}, using the normalization factor {norm_factor}")
 
-        subsampled_slice = subsampled_slice / norm_factor
+        subsampled_slice = subsampled_slice / norm_factor.item()
 
         # Perform inference on this slice
-        pred_fullsampled_slice = infer_on_slice(subsampled_slice, subsampled_mask, slice_idx)
+        pred_fullsampled_slice = infer_on_slice(subsampled_slice, subsampled_mask, slice_idx, results_dir)
 
         # TODO: Compute the metrics (SNR/SSIM)
 

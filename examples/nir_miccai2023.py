@@ -48,6 +48,10 @@ import tqdm
 import torch
 import torch.nn as nn
 import numpy as np
+import matplotlib
+
+matplotlib.use("Agg")  # Non interactive backend
+
 import matplotlib.pyplot as plt
 
 # Local imports
@@ -73,6 +77,31 @@ def IFFT(x):
     return torch.fft.ifftshift(
         torch.fft.ifft2(torch.fft.fftshift(x, dim=(0, 1)), dim=(0, 1)), dim=(0, 1)
     )
+
+
+def combine_coils(kspace):
+    """
+    Combine the coils from the given k-space
+
+    Arguments:
+        kspace: Tensor of shape (nrows, ncols, ncoils)
+                     or (nrows, ncols, ncoils, nframes)
+                complex valued
+
+    Returns:
+        image: Tensor of shape (nrows, ncols)
+                    or (nrows, ncols, nframes)
+                magnitude only
+    """
+    if isinstance(kspace, np.ndarray):
+        kspace = torch.tensor(kspace, dtype=torch.complex64)
+
+    images = IFFT(kspace)
+
+    # Combine the coils in the image space with the RSS
+    coils_combined = (images.abs() ** 2).sum(axis=2).sqrt()
+
+    return coils_combined
 
 
 class TVLoss(nn.Module):
@@ -107,6 +136,9 @@ def infer_on_slice(
     Arguments:
         subsampled_slice (torch.Tensor): Subsampled k-space data for a single slice, (ky, kx, sc, t)
         subsampled_mask (torch.Tensor): Subsampled mask for a single slice (ky, kx)
+        slice_idx (int): the index of the slice, used to determine the results filenames
+        results_dir (pathlib.Path): the path where to save all the results
+        training_cfg (dict): the training parameters (reg_weight, learning rate, number of iterations)
     """
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -136,7 +168,7 @@ def infer_on_slice(
         "per_level_scale": 2,
         "interpolation": "Linear",
     }
-    mlp_image = {"n_hidden_units": 32, "n_hidden_layers": 2}
+    mlp_image = {"n_hidden_units": 32, "n_hidden_layers": 4}
     image_model = utils.ComplexNGP(
         n_inputs=3, n_outputs=1, encoding_cfg=encoding_image, mlp_cfg=mlp_image
     ).to(device)
@@ -152,7 +184,7 @@ def infer_on_slice(
         "per_level_scale": 1.1,
         "interpolation": "Linear",
     }
-    mlp_csm = {"n_hidden_units": 32, "n_hidden_layers": 2}
+    mlp_csm = {"n_hidden_units": 32, "n_hidden_layers": 4}
     csm_model = utils.ComplexNGP(
         n_inputs=3, n_outputs=ncoils, encoding_cfg=encoding_csm, mlp_cfg=mlp_csm
     ).to(device)
@@ -256,33 +288,40 @@ def infer_on_slice(
         img = fused_recon_img.abs() / scale_factor
         img = img.cpu()  #  (Nrows, Ncols, Nframes)
 
-        frame_idx = 0
+        # frame_idx = 0
+        # h = plt.figure()
+        # plt.imshow(img[:, :, frame_idx], cmap="gray")
+        # plt.savefig(
+        #     str(results_dir / f"slice_{slice_idx}_frame_{frame_idx}.png"),
+        #     bbox_inches="tight",
+        # )
+        # plt.close(h)
 
-        h = plt.figure()
-        plt.imshow(img[:, :, frame_idx], cmap="gray")
-        plt.savefig(
-            str(results_dir / f"slice_{slice_idx}_frame_{frame_idx}.png"),
-            bbox_inches="tight",
-        )
-        plt.close(h)
-
-        # Plot, for evey coil, side by side, the k-space to
-        # predict and the predicted k-space
-        # TODO
-
-        # Plot, for evey coil, the predicted image
-        for coil_idx in range(recon_img.shape[3]):
-            img = (recon_img[:, :, frame_idx, coil_idx].abs() / scale_factor).cpu()
+        # Plot the combined coils for every frame
+        # This allows to make a video
+        for frame_idx in range(img.shape[2]):
             h = plt.figure()
-            plt.imshow(img, cmap="gray", clim=[0, 1])
+            plt.imshow(img[:, :, frame_idx], cmap="gray")
             plt.savefig(
-                str(
-                    results_dir
-                    / f"slice_{slice_idx}_frame_{frame_idx}_coil_{coil_idx}.png"
-                ),
+                str(results_dir / f"slice_{slice_idx}_{frame_idx:04d}.png"),
                 bbox_inches="tight",
             )
             plt.close(h)
+
+        # Plot, for evey coil, the predicted image
+        # for coil_idx in range(recon_img.shape[3]):
+        #     img = (recon_img[:, :, frame_idx, coil_idx].abs() / scale_factor).cpu()
+        #     h = plt.figure()
+        #     plt.imshow(img, cmap="gray", clim=[0, 1])
+        #     plt.savefig(
+        #         str(
+        #             results_dir
+        #             / f"slice_{slice_idx}_frame_{frame_idx}_coil_{coil_idx}.png"
+        #         ),
+        #         bbox_inches="tight",
+        #     )
+        #     plt.close(h)
+    return pre_intensity, csm, img
 
 
 def train(rootdir, acc_factor, view, training_cfg):
@@ -317,6 +356,8 @@ def train(rootdir, acc_factor, view, training_cfg):
     n_frames = subsampled_data.shape[-1]
 
     # Iterate over the slices
+    all_psnrs = []
+
     logging.info(f"Processing {n_slices} slices")
     for slice_idx in tqdm.tqdm(range(n_slices)):
 
@@ -328,10 +369,7 @@ def train(rootdir, acc_factor, view, training_cfg):
         # Compute the normalization factor by computing the max RSS
         # of the images
         # This step is super important for the training to work properly
-        images = IFFT(torch.tensor(subsampled_slice, dtype=torch.complex64))
-
-        # Combine the coils in the image space with the RSS
-        coils_combined = (images.abs() ** 2).sum(axis=2).sqrt()
+        coils_combined = combine_coils(subsampled_slice)
         norm_factor = coils_combined.max()
         logging.debug(
             f"For slice {slice_idx}, using the normalization factor {norm_factor}"
@@ -340,11 +378,58 @@ def train(rootdir, acc_factor, view, training_cfg):
         subsampled_slice = subsampled_slice / norm_factor.item()
 
         # Perform inference on this slice
-        pred_fullsampled_slice = infer_on_slice(
+        pre_intensity, csm, pred_image = infer_on_slice(
             subsampled_slice, subsampled_mask, slice_idx, results_dir, training_cfg
         )
 
-        # TODO: Compute the metrics (SNR/SSIM)
+        # Compute the PSNR for every slice and every coil
+        # and also plot, for comparison,
+        # - the full sampled image
+        # - the zero filled image (the unobserved k-space is filled with zeros)
+        # - the predicted image
+
+        full_image = combine_coils(fullsampled_slice)  # nrows, ncols, nframes
+        full_image /= full_image.max()
+
+        zero_filled = combine_coils(subsampled_slice)
+        zero_filled /= zero_filled.max()
+
+        for frame_idx in range(full_image.shape[2]):
+            img = full_image[:, :, frame_idx]
+            zero_img = zero_filled[:, :, frame_idx]
+            pred_img = pred_image[:, :, frame_idx]
+
+            # Compute the PSNR
+            mse = ((img - pred_img) ** 2).mean()
+            data_range = 1.0
+            psnr = 10.0 * np.log10(data_range**2 / mse)
+            all_psnrs.append(psnr)
+            logging.debug(f"PSNR for slice {slice_idx}, frame {frame_idx}: {psnr}")
+
+            fig, axes = plt.subplots(nrows=1, ncols=3)
+            axes[0].imshow(img, cmap="gray", clim=[0, 1])
+            axes[0].set_title("Ground truth")
+            axes[0].axis("off")
+
+            axes[1].imshow(pred_img, cmap="gray", clim=[0, 1])
+            axes[1].set_title("Predicted")
+            axes[1].axis("off")
+
+            axes[2].imshow(zero_img, cmap="gray", clim=[0, 1])
+            axes[2].set_title("Zero filled")
+            axes[2].axis("off")
+
+            plt.tight_layout()
+            plt.savefig(
+                results_dir / f"slice_{slice_idx}_frame_{frame_idx}.png",
+                bbox_inches="tight",
+                dpi=150,
+            )
+            plt.close(fig)
+
+    logging.info(
+        f"Mean PSNR evaluated over all the slices and all the frames : {np.mean(all_psnrs)}"
+    )
 
 
 if __name__ == "__main__":
@@ -375,13 +460,22 @@ if __name__ == "__main__":
 
     # Some training parameters
     parser.add_argument(
-        "--lr", default=0.01, help="The base learning rate for the optimizer"
+        "--lr",
+        default=0.01,
+        type=float,
+        help="The base learning rate for the optimizer",
     )
     parser.add_argument(
-        "--iter", default=512, help="The number of training iterations per slice"
+        "--iter",
+        default=512,
+        type=int,
+        help="The number of training iterations per slice",
     )
     parser.add_argument(
-        "--reg_weight", default=4.0, help="The weights of the TV loss in the total loss"
+        "--reg_weight",
+        default=4.0,
+        type=float,
+        help="The weights of the TV loss in the total loss",
     )
 
     args = parser.parse_args()

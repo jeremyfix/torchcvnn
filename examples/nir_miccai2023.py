@@ -41,6 +41,7 @@ import argparse
 import logging
 import random
 import pathlib
+import shutil
 
 # External imports
 import tqdm
@@ -97,7 +98,9 @@ class TVLoss(nn.Module):
         return tv
 
 
-def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx, results_dir):
+def infer_on_slice(
+    subsampled_slice, subsampled_mask, slice_idx, results_dir, training_cfg
+):
     """
     Perform inference on a single slice for all the frames and all the coils
 
@@ -107,20 +110,13 @@ def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx, results_dir):
     """
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    reg_weight = 5
-    max_iter = 500
-    lr = 0.01
+    reg_weight = training_cfg["reg_weight"]
+    max_iter = training_cfg["iter"]
+    lr = training_cfg["lr"]
 
     # Put the slices on the right device
     subsampled_slice = torch.tensor(subsampled_slice, dtype=torch.complex64).to(device)
     subsampled_mask = torch.tensor(subsampled_mask, dtype=torch.float32).to(device)
-
-    # TODO : only keep part of the data ; to remove for the final evaluation
-    # nrows, ncols, ncoils, nframes = subsampled_slice.shape
-    # subsampled_slice = subsampled_slice[: nrows // 4, : ncols // 4, :]
-    # subsampled_mask = subsampled_mask[: nrows // 4, : ncols // 4]
-
-    # TODO: Prepare the mask
 
     # Build the models
     nrows, ncols, ncoils, nframes = subsampled_slice.shape
@@ -140,7 +136,10 @@ def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx, results_dir):
         "per_level_scale": 2,
         "interpolation": "Linear",
     }
-    image_model = utils.ComplexNGP(encoding_image, n_inputs=3, n_outputs=1).to(device)
+    mlp_image = {"n_hidden_units": 32, "n_hidden_layers": 2}
+    image_model = utils.ComplexNGP(
+        n_inputs=3, n_outputs=1, encoding_cfg=encoding_image, mlp_cfg=mlp_image
+    ).to(device)
 
     # Build the Coil Sensitivity Map network
     encoding_csm = {
@@ -153,7 +152,10 @@ def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx, results_dir):
         "per_level_scale": 1.1,
         "interpolation": "Linear",
     }
-    csm_model = utils.ComplexNGP(encoding_csm, n_inputs=3, n_outputs=ncoils).to(device)
+    mlp_csm = {"n_hidden_units": 32, "n_hidden_layers": 2}
+    csm_model = utils.ComplexNGP(
+        n_inputs=3, n_outputs=ncoils, encoding_cfg=encoding_csm, mlp_cfg=mlp_csm
+    ).to(device)
 
     # Built the optimizers and losses
     optim_image = torch.optim.Adam(image_model.parameters(), lr=lr)
@@ -193,13 +195,20 @@ def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx, results_dir):
 
             # Compute the loss with the reconstruction loss
             # and the regularization loss
-            masked_pred_kspace = torch.view_as_real(fft_pre_intensity[subsampled_mask == 1])
+            masked_pred_kspace = torch.view_as_real(
+                fft_pre_intensity[subsampled_mask == 1]
+            )
             masked_kspace = torch.view_as_real(subsampled_slice[subsampled_mask == 1])
 
             kspace_loss_value = kspace_loss(masked_pred_kspace, masked_kspace)
             reg_loss_value = reg_loss(pre_intensity)
             loss = kspace_loss_value + reg_weight * reg_loss_value
-            pbar.set_postfix({"TV": reg_loss_value.item(), "Data consistency Loss": kspace_loss_value.item()})
+            pbar.set_postfix(
+                {
+                    "TV": reg_loss_value.item(),
+                    "Data consistency Loss": kspace_loss_value.item(),
+                }
+            )
 
             # Zero grad, backward and update
             optim_image.zero_grad()
@@ -227,11 +236,15 @@ def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx, results_dir):
         # Unsqueeze over the coil dimension to apply the same scaling for every coil
         csm = csm / (csm_norm.unsqueeze(-1) + 1e-12)
 
-        fft_pre_intensity = FFT(pre_intensity.unsqueeze(axis=-1) * csm)  # (Nrows, Ncols, Nframes, Ncoils)
+        fft_pre_intensity = FFT(
+            pre_intensity.unsqueeze(axis=-1) * csm
+        )  # (Nrows, Ncols, Nframes, Ncoils)
 
         recon_kspace = torch.clone(fft_pre_intensity)
         # Keep the input k-space untouched
-        recon_kspace[subsampled_mask == 1] = subsampled_slice[subsampled_mask == 1].transpose(1, 2)
+        recon_kspace[subsampled_mask == 1] = subsampled_slice[
+            subsampled_mask == 1
+        ].transpose(1, 2)
         # Compute the image for the reconstructed k-space
         recon_img = IFFT(recon_kspace)
 
@@ -239,36 +252,45 @@ def infer_on_slice(subsampled_slice, subsampled_mask, slice_idx, results_dir):
         fused_recon_img = (recon_img * torch.conj(csm)).sum(axis=-1)
 
         # Plot the reconstruction with the contributions of all the coils
-        img = fused_recon_img.abs() / fused_recon_img.abs().max()
-        img = img.cpu() #  (Nrows, Ncols, Nframes)
+        scale_factor = fused_recon_img.abs().max()
+        img = fused_recon_img.abs() / scale_factor
+        img = img.cpu()  #  (Nrows, Ncols, Nframes)
 
         frame_idx = 0
 
         h = plt.figure()
-        plt.imshow(img[:,:, frame_idx], cmap="gray")
-        plt.savefig(f"slice_{slice_idx}_frame_{frame_idx}.png", bbox_inches="tight")
+        plt.imshow(img[:, :, frame_idx], cmap="gray")
+        plt.savefig(
+            str(results_dir / f"slice_{slice_idx}_frame_{frame_idx}.png"),
+            bbox_inches="tight",
+        )
         plt.close(h)
 
-        # Plot, for evey coil, side by side, the k-space to 
+        # Plot, for evey coil, side by side, the k-space to
         # predict and the predicted k-space
         # TODO
 
         # Plot, for evey coil, the predicted image
         for coil_idx in range(recon_img.shape[3]):
-            img = recon_img[:, :, frame_idx, coil_idx].abs().cpu()
+            img = (recon_img[:, :, frame_idx, coil_idx].abs() / scale_factor).cpu()
             h = plt.figure()
-            plt.imshow(img, cmap="gray")
-            plt.savefig(f"slice_{slice_idx}_frame_{frame_idx}_coil_{coil_idx}.png", bbox_inches="tight")
+            plt.imshow(img, cmap="gray", clim=[0, 1])
+            plt.savefig(
+                str(
+                    results_dir
+                    / f"slice_{slice_idx}_frame_{frame_idx}_coil_{coil_idx}.png"
+                ),
+                bbox_inches="tight",
+            )
             plt.close(h)
 
 
-def train(rootdir, acc_factor, view):
+def train(rootdir, acc_factor, view, training_cfg):
     dataset = MICCAI2023(
         rootdir=rootdir,
         view=view,
         acc_factor=acc_factor,
     )
-
 
     # Take a random sample
     # sample_idx = random.randint(0, len(dataset) - 1)
@@ -276,9 +298,17 @@ def train(rootdir, acc_factor, view):
 
     # Prepare the directory in which to store the results
     patient_path = dataset.patients[sample_idx]
-    results_dir = pathlib.Path('./results') / patient_path.name
-    logging.info(f"I will save the results into {results_dir}")
+    results_dir = pathlib.Path("./results") / patient_path.name
 
+    # Prepare the results directory, rm if already exists
+    if results_dir.exists():
+        logging.info(f"Removing {results_dir} as it already exists")
+        shutil.rmtree(results_dir)
+
+    logging.info(f"Results will be saved into {results_dir}")
+    results_dir.mkdir(parents=True)
+
+    # Get the sample
     subsampled_data, subsampled_mask, fullsampled_data = dataset[sample_idx]
 
     # Subsampled_data and fullsampled_data are (kx, ky, sc, sz, t)
@@ -301,14 +331,18 @@ def train(rootdir, acc_factor, view):
         images = IFFT(torch.tensor(subsampled_slice, dtype=torch.complex64))
 
         # Combine the coils in the image space with the RSS
-        coils_combined = (images.abs()**2).sum(axis=2).sqrt()
+        coils_combined = (images.abs() ** 2).sum(axis=2).sqrt()
         norm_factor = coils_combined.max()
-        logging.debug(f"For slice {slice_idx}, using the normalization factor {norm_factor}")
+        logging.debug(
+            f"For slice {slice_idx}, using the normalization factor {norm_factor}"
+        )
 
         subsampled_slice = subsampled_slice / norm_factor.item()
 
         # Perform inference on this slice
-        pred_fullsampled_slice = infer_on_slice(subsampled_slice, subsampled_mask, slice_idx, results_dir)
+        pred_fullsampled_slice = infer_on_slice(
+            subsampled_slice, subsampled_mask, slice_idx, results_dir, training_cfg
+        )
 
         # TODO: Compute the metrics (SNR/SSIM)
 
@@ -338,8 +372,20 @@ if __name__ == "__main__":
         type=CINEView.__getitem__,
         help="View of the cine MRI data (SAX, LAX)",
     )
-    view = CINEView.LAX
+
+    # Some training parameters
+    parser.add_argument(
+        "--lr", default=0.01, help="The base learning rate for the optimizer"
+    )
+    parser.add_argument(
+        "--iter", default=512, help="The number of training iterations per slice"
+    )
+    parser.add_argument(
+        "--reg_weight", default=4.0, help="The weights of the TV loss in the total loss"
+    )
 
     args = parser.parse_args()
 
-    train(args.rootdir, args.acc_factor, args.view)
+    training_cfg = {"lr": args.lr, "iter": args.iter, "reg_weight": args.reg_weight}
+
+    train(args.rootdir, args.acc_factor, args.view, training_cfg)

@@ -49,17 +49,14 @@ class ComplexNGP(nn.Module):
     input coordinates.
 
     Arguments:
-        encoding_cfg (dict): Configuration for the encoding
         n_inputs (int): Number of input coordinates (e.g. 3 for x, y, t)
+        n_outputs (int): Number of output values (e.g. 1 for a scalar field)
+        encoding_cfg (dict): Configuration for the encoding
+        mlp_config (dict): Configuration for the MLP after the encoding
     """
 
-    def __init__(self, encoding_cfg, n_inputs, n_outputs):
+    def __init__(self, n_inputs, n_outputs, encoding_cfg, mlp_cfg):
         super().__init__()
-
-        n_hidden_units = 64
-        n_hidden_layers = 4
-        self.cdtype = torch.complex64
-        hidden_activation = c_nn.modReLU
 
         # The input layer uses a hash encoding
         self.hash_encoder = tcnn.Encoding(n_inputs, encoding_cfg)
@@ -69,6 +66,11 @@ class ComplexNGP(nn.Module):
 
         # And then comes the FFNN with dense layers based
         # on the above coordinate encoding
+        n_hidden_units = mlp_cfg["n_hidden_units"]
+        n_hidden_layers = mlp_cfg["n_hidden_layers"]
+        hidden_activation = c_nn.modReLU
+        self.cdtype = torch.complex64
+
         layers = []
         input_dim = output_hash_encoding
         for _ in range(n_hidden_layers - 1):
@@ -93,6 +95,8 @@ def test_ngp():
     n_inputs = 3
     n_outputs = 4
     model = ComplexNGP(
+        n_inputs=n_inputs,
+        n_outputs=n_outputs,
         encoding_cfg={
             "otype": "Grid",
             "type": "Hash",
@@ -103,8 +107,7 @@ def test_ngp():
             "per_level_scale": 2,
             "interpolation": "Linear",
         },
-        n_inputs=n_inputs,
-        n_outputs=n_outputs,
+        mlp_cfg={"n_hidden_units": 32, "n_hidden_layers": 2},
     )
     model = model.to(device)
 

@@ -332,8 +332,8 @@ def train(rootdir, acc_factor, view, training_cfg):
     )
 
     # Take a random sample
-    # sample_idx = random.randint(0, len(dataset) - 1)
-    sample_idx = 0
+    sample_idx = random.randint(0, len(dataset) - 1)
+    # sample_idx = 0
 
     # Prepare the directory in which to store the results
     patient_path = dataset.patients[sample_idx]

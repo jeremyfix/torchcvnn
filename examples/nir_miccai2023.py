@@ -29,7 +29,7 @@ This example is based on the paper (Hemidi et al., 2023) "CineJENSE: Simultaneou
 
 This example requires additional dependencies
 
-    python -m pip install torchcvnn tqdm
+    python -m pip install torchcvnn tqdm matplotlib
     python -m pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
 
 And you need some data.
@@ -244,13 +244,14 @@ def infer_on_slice(subsampled_slice, subsampled_mask):
 
 def train(rootdir, acc_factor, view):
     dataset = MICCAI2023(
-        rootdir="/home/fix_jer/Datasets/MICCAIChallenge2023/ChallengeData/",
+        rootdir=rootdir,
         view=view,
         acc_factor=acc_factor,
     )
 
     # Take a random sample
-    sample_idx = random.randint(0, len(dataset) - 1)
+    # sample_idx = random.randint(0, len(dataset) - 1)
+    sample_idx = 0
 
     subsampled_data, subsampled_mask, fullsampled_data = dataset[sample_idx]
     print(np.unique(subsampled_mask))
@@ -291,7 +292,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--acc_factor",
-        default=AccFactor.ACC8,
+        default=AccFactor.ACC4,
         type=AccFactor.__getitem__,
         help="Acceleration factor (ACC4, ACC8, ACC10)",
     )

@@ -1,6 +1,6 @@
 # MIT License
 
-# Copyright (c) 2023 Jérémie Levi, Victor Dhédin, Jeremy Fix
+# Copyright (c) 2024 Quentin Gabot
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-__version__ = "0.7.0"
+# External imports
+import torch
+import numpy as np
 
-"""
-# Torchcvnn
+# Local imports
+import torchcvnn.nn as c_nn
 
-This provides several modules (layers, activation functions) suitable for
-optimizing complex valued neural networks with the pytorch framework.
-"""
+
+def test_complex_mse_loss():
+    loss = c_nn.ComplexMSELoss()
+    y_pred = torch.tensor([1 + 1j, 2 + 2j], dtype=torch.complex64)
+    y_true = torch.tensor([1 + 2j, 2 + 3j], dtype=torch.complex64)
+    output = loss(y_pred, y_true)
+    expected_outputs = torch.ones_like(output)
+    assert torch.allclose(output, expected_outputs)
+
+
+if __name__ == "__main__":
+    test_complex_mse_loss()

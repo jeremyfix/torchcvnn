@@ -23,10 +23,12 @@
 from .pooling import MaxPool2d, AvgPool2d
 from .dropout import Dropout, Dropout2d
 from .conv import ConvTranspose2d
-from .batchnorm import BatchNorm2d
+from .batchnorm import BatchNorm1d, BatchNorm2d
 from .upsampling import Upsample
+from .normalization import LayerNorm
 from .transformer import TransformerEncoder, TransformerEncoderLayer
 from . import initialization as init
+from .loss import ComplexMSELoss
 from .activation import (
     CReLU,
     CPReLU,

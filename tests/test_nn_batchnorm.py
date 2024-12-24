@@ -86,6 +86,27 @@ def time_inv_sqrt():
     print(el1, el2)
 
 
+def test_batchnorm1d():
+    B, C = 20, 16
+    m = c_nn.BatchNorm1d(C)
+
+    x = torch.randn((B, C), dtype=torch.complex64)
+    output = m(x)
+
+    # Compute the variance/covariance
+    xc = output.transpose(0, 1).reshape(C, -1)  # C, B
+    mus = xc.mean(axis=-1)  # 16 means
+    xc_real = torch.view_as_real(xc)
+    covs = bn.batch_cov(xc_real)  # 16 covariances matrices
+
+    # All the mus must be 0's
+    # For some reasons, this is not exactly 0
+    assert torch.allclose(mus, torch.zeros_like(mus), atol=1e-7)
+    # All the covs must be identities
+    id_cov = 0.5 * torch.eye(2).tile(C, 1, 1)
+    assert torch.allclose(covs, id_cov, atol=1e-7)
+
+
 def test_batchnorm2d():
     B, C, H, W = 20, 16, 50, 100
     m = c_nn.BatchNorm2d(C)
@@ -111,4 +132,5 @@ if __name__ == "__main__":
     test_inv()
     test_inv_sqrt()
     # time_inv_sqrt()
+    test_batchnorm1d()
     test_batchnorm2d()

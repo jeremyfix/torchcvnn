@@ -24,11 +24,11 @@
 import torch
 
 # Local imports
-import torchcvnn.nn as nn_c
+import torchcvnn.nn as c_nn
 
 
 def test_mpool2d():
-    mpool = nn_c.MaxPool2d(kernel_size=2, stride=2, padding=0)
+    mpool = c_nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
 
     N = 10
     inputs = torch.tensor([[i + j * 1j for i in range(N)] for j in range(N)])
@@ -49,7 +49,7 @@ def test_mpool2d():
 
 
 def test_avgpool2d():
-    avgpool = nn_c.AvgPool2d(kernel_size=3, stride=1, padding=1)
+    avgpool = c_nn.AvgPool2d(kernel_size=3, stride=1, padding=1)
 
     N = 10
     inputs = torch.tensor([[i + j * 1j for i in range(N)] for j in range(N)])

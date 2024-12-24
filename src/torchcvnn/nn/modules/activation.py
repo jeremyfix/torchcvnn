@@ -20,10 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Standard imports
+from typing import Optional
 
 # External imports
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+
+# Local imports
+from torchcvnn.nn import functional as c_F
 
 
 class IndependentRealImag(nn.Module):
@@ -288,8 +294,11 @@ class Cardioid(nn.Module):
         return 0.5 * (1 + torch.cos(z.angle())) * z
 
 
-class MultiheadAttention(nn.Module):
+class ScaledDotProduct(nn.Module):
     r"""
+
+    This class is adapted from torch.nn.MultiheadAttention to support complex valued tensors.
+
     Allows the model to jointly attend to information from different
     representation subspaces as described in the paper
     [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
@@ -307,6 +316,12 @@ class MultiheadAttention(nn.Module):
         kdim: Total number of features for keys. Default `None` which uses `kdim=embed_dim`
         vdim: Total number of features for keys. Default `None` which uses `vdim=embed_dim`
         batch_first: If `True`, then the input and output tensors are provided as (batch, seq, feature). Default `False` with tensors as (seq, batch, feature)
+
+    Note:
+        With pytorch 2.2.1, applying the MultiheadAttention to a complex valued tensor,
+        calls torch.nn.functional.scaled_dot_product_attention which raises
+        an exception "softmax_lastdim_kernel_impl" not implemented for 'ComplexFloat'
+
     """
 
     def __init__(
@@ -315,17 +330,182 @@ class MultiheadAttention(nn.Module):
         num_heads: int,
         dropout: float = 0.0,
         bias: bool = True,
+        add_bias_kv=False,
+        add_zero_attn=False,
         kdim: int = None,
         vdim: int = None,
         batch_first: bool = False,
         device: torch.device = None,
         dtype: torch.dtype = torch.complex64,
     ):
+        factory_kwargs = {"device": device, "dtype": dtype}
         super().__init__()
+        self.embed_dim = embed_dim
+        self.kdim = kdim if kdim is not None else embed_dim
+        self.vdim = vdim if vdim is not None else embed_dim
+        self._qkv_same_embed_dim = self.kdim == embed_dim and self.vdim == embed_dim
+
+        self.num_heads = num_heads
+        self.dropout = dropout
+        self.batch_first = batch_first
+        self.head_dim = embed_dim // num_heads
+        assert (
+            self.head_dim * num_heads == self.embed_dim
+        ), "embed_dim must be divisible by num_heads"
+
+        if not self._qkv_same_embed_dim:
+            self.q_proj_weight = torch.nn.parameter.Parameter(
+                torch.empty((embed_dim, embed_dim), **factory_kwargs)
+            )
+            self.k_proj_weight = torch.nn.parameter.Parameter(
+                torch.empty((embed_dim, self.kdim), **factory_kwargs)
+            )
+            self.v_proj_weight = torch.nn.parameter.Parameter(
+                torch.empty((embed_dim, self.vdim), **factory_kwargs)
+            )
+            self.register_parameter("in_proj_weight", None)
+        else:
+            self.in_proj_weight = torch.nn.parameter.Parameter(
+                torch.empty((3 * embed_dim, embed_dim), **factory_kwargs)
+            )
+            self.register_parameter("q_proj_weight", None)
+            self.register_parameter("k_proj_weight", None)
+            self.register_parameter("v_proj_weight", None)
+
+        if bias:
+            self.in_proj_bias = torch.nn.parameter.Parameter(
+                torch.empty(3 * embed_dim, **factory_kwargs)
+            )
+        else:
+            self.register_parameter("in_proj_bias", None)
+
+        self.out_proj = torch.nn.Linear(
+            embed_dim, embed_dim, bias=bias, **factory_kwargs
+        )
+
+        if add_bias_kv:
+            self.bias_k = torch.nn.parameter.Parameter(
+                torch.empty((1, 1, embed_dim), **factory_kwargs)
+            )
+            self.bias_v = torch.nn.parameter.Parameter(
+                torch.empty((1, 1, embed_dim), **factory_kwargs)
+            )
+        else:
+            self.bias_k = self.bias_v = None
+
+        self.add_zero_attn = add_zero_attn
+        if bias:
+            self.in_proj_bias = torch.nn.parameter.Parameter(
+                torch.empty(3 * embed_dim, **factory_kwargs)
+            )
+
+        self._reset_parameters()
+
+    def _reset_parameters(self):
+        # TODO
         pass
 
-    def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor):
+    def forward(
+        self,
+        query: torch.Tensor,
+        key: torch.Tensor,
+        value: torch.Tensor,
+        key_padding_mask: Optional[torch.Tensor] = None,
+        need_weights: bool = True,
+        attn_mask: Optional[torch.Tensor] = None,
+        average_attn_weights: bool = True,
+        is_causal: bool = False,
+    ) -> torch.Tensor:
         """
-        Performs the forward pass
+        Computes attention outputs using query, key and value embeddings.
+
+        Supports optional parameters for padding, masks and attention weights.
         """
-        return torch.nn.functional.scaled_dot_product_attention(query, key, value)
+
+        is_batched = query.dim() == 3
+
+        if key_padding_mask is not None:
+            raise NotImplementedError("key_padding_mask is not supported yet")
+        # key_padding_mask = F._canonical_mask(
+        #     mask=key_padding_mask,
+        #     mask_name="key_padding_mask",
+        #     other_type=F._none_or_dtype(attn_mask),
+        #     other_name="attn_mask",
+        #     target_type=query.dtype, # To adapt because query.dtype is complex
+        # )
+
+        if attn_mask is not None:
+            raise NotImplementedError("attn_mask is not supported yet")
+        # attn_mask = F._canonical_mask(
+        #     mask=attn_mask,
+        #     mask_name="attn_mask",
+        #     other_type=None,
+        #     other_name="",
+        #     target_type=query.dtype, # To adapt because query.dtype is complex
+        #     check_other=False,
+        # )
+
+        if self.batch_first and is_batched:
+            # These steps prevent multiple transpose on the same tensors
+            # for example when using self-attention
+            if key is value:
+                if query is key:
+                    query = key = value = query.transpose(1, 0)
+                else:
+                    query, key = (x.transpose(1, 0) for x in (query, key))
+                    key = value
+            else:
+                query, key, value = (x.transpose(1, 0) for x in (query, key, value))
+
+        if not self._qkv_same_embed_dim:
+            attn_output, attn_output_weights = c_F.multi_head_attention_forward(
+                query,
+                key,
+                value,
+                self.embed_dim,
+                self.num_heads,
+                self.in_proj_weight,
+                self.in_proj_bias,
+                self.bias_k,
+                self.bias_v,
+                self.add_zero_attn,
+                self.dropout,
+                self.out_proj.weight,
+                self.out_proj.bias,
+                training=self.training,
+                key_padding_mask=key_padding_mask,
+                need_weights=need_weights,
+                attn_mask=attn_mask,
+                use_separate_proj_weight=True,
+                q_proj_weight=self.q_proj_weight,
+                k_proj_weight=self.k_proj_weight,
+                v_proj_weight=self.v_proj_weight,
+                average_attn_weights=average_attn_weights,
+                is_causal=is_causal,
+            )
+        else:
+            attn_output, attn_output_weights = c_F.multi_head_attention_forward(
+                query,
+                key,
+                value,
+                self.embed_dim,
+                self.num_heads,
+                self.in_proj_weight,
+                self.in_proj_bias,
+                self.bias_k,
+                self.bias_v,
+                self.add_zero_attn,
+                self.dropout,
+                self.out_proj.weight,
+                self.out_proj.bias,
+                training=self.training,
+                key_padding_mask=key_padding_mask,
+                need_weights=need_weights,
+                attn_mask=attn_mask,
+                average_attn_weights=average_attn_weights,
+                is_causal=is_causal,
+            )
+        if self.batch_first and is_batched:
+            return attn_output.transpose(1, 0), attn_output_weights
+        else:
+            return attn_output, attn_output_weights

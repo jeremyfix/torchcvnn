@@ -43,5 +43,5 @@ from .activation import (
     Mod,
     modReLU,
     Cardioid,
-    MultiheadAttention,
+    ScaledDotProduct,
 )

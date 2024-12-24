@@ -294,7 +294,7 @@ class Cardioid(nn.Module):
         return 0.5 * (1 + torch.cos(z.angle())) * z
 
 
-class ScaledDotProduct(nn.Module):
+class MultiheadAttention(nn.Module):
     r"""
 
     This class is adapted from torch.nn.MultiheadAttention to support complex valued tensors.

@@ -30,6 +30,7 @@ import torch.nn as nn
 # Local imports
 from .activation import CReLU, MultiheadAttention
 from .dropout import Dropout
+from .normalization import LayerNorm
 
 
 class TransformerEncoderLayer(nn.Module):
@@ -73,12 +74,12 @@ class TransformerEncoderLayer(nn.Module):
 
     Examples::
         >>> encoder_layer = nn.TransformerEncoderLayer(d_model=512, nhead=8)
-        >>> src = torch.rand(10, 32, 512)
+        >>> src = torch.rand(10, 32, 512, dtype=torch.complex64)
         >>> out = encoder_layer(src)
 
     Alternatively, when ``batch_first`` is ``True``:
         >>> encoder_layer = nn.TransformerEncoderLayer(d_model=512, nhead=8, batch_first=True)
-        >>> src = torch.rand(32, 10, 512)
+        >>> src = torch.rand(32, 10, 512, dtype=torch.complex64)
         >>> out = encoder_layer(src)
 
     """
@@ -96,10 +97,11 @@ class TransformerEncoderLayer(nn.Module):
         bias: bool = True,
         device: torch.device = None,
         dtype: torch.dtype = torch.complex64,
+        attn_module=MultiheadAttention,
     ) -> None:
         factory_kwargs = {"device": device, "dtype": dtype}
         super().__init__()
-        self.self_attn = MultiheadAttention(
+        self.self_attn = attn_module(
             d_model,
             nhead,
             dropout=dropout,
@@ -119,6 +121,51 @@ class TransformerEncoderLayer(nn.Module):
         self.dropout2 = Dropout(dropout)
 
         self.activation = activation()
+
+    def forward(
+        self,
+        src: torch.Tensor,
+        src_mask: Optional[torch.Tensor] = None,
+        src_key_padding_mask: Optional[torch.Tensor] = None,
+        is_causal: bool = False,
+    ) -> torch.Tensor:
+
+        x = src
+        if self.norm_first:
+            x = x + self._sa_block(
+                self.norm1(x), src_mask, src_key_padding_mask, is_causal
+            )
+            x = x + self._ff_block(self.norm2(x))
+        else:
+            x = x + self._sa_block(x, src_mask, src_key_padding_mask, is_causal)
+            x = self.norm1(x)
+            x = x + self._ff_block(x)
+            x = self.norm2(x)
+
+        return x
+
+    def _sa_block(
+        self,
+        x: torch.Tensor,
+        attn_mask: Optional[torch.Tensor],
+        key_padding_mask: Optional[torch.Tensor],
+        is_causal: bool,
+    ) -> torch.Tensor:
+        x = self.self_attn(
+            x,
+            x,
+            x,
+            attn_mask=attn_mask,
+            key_padding_mask=key_padding_mask,
+            need_weights=False,
+            is_causal=is_causal,
+        )[0]
+        x = self.dropout1(x)
+        return x
+
+    def _ff_block(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.linear2(self.dropout(self.activation(self.linear1(x))))
+        return self.dropout2(x)
 
 
 class TransformerEncoder(nn.Module):

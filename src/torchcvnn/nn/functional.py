@@ -70,7 +70,7 @@ def multi_head_attention_forward(
 
     This function is adapted from pytorch torch.nn.functional.multi_head_attention_forward
 
-    See :class:`torchcvnn.nn.ScaledDotProduct` for details.
+    See :class:`torchcvnn.nn.MultiheadAttention` for details.
 
     Args:
         query, key, value: map a query and a set of key-value pairs to an output.

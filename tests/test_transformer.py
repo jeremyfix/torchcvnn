@@ -27,6 +27,43 @@ import torch
 import torchcvnn.nn as c_nn
 
 
+def test_multihead_scaleddotproduct_selfattention():
+    nhead = 8
+    seq_len = 10
+    batch_size = 32
+    num_features = 512
+
+    multihead_attn = c_nn.MultiheadAttention(embed_dim=num_features, num_heads=nhead)
+    src = torch.rand(seq_len, batch_size, num_features, dtype=torch.complex64)
+    out = multihead_attn(src, src, src)
+
+    assert out.shape == (seq_len, batch_size, num_features)
+
+
+def test_multihead_scaleddotproduct():
+    nheads = 8
+
+    src_seq_len = 10
+    tgt_seq_len = 20
+
+    embed_dim = 16  # multiple of nheads, so that head_dim = embed_dim // nheads
+    kdim = 12
+    vdim = 13
+
+    batch_size = 32
+
+    query = torch.rand(tgt_seq_len, batch_size, embed_dim, dtype=torch.complex64)
+    key = torch.rand(src_seq_len, batch_size, kdim, dtype=torch.complex64)
+    value = torch.rand(src_seq_len, batch_size, vdim, dtype=torch.complex64)
+
+    multihead_attn = c_nn.MultiheadAttention(
+        embed_dim=embed_dim, num_heads=nheads, kdim=kdim, vdim=vdim
+    )
+    attn_output, attn_output_weights = multihead_attn(query, key, value)
+
+    assert attn_output.shape == (tgt_seq_len, batch_size, embed_dim)
+
+
 def test_transformer_encoder_layer():
     nhead = 8
     seq_len = 10
@@ -34,10 +71,18 @@ def test_transformer_encoder_layer():
     num_features = 512
 
     encoder_layer = c_nn.TransformerEncoderLayer(d_model=num_features, nhead=nhead)
-    src = torch.rand(seq_len, batch_size, num_features)
+    src = torch.rand(seq_len, batch_size, num_features, dtype=torch.complex64)
     out = encoder_layer(src)
 
-    assert out.shape(seq_len, batch_size, num_features)
+    assert out.shape == (seq_len, batch_size, num_features)
+
+    encoder_layer = c_nn.TransformerEncoderLayer(
+        d_model=num_features, nhead=nhead, batch_first=True
+    )
+    src = torch.rand(batch_size, seq_len, num_features, dtype=torch.complex64)
+    out = encoder_layer(src)
+
+    assert out.shape == (batch_size, seq_len, num_features)
 
 
 def test_transformer_encoder():
@@ -58,5 +103,7 @@ def test_transformer_encoder():
 
 
 if __name__ == "__main__":
+    # test_multihead_scaleddotproduct_selfattention()
+    test_multihead_scaleddotproduct()
     test_transformer_encoder_layer()
-    test_transformer_encoder()
+    # test_transformer_encoder()

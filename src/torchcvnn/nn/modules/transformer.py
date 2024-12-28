@@ -26,6 +26,12 @@ from typing import Union, Callable, Optional
 # External imports
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+from torch.nn.modules.transformer import (
+    _get_clones,
+    _get_seq_len,
+    _detect_is_causal_mask,
+)
 
 # Local imports
 from .activation import CReLU, MultiheadAttention
@@ -188,13 +194,14 @@ class TransformerEncoder(nn.Module):
 
     def __init__(
         self,
-        encoder_layer,
-        num_layers,
-        norm=None,
-        mask_check=True,
+        encoder_layer: nn.Module,
+        num_layers: int,
+        norm: Optional[nn.Module] = None,
     ):
         super().__init__()
-        # TODO
+        self.layers = _get_clones(encoder_layer, num_layers)
+        self.num_layers = num_layers
+        self.norm = norm
 
     def forward(
         self,
@@ -220,7 +227,43 @@ class TransformerEncoder(nn.Module):
         Shape:
             see the docs in Transformer class.
         """
-        pass
+        src_key_padding_mask = F._canonical_mask(
+            mask=src_key_padding_mask,
+            mask_name="src_key_padding_mask",
+            other_type=F._none_or_dtype(mask),
+            other_name="mask",
+            target_type=src.dtype,
+        )
+
+        mask = F._canonical_mask(
+            mask=mask,
+            mask_name="mask",
+            other_type=None,
+            other_name="",
+            target_type=src.dtype,
+            check_other=False,
+        )
+
+        output = src
+        first_layer = self.layers[0]
+        src_key_padding_mask_for_layers = src_key_padding_mask
+        batch_first = first_layer.self_attn.batch_first
+
+        seq_len = _get_seq_len(src, batch_first)
+        is_causal = _detect_is_causal_mask(mask, is_causal, seq_len)
+
+        for mod in self.layers:
+            output = mod(
+                output,
+                src_mask=mask,
+                is_causal=is_causal,
+                src_key_padding_mask=src_key_padding_mask_for_layers,
+            )
+
+        if self.norm is not None:
+            output = self.norm(output)
+
+        return output
 
 
 class Transformer(nn.Module):

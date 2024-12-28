@@ -96,14 +96,11 @@ def test_transformer_encoder():
 
     src = torch.randn((seq_len, batch_size, num_features), dtype=torch.complex64)
     out = transformer_encoder(src)
-    assert out.shape == (
-        seq_len,
-        batch_size,
-    )
+    assert out.shape == (seq_len, batch_size, num_features)
 
 
 if __name__ == "__main__":
     # test_multihead_scaleddotproduct_selfattention()
     test_multihead_scaleddotproduct()
     test_transformer_encoder_layer()
-    # test_transformer_encoder()
+    test_transformer_encoder()

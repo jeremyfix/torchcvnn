@@ -362,6 +362,9 @@ def multi_head_attention_forward(
 
     # This is the "if need_weights" from the original pytorch code
     # We just adapt the case where the weights are needed
+    # Indeed, since we are using specific implementations for computing
+    # attention for the complex valued case, we cannot use the optimized versions
+    # of the original pytorch code (flash attention or others)
     _B, _Nt, E = q.shape
     q_scaled = q * math.sqrt(1.0 / float(E))
 

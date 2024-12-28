@@ -128,6 +128,11 @@ class TransformerEncoderLayer(nn.Module):
 
         self.activation = activation()
 
+    def __setstate__(self, state):
+        super().__setstate__(state)
+        if not hasattr(self, "activation"):
+            self.activation = CReLU()
+
     def forward(
         self,
         src: torch.Tensor,

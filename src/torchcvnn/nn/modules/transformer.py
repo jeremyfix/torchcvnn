@@ -38,6 +38,7 @@ from torch.nn.modules.transformer import (
 from .activation import CReLU, MultiheadAttention
 from .dropout import Dropout
 from .normalization import LayerNorm
+from .initialization import complex_xavier_uniform_
 
 
 class TransformerEncoderLayer(nn.Module):
@@ -128,6 +129,16 @@ class TransformerEncoderLayer(nn.Module):
         self.dropout2 = Dropout(dropout)
 
         self.activation = activation()
+
+        self._reset_parameters()
+
+    def _reset_parameters(self):
+        complex_xavier_uniform_(self.linear1.weight)
+        if self.linear1.bias is not None:
+            nn.init.constant_(self.linear1.bias, 0)
+        complex_xavier_uniform_(self.linear2.weight)
+        if self.linear2.bias is not None:
+            nn.init.constant_(self.linear2.bias, 0)
 
     def __setstate__(self, state):
         super().__setstate__(state)
@@ -363,6 +374,16 @@ class TransformerDecoderLayer(nn.Module):
 
         self.activation = activation()
 
+        self._reset_parameters()
+
+    def _reset_parameters(self):
+        complex_xavier_uniform_(self.linear1.weight)
+        if self.linear1.bias is not None:
+            nn.init.constant_(self.linear1.bias, 0)
+        complex_xavier_uniform_(self.linear2.weight)
+        if self.linear2.bias is not None:
+            nn.init.constant_(self.linear2.bias, 0)
+
     # Adapted from Pytorch TransformerDecoderLayer
     # with CReLU instead of ReLU
     def __setstate__(self, state):
@@ -545,8 +566,6 @@ class Transformer(nn.Module):
             decoder_layer, num_decoder_layers, decoder_norm
         )
 
-        self._reset_parameters()
-
         self.d_model = d_model
         self.nhead = nhead
 
@@ -583,7 +602,3 @@ class Transformer(nn.Module):
             memory_is_causal=memory_is_causal,
         )
         return output
-
-    def _reset_parameters(self):
-        # TODO
-        pass

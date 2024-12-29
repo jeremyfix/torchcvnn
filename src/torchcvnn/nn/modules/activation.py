@@ -30,6 +30,7 @@ import torch.nn.functional as F
 
 # Local imports
 from torchcvnn.nn import functional as c_F
+from .initialization import complex_xavier_uniform_
 
 
 class IndependentRealImag(nn.Module):
@@ -402,8 +403,20 @@ class MultiheadAttention(nn.Module):
         self._reset_parameters()
 
     def _reset_parameters(self):
-        # TODO
-        pass
+        if self._qkv_same_embed_dim:
+            complex_xavier_uniform_(self.in_proj_weight)
+        else:
+            complex_xavier_uniform_(self.q_proj_weight)
+            complex_xavier_uniform_(self.k_proj_weight)
+            complex_xavier_uniform_(self.v_proj_weight)
+
+        if self.in_proj_bias is not None:
+            torch.nn.init.constant_(self.in_proj_bias, 0.0)
+            torch.nn.init.constant_(self.out_proj.bias, 0.0)
+        if self.bias_k is not None:
+            torch.nn.init.constant_(self.bias_k, 0.0)
+        if self.bias_v is not None:
+            torch.nn.init.constant_(self.bias_v, 0.0)
 
     def forward(
         self,

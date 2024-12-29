@@ -31,6 +31,7 @@ from torch.nn.modules.transformer import (
     _get_clones,
     _get_seq_len,
     _detect_is_causal_mask,
+    TransformerEncoder,
     TransformerDecoder,
 )
 
@@ -190,105 +191,6 @@ class TransformerEncoderLayer(nn.Module):
     def _ff_block(self, x: torch.Tensor) -> torch.Tensor:
         x = self.linear2(self.dropout(self.activation(self.linear1(x))))
         return self.dropout2(x)
-
-
-class TransformerEncoder(nn.Module):
-    r"""TransformerEncoder is a stack of N encoder layers.
-
-    Adapted from Pytorch :py:class:`torch.nn.TransformerEncoder`.
-
-    Args:
-        encoder_layer: an instance of the TransformerEncoderLayer() class (required).
-        num_layers: the number of sub-encoder-layers in the encoder (required).
-        norm: the layer normalization component (optional).
-
-    Examples:
-
-        .. code-block:: python
-
-            import torchcvnn as c_nn
-            import torch
-
-            encoder_layer = c_nn.TransformerEncoderLayer(d_model=512, nhead=8)
-            transformer_encoder = c_nn.TransformerEncoder(encoder_layer, num_layers=6)
-            src = torch.rand(10, 32, 512, dtype=torch.complex64)
-            out = transformer_encoder(src)
-    """
-
-    def __init__(
-        self,
-        encoder_layer: nn.Module,
-        num_layers: int,
-        norm: Optional[nn.Module] = None,
-    ):
-        super().__init__()
-        self.layers = _get_clones(encoder_layer, num_layers)
-        self.num_layers = num_layers
-        self.norm = norm
-
-    def forward(
-        self,
-        src: torch.Tensor,
-        mask: Optional[torch.Tensor] = None,
-        src_key_padding_mask: Optional[torch.Tensor] = None,
-        is_causal: Optional[bool] = None,
-    ) -> torch.Tensor:
-        r"""Pass the input through the encoder layers in turn.
-
-        src_key_padding_mask is not yet supported
-
-        Args:
-            src: the sequence to the encoder (required).
-            mask: the mask for the src sequence (optional).
-            src_key_padding_mask: the mask for the src keys per batch (optional).
-            is_causal: If specified, applies a causal mask as ``mask``.
-                Default: ``None``; try to detect a causal mask.
-                Warning:
-                ``is_causal`` provides a hint that ``mask`` is the
-                causal mask. Providing incorrect hints can result in
-                incorrect execution, including forward and backward
-                compatibility.
-
-        Shape:
-            see the docs in Transformer class.
-        """
-        src_key_padding_mask = F._canonical_mask(
-            mask=src_key_padding_mask,
-            mask_name="src_key_padding_mask",
-            other_type=F._none_or_dtype(mask),
-            other_name="mask",
-            target_type=src.dtype,
-        )
-
-        mask = F._canonical_mask(
-            mask=mask,
-            mask_name="mask",
-            other_type=None,
-            other_name="",
-            target_type=src.dtype,
-            check_other=False,
-        )
-
-        output = src
-        first_layer = self.layers[0]
-        src_key_padding_mask_for_layers = src_key_padding_mask
-        batch_first = first_layer.self_attn.batch_first
-
-        seq_len = _get_seq_len(src, batch_first)
-        is_causal = _detect_is_causal_mask(mask, is_causal, seq_len)
-
-        for mod in self.layers:
-            output = mod(
-                output,
-                src_mask=mask,
-                is_causal=is_causal,
-                src_key_padding_mask=src_key_padding_mask_for_layers,
-            )
-
-        if self.norm is not None:
-            output = self.norm(output)
-
-        return output
 
 
 class TransformerDecoderLayer(nn.Module):

@@ -22,7 +22,7 @@
 
 # External imports
 import torch
-from torch.nn.modules.transformer import TransformerDecoder
+from torch.nn.modules.transformer import TransformerDecoder, TransformerEncoder
 
 # Local imports
 import torchcvnn.nn as c_nn
@@ -136,7 +136,7 @@ def test_transformer_encoder():
     num_features = 512
 
     encoder_layer = c_nn.TransformerEncoderLayer(d_model=num_features, nhead=nhead)
-    transformer_encoder = c_nn.TransformerEncoder(encoder_layer, num_layers=4)
+    transformer_encoder = TransformerEncoder(encoder_layer, num_layers=4)
 
     src = torch.randn((seq_len, batch_size, num_features), dtype=torch.complex64)
     out = transformer_encoder(src)

@@ -127,65 +127,50 @@ def test_multiheadattention():
     kdim = 8
     vdim = 9
     num_heads = 3
-    batch_first = True
 
-    rmha = torch.nn.MultiheadAttention(
-        embed_dim, num_heads, batch_first=batch_first, kdim=kdim, vdim=vdim
-    )
+    for batch_first in [True, False]:
 
-    query = torch.randn(
-        (batch_size, target_seq_len, embed_dim)
-        if batch_first
-        else (target_seq_len, batch_size, embed_dim),
-    )
-    key = torch.randn(
-        (batch_size, source_seq_len, kdim)
-        if batch_first
-        else (source_seq_len, batch_size, kdim),
-    )
-    value = torch.randn(
-        (batch_size, source_seq_len, vdim)
-        if batch_first
-        else (source_seq_len, batch_size, vdim),
-    )
-    output = rmha(query, key, value)
-    print(output[0].shape)  # batch_size, target_seq_len, embed_dim
+        mha = c_nn.MultiheadAttention(
+            embed_dim, num_heads, batch_first=batch_first, kdim=kdim, vdim=vdim
+        )
 
-    mha = c_nn.MultiheadAttention(
-        embed_dim, num_heads, batch_first=batch_first, kdim=kdim, vdim=vdim
-    )
+        query = torch.randn(
+            (
+                (batch_size, target_seq_len, embed_dim)
+                if batch_first
+                else (target_seq_len, batch_size, embed_dim)
+            ),
+            dtype=torch.complex64,
+        )
+        key = torch.randn(
+            (
+                (batch_size, source_seq_len, kdim)
+                if batch_first
+                else (source_seq_len, batch_size, kdim)
+            ),
+            dtype=torch.complex64,
+        )
+        value = torch.randn(
+            (
+                (batch_size, source_seq_len, vdim)
+                if batch_first
+                else (source_seq_len, batch_size, vdim)
+            ),
+            dtype=torch.complex64,
+        )
 
-    query = torch.randn(
-        (batch_size, target_seq_len, embed_dim)
-        if batch_first
-        else (target_seq_len, batch_size, embed_dim),
-        dtype=torch.complex64,
-    )
-    key = torch.randn(
-        (batch_size, source_seq_len, kdim)
-        if batch_first
-        else (source_seq_len, batch_size, kdim),
-        dtype=torch.complex64,
-    )
-    value = torch.randn(
-        (batch_size, source_seq_len, vdim)
-        if batch_first
-        else (source_seq_len, batch_size, vdim),
-        dtype=torch.complex64,
-    )
+        # Check for the forward pass
+        # Ensure it runs without exception
+        output = mha(query, key, value)
 
-    # Check for the forward pass
-    # Ensure it runs without exception
-    output = mha(query, key, value)
+        expected_output_shape = (
+            [batch_size, target_seq_len, embed_dim]
+            if batch_first
+            else [target_seq_len, batch_size, embed_dim]
+        )
 
-    expected_output_shape = (
-        [batch_size, target_seq_len, embed_dim]
-        if batch_first
-        else [target_seq_len, batch_size, embed_dim]
-    )
-
-    # Check for the shape
-    assert list(output.shape) == expected_output_shape
+        # Check for the shape
+        assert list(output[0].shape) == expected_output_shape
 
 
 if __name__ == "__main__":

@@ -91,7 +91,6 @@ Transformer layers
    :toctree: _autosummary
 
    Transformer
-   TransformerEncoder
    TransformerEncoderLayer
    TransformerDecoderLayer
 

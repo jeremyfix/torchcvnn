@@ -22,6 +22,7 @@
 
 # External imports
 import torch
+from torch.nn.modules.transformer import TransformerDecoder
 
 # Local imports
 import torchcvnn.nn as c_nn
@@ -35,12 +36,13 @@ def test_multihead_scaleddotproduct_selfattention():
 
     multihead_attn = c_nn.MultiheadAttention(embed_dim=num_features, num_heads=nhead)
     src = torch.rand(seq_len, batch_size, num_features, dtype=torch.complex64)
-    out = multihead_attn(src, src, src)
+    attn_output, attn_output_weights = multihead_attn(src, src, src)
 
-    assert out.shape == (seq_len, batch_size, num_features)
+    assert attn_output.shape == (seq_len, batch_size, num_features)
 
 
 def test_multihead_scaleddotproduct():
+    print("test_multihead_scaleddotproduct")
     nheads = 8
 
     src_seq_len = 10
@@ -52,6 +54,7 @@ def test_multihead_scaleddotproduct():
 
     batch_size = 32
 
+    # Batch_first = False
     query = torch.rand(tgt_seq_len, batch_size, embed_dim, dtype=torch.complex64)
     key = torch.rand(src_seq_len, batch_size, kdim, dtype=torch.complex64)
     value = torch.rand(src_seq_len, batch_size, vdim, dtype=torch.complex64)
@@ -62,6 +65,19 @@ def test_multihead_scaleddotproduct():
     attn_output, attn_output_weights = multihead_attn(query, key, value)
 
     assert attn_output.shape == (tgt_seq_len, batch_size, embed_dim)
+
+    # Batch_first = True
+    query = torch.rand(batch_size, tgt_seq_len, embed_dim, dtype=torch.complex64)
+    key = torch.rand(batch_size, src_seq_len, kdim, dtype=torch.complex64)
+    value = torch.rand(batch_size, src_seq_len, vdim, dtype=torch.complex64)
+
+    multihead_attn = c_nn.MultiheadAttention(
+        embed_dim=embed_dim, num_heads=nheads, kdim=kdim, vdim=vdim, batch_first=True
+    )
+
+    attn_output, attn_output_weights = multihead_attn(query, key, value)
+
+    assert attn_output.shape == (batch_size, tgt_seq_len, embed_dim)
 
 
 def test_transformer_encoder_layer():
@@ -99,8 +115,52 @@ def test_transformer_encoder():
     assert out.shape == (seq_len, batch_size, num_features)
 
 
+def test_transformer_decoder_layer():
+    print("test_transformer_decoder_layer")
+    nhead = 8
+    src_seq_len = 10
+    tgt_seq_len = 20
+    batch_size = 32
+    num_features = 512
+
+    decoder_layer = c_nn.TransformerDecoderLayer(d_model=num_features, nhead=nhead)
+    memory = torch.rand(src_seq_len, batch_size, num_features, dtype=torch.complex64)
+    tgt = torch.rand(tgt_seq_len, batch_size, num_features, dtype=torch.complex64)
+    out = decoder_layer(tgt, memory)
+
+    assert out.shape == (tgt_seq_len, batch_size, num_features)
+
+    decoder_layer = c_nn.TransformerDecoderLayer(
+        d_model=num_features, nhead=nhead, batch_first=True
+    )
+    memory = torch.rand(batch_size, src_seq_len, num_features, dtype=torch.complex64)
+    tgt = torch.rand(batch_size, tgt_seq_len, num_features, dtype=torch.complex64)
+    out = decoder_layer(tgt, memory)
+    print(out.shape)
+
+    assert out.shape == (batch_size, tgt_seq_len, num_features)
+
+
+def test_transformer_decoder():
+    nhead = 8
+    src_seq_len = 10
+    tgt_seq_len = 20
+    batch_size = 32
+    num_features = 512
+
+    decoder_layer = c_nn.TransformerDecoderLayer(d_model=num_features, nhead=nhead)
+    transformer_decoder = TransformerDecoder(decoder_layer, num_layers=4)
+    memory = torch.rand((src_seq_len, batch_size, num_features), dtype=torch.complex64)
+    tgt = torch.rand((tgt_seq_len, batch_size, num_features), dtype=torch.complex64)
+    out = transformer_decoder(tgt, memory)
+
+    assert out.shape == (tgt_seq_len, batch_size, num_features)
+
+
 if __name__ == "__main__":
-    # test_multihead_scaleddotproduct_selfattention()
+    test_multihead_scaleddotproduct_selfattention()
     test_multihead_scaleddotproduct()
     test_transformer_encoder_layer()
     test_transformer_encoder()
+    test_transformer_decoder_layer()
+    test_transformer_decoder()

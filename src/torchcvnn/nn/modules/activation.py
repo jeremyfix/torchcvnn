@@ -309,6 +309,17 @@ class MultiheadAttention(nn.Module):
 
     where :math:`head_i = \mbox{Attention}(Q W^Q_i, KW^K_i, VW^V_i)`
 
+
+    This implementation is based on the paper **Building blocks for a complex-valued
+    transformer architecture**. Florian Eilers, Xiaoyi Jiang. 2023. In International Conference on Acoustics, Speech,
+    and Signal Processing (ICASSP).
+
+    Attention is defined as follows:
+
+    .. math::
+
+        \mbox{Attention}(Q, K, V) = \\Re[\\frac{Q K^H}{\sqrt{d_k}}]V
+
     Arguments:
         embed_dim: Total dimension of the model.
         num_heads: Number of parallel heads. Note that `embed_dim` will be split accross `num_heads` (i.e. each head will have dimension `embed_dim // num_heads`)
@@ -317,10 +328,6 @@ class MultiheadAttention(nn.Module):
         vdim: Total number of features for keys. Default `None` which uses `vdim=embed_dim`
         batch_first: If `True`, then the input and output tensors are provided as (batch, seq, feature). Default `False` with tensors as (seq, batch, feature)
 
-    Note:
-        With pytorch 2.2.1, applying the MultiheadAttention to a complex valued tensor,
-        calls torch.nn.functional.scaled_dot_product_attention which raises
-        an exception "softmax_lastdim_kernel_impl" not implemented for 'ComplexFloat'
 
     Example:
 

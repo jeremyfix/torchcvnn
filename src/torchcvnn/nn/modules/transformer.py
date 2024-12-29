@@ -44,34 +44,23 @@ from .initialization import complex_xavier_uniform_
 class TransformerEncoderLayer(nn.Module):
     r"""TransformerEncoderLayer is made up of self-attn and feedforward network.
 
-    This class is adapted from pytorch TransformerEncoderLayer
+    This class is adapted from pytorch :py:class:`torch.nn.TransformerEncoderLayer`
 
-    This standard encoder layer is based on the paper "Attention Is All You Need".
+    This standard encoder layer is based on the paper **Attention Is All You Need**.
     Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez,
     Lukasz Kaiser, and Illia Polosukhin. 2017. Attention is all you need. In Advances in
     Neural Information Processing Systems, pages 6000-6010. Users may modify or implement
     in a different way during application.
 
-    TransformerEncoderLayer can handle either traditional torch.tensor inputs,
-    or Nested Tensor inputs.  Derived classes are expected to similarly accept
-    both input formats.  (Not all combinations of inputs are currently
-    supported by TransformerEncoderLayer while Nested Tensor is in prototype
-    state.)
-
     If you are implementing a custom layer, you may derive it either from
-    the Module or TransformerEncoderLayer class.  If your custom layer
-    supports both torch.Tensors and Nested Tensors inputs, make its
-    implementation a derived class of TransformerEncoderLayer. If your custom
-    Layer supports only torch.Tensor inputs, derive its implementation from
-    Module.
+    the Module or TransformerEncoderLayer class.
 
     Args:
         d_model: the number of expected features in the input (required).
         nhead: the number of heads in the multiheadattention models (required).
         dim_feedforward: the dimension of the feedforward network model (default=2048).
         dropout: the dropout value (default=0.1).
-        activation: the activation function of the intermediate layer, can be a string
-            ("relu" or "gelu") or a unary callable. Default: relu
+        activation: the activation function of the intermediate layer. Default: :py:class:`CReLU`
         layer_norm_eps: the eps value in layer normalization components (default=1e-5).
         batch_first: If ``True``, then the input and output tensors are provided
             as (batch, seq, feature). Default: ``False`` (seq, batch, feature).
@@ -80,15 +69,27 @@ class TransformerEncoderLayer(nn.Module):
         bias: If set to ``False``, ``Linear`` and ``LayerNorm`` layers will not learn an additive
             bias. Default: ``True``.
 
-    Examples::
-        >>> encoder_layer = nn.TransformerEncoderLayer(d_model=512, nhead=8)
-        >>> src = torch.rand(10, 32, 512, dtype=torch.complex64)
-        >>> out = encoder_layer(src)
+    Examples:
 
-    Alternatively, when ``batch_first`` is ``True``:
-        >>> encoder_layer = nn.TransformerEncoderLayer(d_model=512, nhead=8, batch_first=True)
-        >>> src = torch.rand(32, 10, 512, dtype=torch.complex64)
-        >>> out = encoder_layer(src)
+        .. code-block:: python
+
+            import torchcvnn as c_nn
+            import torch
+
+            encoder_layer = c_nn.TransformerEncoderLayer(d_model=512, nhead=8)
+            src = torch.rand(10, 32, 512, dtype=torch.complex64)
+            out = encoder_layer(src)
+
+        Alternatively, when ``batch_first`` is ``True``:
+
+        .. code-block:: python
+
+            import torchcvnn as c_nn
+            import torch
+
+            encoder_layer = c_nn.TransformerEncoderLayer(d_model=512, nhead=8, batch_first=True)
+            src = torch.rand(32, 10, 512, dtype=torch.complex64)
+            out = encoder_layer(src)
 
     """
 
@@ -194,19 +195,24 @@ class TransformerEncoderLayer(nn.Module):
 class TransformerEncoder(nn.Module):
     r"""TransformerEncoder is a stack of N encoder layers.
 
-    Adapted from Pytorch TransformerEncoder.
+    Adapted from Pytorch :py:class:`torch.nn.TransformerEncoder`.
 
     Args:
         encoder_layer: an instance of the TransformerEncoderLayer() class (required).
         num_layers: the number of sub-encoder-layers in the encoder (required).
         norm: the layer normalization component (optional).
-        mask_check: TODO
 
-    Examples::
-        >>> encoder_layer = nn.TransformerEncoderLayer(d_model=512, nhead=8)
-        >>> transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers=6)
-        >>> src = torch.rand(10, 32, 512)
-        >>> out = transformer_encoder(src)
+    Examples:
+
+        .. code-block:: python
+
+            import torchcvnn as c_nn
+            import torch
+
+            encoder_layer = c_nn.TransformerEncoderLayer(d_model=512, nhead=8)
+            transformer_encoder = c_nn.TransformerEncoder(encoder_layer, num_layers=6)
+            src = torch.rand(10, 32, 512, dtype=torch.complex64)
+            out = transformer_encoder(src)
     """
 
     def __init__(
@@ -228,6 +234,8 @@ class TransformerEncoder(nn.Module):
         is_causal: Optional[bool] = None,
     ) -> torch.Tensor:
         r"""Pass the input through the encoder layers in turn.
+
+        src_key_padding_mask is not yet supported
 
         Args:
             src: the sequence to the encoder (required).
@@ -286,9 +294,9 @@ class TransformerEncoder(nn.Module):
 class TransformerDecoderLayer(nn.Module):
     r"""TransformerDecoderLayer is made up of self-attn, multi-head-attn and feedforward network.
 
-    Adapted from Pytorch TransformerDecoderLayer.
+    Adapted from Pytorch :py:class:`torch.nn.TransformerDecoderLayer`.
 
-    This standard decoder layer is based on the paper "Attention Is All You Need".
+    This standard decoder layer is based on the paper **Attention Is All You Need**.
     Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez,
     Lukasz Kaiser, and Illia Polosukhin. 2017. Attention is all you need. In Advances in
     Neural Information Processing Systems, pages 6000-6010. Users may modify or implement
@@ -299,8 +307,7 @@ class TransformerDecoderLayer(nn.Module):
         nhead: the number of heads in the multiheadattention models (required).
         dim_feedforward: the dimension of the feedforward network model (default=2048).
         dropout: the dropout value (default=0.1).
-        activation: the activation function of the intermediate layer, can be a string
-            ("relu" or "gelu") or a unary callable. Default: relu
+        activation: the activation function of the intermediate layer. Default: :py:class:`CReLU`
         layer_norm_eps: the eps value in layer normalization components (default=1e-5).
         batch_first: If ``True``, then the input and output tensors are provided
             as (batch, seq, feature). Default: ``False`` (seq, batch, feature).
@@ -311,16 +318,28 @@ class TransformerDecoderLayer(nn.Module):
             bias. Default: ``True``.
 
     Examples::
-        >>> decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8)
-        >>> memory = torch.rand(10, 32, 512, dtype=torch.complex64)
-        >>> tgt = torch.rand(20, 32, 512, dtype=torch.complex64)
-        >>> out = decoder_layer(tgt, memory)
 
-    Alternatively, when ``batch_first`` is ``True``:
-        >>> decoder_layer = nn.TransformerDecoderLayer(d_model=512, nhead=8, batch_first=True)
-        >>> memory = torch.rand(32, 10, 512, dtype=torch.complex64)
-        >>> tgt = torch.rand(32, 20, 512, dtype=torch.complex64)
-        >>> out = decoder_layer(tgt, memory)
+        .. code-block:: python
+
+            import torchcvnn as c_nn
+            import torch
+
+            decoder_layer = c_nn.TransformerDecoderLayer(d_model=512, nhead=8)
+            memory = torch.rand(10, 32, 512, dtype=torch.complex64)
+            tgt = torch.rand(20, 32, 512, dtype=torch.complex64)
+            out = decoder_layer(tgt, memory)
+
+        Alternatively, when ``batch_first`` is ``True``:
+
+        .. code-block:: python
+
+            import torchcvnn as c_nn
+            import torch
+
+            decoder_layer = c_nn.TransformerDecoderLayer(d_model=512, nhead=8, batch_first=True)
+            memory = torch.rand(32, 10, 512, dtype=torch.complex64)
+            tgt = torch.rand(32, 20, 512, dtype=torch.complex64)
+            out = decoder_layer(tgt, memory)
     """
 
     __constants__ = ["norm_first"]
@@ -509,6 +528,54 @@ class TransformerDecoderLayer(nn.Module):
 
 
 class Transformer(nn.Module):
+    r"""A transformer model.
+
+    Adapted from :py:class:`torch.nn.Transformer`.
+
+    User is able to modify the attributes as needed. The architecture
+    is based on the paper **Attention Is All You Need**. Ashish Vaswani, Noam Shazeer,
+    Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz Kaiser, and
+    Illia Polosukhin. 2017. Attention is all you need. In Advances in Neural Information
+    Processing Systems, pages 6000-6010.
+
+
+    The :py:class:`MultiheadAttention` implementation is based on the paper **Building blocks for a complex-valued
+    transformer architecture**. Florian Eilers, Xiaoyi Jiang. 2023. In International Conference on Acoustics, Speech,
+    and Signal Processing (ICASSP).
+
+
+    Args:
+        d_model: the number of expected features in the encoder/decoder inputs (default=512).
+        nhead: the number of heads in the multiheadattention models (default=8).
+        num_encoder_layers: the number of sub-encoder-layers in the encoder (default=6).
+        num_decoder_layers: the number of sub-decoder-layers in the decoder (default=6).
+        dim_feedforward: the dimension of the feedforward network model (default=2048).
+        dropout: the dropout value (default=0.1).
+        activation: the activation function of encoder/decoder intermediate layer. Default: :py:class:`CReLU`.
+        custom_encoder: custom encoder (default=None).
+        custom_decoder: custom decoder (default=None).
+        layer_norm_eps: the eps value in layer normalization components (default=1e-5).
+        batch_first: If ``True``, then the input and output tensors are provided
+            as (batch, seq, feature). Default: ``False`` (seq, batch, feature).
+        norm_first: if ``True``, encoder and decoder layers will perform LayerNorms before
+            other attention and feedforward operations, otherwise after. Default: ``False`` (after).
+        bias: If set to ``False``, ``Linear`` and ``LayerNorm`` layers will not learn an additive
+            bias. Default: ``True``.
+
+    Examples:
+
+        .. code-block:: python
+
+            import torchcvnn as c_nn
+            import torch
+
+            transformer_model = c_nn.Transformer(nhead=16, num_encoder_layers=12)
+            src = torch.rand((10, 32, 512), dtype=torch.complex64)
+            tgt = torch.rand((20, 32, 512), dtype=torch.complex64)
+            out = transformer_model(src, tgt)
+
+    """
+
     def __init__(
         self,
         d_model: int = 512,

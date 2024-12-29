@@ -318,7 +318,7 @@ class MultiheadAttention(nn.Module):
 
     .. math::
 
-        \mbox{Attention}(Q, K, V) = \\Re[\\frac{Q K^H}{\sqrt{d_k}}]V
+        \mbox{Attention}(Q, K, V) = \sigma(\\Re[\\frac{Q K^H}{\sqrt{d_k}}])V
 
     Arguments:
         embed_dim: Total dimension of the model.

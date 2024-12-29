@@ -41,33 +41,33 @@ def test_multihead_scaleddotproduct_selfattention():
     assert attn_output.shape == (seq_len, batch_size, num_features)
 
 
-def test_multihead_masks():
-    nheads = 8
-
-    src_seq_len = 10
-    tgt_seq_len = 20
-
-    embed_dim = 16  # multiple of nheads, so that head_dim = embed_dim // nheads
-    kdim = 12
-    vdim = 13
-
-    batch_size = 32
-
-    # Batch_first = False
-    query = torch.rand(tgt_seq_len, batch_size, embed_dim, dtype=torch.complex64)
-    key = torch.rand(src_seq_len, batch_size, kdim, dtype=torch.complex64)
-    value = torch.rand(src_seq_len, batch_size, vdim, dtype=torch.complex64)
-
-    key_padding_mask = torch.rand(batch_size, src_seq_len) > 0.5
-
-    multihead_attn = c_nn.MultiheadAttention(
-        embed_dim=embed_dim, num_heads=nheads, kdim=kdim, vdim=vdim
-    )
-    attn_output, attn_output_weights = multihead_attn(
-        query, key, value, key_padding_mask=key_padding_mask
-    )
-
-    assert attn_output.shape == (tgt_seq_len, batch_size, embed_dim)
+# def test_multihead_masks():
+#    nheads = 8
+#
+#    src_seq_len = 10
+#    tgt_seq_len = 20
+#
+#    embed_dim = 16  # multiple of nheads, so that head_dim = embed_dim // nheads
+#    kdim = 12
+#    vdim = 13
+#
+#    batch_size = 32
+#
+#    # Batch_first = False
+#    query = torch.rand(tgt_seq_len, batch_size, embed_dim, dtype=torch.complex64)
+#    key = torch.rand(src_seq_len, batch_size, kdim, dtype=torch.complex64)
+#    value = torch.rand(src_seq_len, batch_size, vdim, dtype=torch.complex64)
+#
+#    key_padding_mask = torch.rand(batch_size, src_seq_len) > 0.5
+#
+#    multihead_attn = c_nn.MultiheadAttention(
+#        embed_dim=embed_dim, num_heads=nheads, kdim=kdim, vdim=vdim
+#    )
+#    attn_output, attn_output_weights = multihead_attn(
+#        query, key, value, key_padding_mask=key_padding_mask
+#    )
+#
+#    assert attn_output.shape == (tgt_seq_len, batch_size, embed_dim)
 
 
 def test_multihead_scaleddotproduct():

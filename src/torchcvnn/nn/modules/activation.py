@@ -453,7 +453,7 @@ class MultiheadAttention(nn.Module):
                     query = key = value = query.transpose(1, 0)
                 else:
                     query, key = (x.transpose(1, 0) for x in (query, key))
-                    key = value
+                    value = key
             else:
                 query, key, value = (x.transpose(1, 0) for x in (query, key, value))
 

@@ -26,7 +26,12 @@ from .conv import ConvTranspose2d
 from .batchnorm import BatchNorm1d, BatchNorm2d
 from .upsampling import Upsample
 from .normalization import LayerNorm
-from .transformer import TransformerEncoder, TransformerEncoderLayer
+from .transformer import (
+    TransformerEncoder,
+    TransformerEncoderLayer,
+    TransformerDecoderLayer,
+    Transformer,
+)
 from . import initialization as init
 from .loss import ComplexMSELoss
 from .activation import (

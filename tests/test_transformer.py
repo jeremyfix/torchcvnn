@@ -154,6 +154,30 @@ def test_transformer_decoder():
     assert out.shape == (tgt_seq_len, batch_size, num_features)
 
 
+def test_transformer():
+    nhead = 8
+    src_seq_len = 10
+    tgt_seq_len = 20
+    batch_size = 32
+    num_features = 512
+
+    transformer = c_nn.Transformer(d_model=num_features, nhead=nhead, batch_first=False)
+
+    src = torch.rand((src_seq_len, batch_size, num_features), dtype=torch.complex64)
+    tgt = torch.rand((tgt_seq_len, batch_size, num_features), dtype=torch.complex64)
+    out = transformer(src, tgt)
+
+    assert out.shape == (tgt_seq_len, batch_size, num_features)
+
+    transformer = c_nn.Transformer(d_model=num_features, nhead=nhead, batch_first=True)
+
+    src = torch.rand((batch_size, src_seq_len, num_features), dtype=torch.complex64)
+    tgt = torch.rand((batch_size, tgt_seq_len, num_features), dtype=torch.complex64)
+    out = transformer(src, tgt)
+
+    assert out.shape == (batch_size, tgt_seq_len, num_features)
+
+
 if __name__ == "__main__":
     test_multihead_scaleddotproduct_selfattention()
     test_multihead_scaleddotproduct()
@@ -161,3 +185,4 @@ if __name__ == "__main__":
     test_transformer_encoder()
     test_transformer_decoder_layer()
     test_transformer_decoder()
+    test_transformer()

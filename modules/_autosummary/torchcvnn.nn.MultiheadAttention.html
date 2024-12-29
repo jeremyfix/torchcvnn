@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="torchcvnn.nn.CGELU" href="torchcvnn.nn.CGELU.html" /><link rel="prev" title="torchcvnn.nn.CCELU" href="torchcvnn.nn.CCELU.html" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="torchcvnn.nn.BatchNorm2d" href="torchcvnn.nn.BatchNorm2d.html" /><link rel="prev" title="torchcvnn.nn.zReLU" href="torchcvnn.nn.zReLU.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>torchcvnn.nn.CELU - torchcvnn 0.7.0 documentation</title>
+        <title>torchcvnn.nn.MultiheadAttention - torchcvnn 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -212,7 +212,7 @@
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.AvgPool2d.html">torchcvnn.nn.AvgPool2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.Upsample.html">torchcvnn.nn.Upsample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CCELU.html">torchcvnn.nn.CCELU</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">torchcvnn.nn.CELU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CELU.html">torchcvnn.nn.CELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CGELU.html">torchcvnn.nn.CGELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CReLU.html">torchcvnn.nn.CReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CPReLU.html">torchcvnn.nn.CPReLU</a></li>
@@ -224,7 +224,7 @@
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.zAbsReLU.html">torchcvnn.nn.zAbsReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.zLeakyReLU.html">torchcvnn.nn.zLeakyReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.zReLU.html">torchcvnn.nn.zReLU</a></li>
-<li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.MultiheadAttention.html">torchcvnn.nn.MultiheadAttention</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">torchcvnn.nn.MultiheadAttention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.BatchNorm2d.html">torchcvnn.nn.BatchNorm2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.BatchNorm1d.html">torchcvnn.nn.BatchNorm1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.LayerNorm.html">torchcvnn.nn.LayerNorm</a></li>
@@ -259,12 +259,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/jeremyfix/torchcvnn/blob/main/docs/source/modules/_autosummary/torchcvnn.nn.CELU.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/jeremyfix/torchcvnn/blob/main/docs/source/modules/_autosummary/torchcvnn.nn.MultiheadAttention.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/jeremyfix/torchcvnn/edit/main/docs/source/modules/_autosummary/torchcvnn.nn.CELU.rst" title="Edit this page">
+  <a class="muted-link" href="https://github.com/jeremyfix/torchcvnn/edit/main/docs/source/modules/_autosummary/torchcvnn.nn.MultiheadAttention.rst" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -283,18 +283,58 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="torchcvnn-nn-celu">
-<h1>torchcvnn.nn.CELU<a class="headerlink" href="#torchcvnn-nn-celu" title="Link to this heading">¶</a></h1>
+          <section id="torchcvnn-nn-multiheadattention">
+<h1>torchcvnn.nn.MultiheadAttention<a class="headerlink" href="#torchcvnn-nn-multiheadattention" title="Link to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="torchcvnn.nn.CELU">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchcvnn.nn.</span></span><span class="sig-name descname"><span class="pre">CELU</span></span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/activation.html#CELU"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.CELU" title="Link to this definition">¶</a></dt>
-<dd><p>Applies a ELU independently on both the real and imaginary parts</p>
-<p>Not to confuse with <cite>torch.nn.CELU</cite>. For the complex equivalent of
-<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.CELU.html#torch.nn.CELU" title="(in PyTorch v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.CELU</span></code></a>, see <a class="reference internal" href="torchcvnn.nn.CCELU.html#torchcvnn.nn.CCELU" title="torchcvnn.nn.modules.activation.CCELU"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchcvnn.nn.modules.activation.CCELU</span></code></a></p>
-<p><span class="math notranslate nohighlight">\(CELU(z) = ELU(\Re[z]) + ELU(\Im[z])j\)</span></p>
+<dt class="sig sig-object py" id="torchcvnn.nn.MultiheadAttention">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchcvnn.nn.</span></span><span class="sig-name descname"><span class="pre">MultiheadAttention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_bias_kv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_zero_attn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kdim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.5)"><span class="pre">device</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="(in PyTorch v2.5)"><span class="pre">dtype</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">torch.complex64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/activation.html#MultiheadAttention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.MultiheadAttention" title="Link to this definition">¶</a></dt>
+<dd><p>This class is adapted from torch.nn.MultiheadAttention to support complex valued tensors.</p>
+<p>Allows the model to jointly attend to information from different
+representation subspaces as described in the paper
+[Attention Is All You Need](<a class="reference external" href="https://arxiv.org/abs/1706.03762">https://arxiv.org/abs/1706.03762</a>)</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\mbox{MultiHead}(Q, K, V) = [head_1, \dots, head_h] W^O\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(head_i = \mbox{Attention}(Q W^Q_i, KW^K_i, VW^V_i)\)</span></p>
+<p>This implementation is based on the paper <strong>Building blocks for a complex-valued
+transformer architecture</strong>. Florian Eilers, Xiaoyi Jiang. 2023. In International Conference on Acoustics, Speech,
+and Signal Processing (ICASSP).</p>
+<p>Attention is defined as follows:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\mbox{Attention}(Q, K, V) = \sigma(\Re[\frac{Q K^H}{\sqrt{d_k}}])V\]</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embed_dim</strong> – Total dimension of the model.</p></li>
+<li><p><strong>num_heads</strong> – Number of parallel heads. Note that <cite>embed_dim</cite> will be split accross <cite>num_heads</cite> (i.e. each head will have dimension <cite>embed_dim // num_heads</cite>)</p></li>
+<li><p><strong>dropout</strong> – Dropout probability on <cite>attn_output_weights</cite>. Default: <cite>0.0</cite></p></li>
+<li><p><strong>kdim</strong> – Total number of features for keys. Default <cite>None</cite> which uses <cite>kdim=embed_dim</cite></p></li>
+<li><p><strong>vdim</strong> – Total number of features for keys. Default <cite>None</cite> which uses <cite>vdim=embed_dim</cite></p></li>
+<li><p><strong>batch_first</strong> – If <cite>True</cite>, then the input and output tensors are provided as (batch, seq, feature). Default <cite>False</cite> with tensors as (seq, batch, feature)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchcvnn</span> <span class="k">as</span> <span class="nn">c_nn</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="n">nhead</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">seq_len</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">num_features</span> <span class="o">=</span> <span class="mi">512</span>
+
+<span class="n">multihead_attn</span> <span class="o">=</span> <span class="n">c_nn</span><span class="o">.</span><span class="n">MultiheadAttention</span><span class="p">(</span><span class="n">embed_dim</span><span class="o">=</span><span class="n">num_features</span><span class="p">,</span> <span class="n">num_heads</span><span class="o">=</span><span class="n">nhead</span><span class="p">)</span>
+<span class="n">src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">seq_len</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_features</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+<span class="n">attn_output</span><span class="p">,</span> <span class="n">attn_output_weights</span> <span class="o">=</span> <span class="n">multihead_attn</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">src</span><span class="p">)</span>
+<span class="c1"># attn_output is (seq_len, batch_size, numè_features)</span>
+</pre></div>
+</div>
 <dl class="py method">
-<dt class="sig sig-object py" id="torchcvnn.nn.CELU.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/activation.html#CELU.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.CELU.__init__" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchcvnn.nn.MultiheadAttention.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_bias_kv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_zero_attn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kdim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.5)"><span class="pre">device</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="(in PyTorch v2.5)"><span class="pre">dtype</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">torch.complex64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/activation.html#MultiheadAttention.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.MultiheadAttention.__init__" title="Link to this definition">¶</a></dt>
 <dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
 </dd></dl>
 
@@ -302,7 +342,7 @@
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torchcvnn.nn.CELU.__init__" title="torchcvnn.nn.CELU.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#torchcvnn.nn.MultiheadAttention.__init__" title="torchcvnn.nn.MultiheadAttention.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(embed_dim, num_heads[, dropout, ...])</p></td>
 <td><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_module</span></code>(name, module)</p></td>
@@ -341,8 +381,8 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>()</p></td>
 <td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">float</span></code> datatype.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code>(z)</p></td>
-<td><p>Performs the forward pass</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code>(query, key, value[, ...])</p></td>
+<td><p>Computes attention outputs using query, key and value embeddings.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_buffer</span></code>(target)</p></td>
 <td><p>Return the buffer given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throw an error.</p></td>
@@ -486,23 +526,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="torchcvnn.nn.CGELU.html">
+          <a class="next-page" href="torchcvnn.nn.BatchNorm2d.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">torchcvnn.nn.CGELU</div>
+                <div class="title">torchcvnn.nn.BatchNorm2d</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="torchcvnn.nn.CCELU.html">
+          <a class="prev-page" href="torchcvnn.nn.zReLU.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">torchcvnn.nn.CCELU</div>
+                <div class="title">torchcvnn.nn.zReLU</div>
                 
               </div>
             </a>
@@ -543,9 +583,9 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">torchcvnn.nn.CELU</a><ul>
-<li><a class="reference internal" href="#torchcvnn.nn.CELU"><code class="docutils literal notranslate"><span class="pre">CELU</span></code></a><ul>
-<li><a class="reference internal" href="#torchcvnn.nn.CELU.__init__"><code class="docutils literal notranslate"><span class="pre">CELU.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#">torchcvnn.nn.MultiheadAttention</a><ul>
+<li><a class="reference internal" href="#torchcvnn.nn.MultiheadAttention"><code class="docutils literal notranslate"><span class="pre">MultiheadAttention</span></code></a><ul>
+<li><a class="reference internal" href="#torchcvnn.nn.MultiheadAttention.__init__"><code class="docutils literal notranslate"><span class="pre">MultiheadAttention.__init__()</span></code></a></li>
 </ul>
 </li>
 </ul>

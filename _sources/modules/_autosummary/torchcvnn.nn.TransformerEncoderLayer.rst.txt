@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.TransformerEncoderLayer
+====================================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: TransformerEncoderLayer
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~TransformerEncoderLayer.__init__
+      ~TransformerEncoderLayer.add_module
+      ~TransformerEncoderLayer.apply
+      ~TransformerEncoderLayer.bfloat16
+      ~TransformerEncoderLayer.buffers
+      ~TransformerEncoderLayer.children
+      ~TransformerEncoderLayer.compile
+      ~TransformerEncoderLayer.cpu
+      ~TransformerEncoderLayer.cuda
+      ~TransformerEncoderLayer.double
+      ~TransformerEncoderLayer.eval
+      ~TransformerEncoderLayer.extra_repr
+      ~TransformerEncoderLayer.float
+      ~TransformerEncoderLayer.forward
+      ~TransformerEncoderLayer.get_buffer
+      ~TransformerEncoderLayer.get_extra_state
+      ~TransformerEncoderLayer.get_parameter
+      ~TransformerEncoderLayer.get_submodule
+      ~TransformerEncoderLayer.half
+      ~TransformerEncoderLayer.ipu
+      ~TransformerEncoderLayer.load_state_dict
+      ~TransformerEncoderLayer.modules
+      ~TransformerEncoderLayer.mtia
+      ~TransformerEncoderLayer.named_buffers
+      ~TransformerEncoderLayer.named_children
+      ~TransformerEncoderLayer.named_modules
+      ~TransformerEncoderLayer.named_parameters
+      ~TransformerEncoderLayer.parameters
+      ~TransformerEncoderLayer.register_backward_hook
+      ~TransformerEncoderLayer.register_buffer
+      ~TransformerEncoderLayer.register_forward_hook
+      ~TransformerEncoderLayer.register_forward_pre_hook
+      ~TransformerEncoderLayer.register_full_backward_hook
+      ~TransformerEncoderLayer.register_full_backward_pre_hook
+      ~TransformerEncoderLayer.register_load_state_dict_post_hook
+      ~TransformerEncoderLayer.register_load_state_dict_pre_hook
+      ~TransformerEncoderLayer.register_module
+      ~TransformerEncoderLayer.register_parameter
+      ~TransformerEncoderLayer.register_state_dict_post_hook
+      ~TransformerEncoderLayer.register_state_dict_pre_hook
+      ~TransformerEncoderLayer.requires_grad_
+      ~TransformerEncoderLayer.set_extra_state
+      ~TransformerEncoderLayer.set_submodule
+      ~TransformerEncoderLayer.share_memory
+      ~TransformerEncoderLayer.state_dict
+      ~TransformerEncoderLayer.to
+      ~TransformerEncoderLayer.to_empty
+      ~TransformerEncoderLayer.train
+      ~TransformerEncoderLayer.type
+      ~TransformerEncoderLayer.xpu
+      ~TransformerEncoderLayer.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~TransformerEncoderLayer.T_destination
+      ~TransformerEncoderLayer.call_super_init
+      ~TransformerEncoderLayer.dump_patches
+      ~TransformerEncoderLayer.training
+   
+   

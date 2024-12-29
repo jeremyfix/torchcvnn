@@ -66,6 +66,14 @@ The Type B activation functions take into account both the magnitude and phase o
     zReLU
 
 
+Attention
+^^^^^^^^^
+
+.. autosummary::
+   :toctree: _autosummary
+
+   MultiheadAttention
+
 Normalization layers
 --------------------
 
@@ -76,5 +84,17 @@ Normalization layers
    BatchNorm1d
    LayerNorm
 
+Transformer layers
+------------------
+
+.. autosummary::
+   :toctree: _autosummary
+
+   Transformer
+   TransformerEncoderLayer
+   TransformerDecoderLayer
+
 Dropout layers
 --------------
+
+

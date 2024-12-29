@@ -223,9 +223,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.zAbsReLU.html">torchcvnn.nn.zAbsReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.zLeakyReLU.html">torchcvnn.nn.zLeakyReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.zReLU.html">torchcvnn.nn.zReLU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.MultiheadAttention.html">torchcvnn.nn.MultiheadAttention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.BatchNorm2d.html">torchcvnn.nn.BatchNorm2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.BatchNorm1d.html">torchcvnn.nn.BatchNorm1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.LayerNorm.html">torchcvnn.nn.LayerNorm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.Transformer.html">torchcvnn.nn.Transformer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.TransformerEncoderLayer.html">torchcvnn.nn.TransformerEncoderLayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.TransformerDecoderLayer.html">torchcvnn.nn.TransformerDecoderLayer</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../modules/init.html">torchcvnn.nn.init</a></li>
@@ -318,6 +322,7 @@
 
 <span class="sd">    Arguments:</span>
 <span class="sd">        normalized_shape (int or list or torch.Size): input shape from an expected input of size :math:`(*, normalized_shape[0], normalized_shape[1], ..., normalized_shape[-1])`</span>
+<span class="sd">        eps (float) – a value added to the denominator for numerical stability. Default: 1e-5</span>
 <span class="sd">        elementwise_affine (bool): a boolean value that when set to `True`, this module has learnable per-element affine parameters initialized to a diagonal matrix with diagonal element :math:`\frac{1}{\sqrt{2}}` (for weights) and zeros (for biases). Default: `True`</span>
 <span class="sd">        bias (bool): if set to `False`, the layer will not learn an additive bias</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -327,6 +332,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">normalized_shape</span><span class="p">:</span> <span class="n">_shape_t</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
         <span class="n">elementwise_affine</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">bias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

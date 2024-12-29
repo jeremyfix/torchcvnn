@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="torchcvnn.nn.CGELU" href="torchcvnn.nn.CGELU.html" /><link rel="prev" title="torchcvnn.nn.CCELU" href="torchcvnn.nn.CCELU.html" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="torchcvnn.nn.TransformerDecoderLayer" href="torchcvnn.nn.TransformerDecoderLayer.html" /><link rel="prev" title="torchcvnn.nn.Transformer" href="torchcvnn.nn.Transformer.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>torchcvnn.nn.CELU - torchcvnn 0.7.0 documentation</title>
+        <title>torchcvnn.nn.TransformerEncoderLayer - torchcvnn 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -212,7 +212,7 @@
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.AvgPool2d.html">torchcvnn.nn.AvgPool2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.Upsample.html">torchcvnn.nn.Upsample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CCELU.html">torchcvnn.nn.CCELU</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">torchcvnn.nn.CELU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CELU.html">torchcvnn.nn.CELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CGELU.html">torchcvnn.nn.CGELU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CReLU.html">torchcvnn.nn.CReLU</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.CPReLU.html">torchcvnn.nn.CPReLU</a></li>
@@ -229,7 +229,7 @@
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.BatchNorm1d.html">torchcvnn.nn.BatchNorm1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.LayerNorm.html">torchcvnn.nn.LayerNorm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.Transformer.html">torchcvnn.nn.Transformer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.TransformerEncoderLayer.html">torchcvnn.nn.TransformerEncoderLayer</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">torchcvnn.nn.TransformerEncoderLayer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.TransformerDecoderLayer.html">torchcvnn.nn.TransformerDecoderLayer</a></li>
 </ul>
 </li>
@@ -259,12 +259,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/jeremyfix/torchcvnn/blob/main/docs/source/modules/_autosummary/torchcvnn.nn.CELU.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/jeremyfix/torchcvnn/blob/main/docs/source/modules/_autosummary/torchcvnn.nn.TransformerEncoderLayer.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/jeremyfix/torchcvnn/edit/main/docs/source/modules/_autosummary/torchcvnn.nn.CELU.rst" title="Edit this page">
+  <a class="muted-link" href="https://github.com/jeremyfix/torchcvnn/edit/main/docs/source/modules/_autosummary/torchcvnn.nn.TransformerEncoderLayer.rst" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -283,18 +283,59 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="torchcvnn-nn-celu">
-<h1>torchcvnn.nn.CELU<a class="headerlink" href="#torchcvnn-nn-celu" title="Link to this heading">¶</a></h1>
+          <section id="torchcvnn-nn-transformerencoderlayer">
+<h1>torchcvnn.nn.TransformerEncoderLayer<a class="headerlink" href="#torchcvnn-nn-transformerencoderlayer" title="Link to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="torchcvnn.nn.CELU">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchcvnn.nn.</span></span><span class="sig-name descname"><span class="pre">CELU</span></span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/activation.html#CELU"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.CELU" title="Link to this definition">¶</a></dt>
-<dd><p>Applies a ELU independently on both the real and imaginary parts</p>
-<p>Not to confuse with <cite>torch.nn.CELU</cite>. For the complex equivalent of
-<a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.CELU.html#torch.nn.CELU" title="(in PyTorch v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.CELU</span></code></a>, see <a class="reference internal" href="torchcvnn.nn.CCELU.html#torchcvnn.nn.CCELU" title="torchcvnn.nn.modules.activation.CCELU"><code class="xref py py-class docutils literal notranslate"><span class="pre">torchcvnn.nn.modules.activation.CCELU</span></code></a></p>
-<p><span class="math notranslate nohighlight">\(CELU(z) = ELU(\Re[z]) + ELU(\Im[z])j\)</span></p>
+<dt class="sig sig-object py" id="torchcvnn.nn.TransformerEncoderLayer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torchcvnn.nn.</span></span><span class="sig-name descname"><span class="pre">TransformerEncoderLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_model:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nhead:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_feedforward:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2048</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation:</span> <span class="pre">~torch.nn.modules.module.Module</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'torchcvnn.nn.modules.activation.CReLU'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_norm_eps:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_first:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_first:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device:</span> <span class="pre">~torch.device</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype:</span> <span class="pre">~torch.dtype</span> <span class="pre">=</span> <span class="pre">torch.complex64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attn_module=&lt;class</span> <span class="pre">'torchcvnn.nn.modules.activation.MultiheadAttention'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/transformer.html#TransformerEncoderLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.TransformerEncoderLayer" title="Link to this definition">¶</a></dt>
+<dd><p>TransformerEncoderLayer is made up of self-attn and feedforward network.</p>
+<p>This class is adapted from pytorch <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.TransformerEncoderLayer.html#torch.nn.TransformerEncoderLayer" title="(in PyTorch v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.TransformerEncoderLayer</span></code></a></p>
+<p>This standard encoder layer is based on the paper <strong>Attention Is All You Need</strong>.
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez,
+Lukasz Kaiser, and Illia Polosukhin. 2017. Attention is all you need. In Advances in
+Neural Information Processing Systems, pages 6000-6010. Users may modify or implement
+in a different way during application.</p>
+<p>If you are implementing a custom layer, you may derive it either from
+the Module or TransformerEncoderLayer class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_model</strong> – the number of expected features in the input (required).</p></li>
+<li><p><strong>nhead</strong> – the number of heads in the multiheadattention models (required).</p></li>
+<li><p><strong>dim_feedforward</strong> – the dimension of the feedforward network model (default=2048).</p></li>
+<li><p><strong>dropout</strong> – the dropout value (default=0.1).</p></li>
+<li><p><strong>activation</strong> – the activation function of the intermediate layer. Default: <a class="reference internal" href="torchcvnn.nn.CReLU.html#torchcvnn.nn.CReLU" title="torchcvnn.nn.CReLU"><code class="xref py py-class docutils literal notranslate"><span class="pre">CReLU</span></code></a></p></li>
+<li><p><strong>layer_norm_eps</strong> – the eps value in layer normalization components (default=1e-5).</p></li>
+<li><p><strong>batch_first</strong> – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then the input and output tensors are provided
+as (batch, seq, feature). Default: <code class="docutils literal notranslate"><span class="pre">False</span></code> (seq, batch, feature).</p></li>
+<li><p><strong>norm_first</strong> – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, layer norm is done prior to attention and feedforward
+operations, respectively. Otherwise it’s done after. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code> (after).</p></li>
+<li><p><strong>bias</strong> – If set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, <code class="docutils literal notranslate"><span class="pre">Linear</span></code> and <code class="docutils literal notranslate"><span class="pre">LayerNorm</span></code> layers will not learn an additive
+bias. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchcvnn</span> <span class="k">as</span> <span class="nn">c_nn</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="n">encoder_layer</span> <span class="o">=</span> <span class="n">c_nn</span><span class="o">.</span><span class="n">TransformerEncoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">encoder_layer</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, when <code class="docutils literal notranslate"><span class="pre">batch_first</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torchcvnn</span> <span class="k">as</span> <span class="nn">c_nn</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="n">encoder_layer</span> <span class="o">=</span> <span class="n">c_nn</span><span class="o">.</span><span class="n">TransformerEncoderLayer</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">complex64</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">encoder_layer</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py method">
-<dt class="sig sig-object py" id="torchcvnn.nn.CELU.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/activation.html#CELU.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.CELU.__init__" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="torchcvnn.nn.TransformerEncoderLayer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_model:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nhead:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_feedforward:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">2048</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation:</span> <span class="pre">~torch.nn.modules.module.Module</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'torchcvnn.nn.modules.activation.CReLU'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_norm_eps:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_first:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_first:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device:</span> <span class="pre">~torch.device</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype:</span> <span class="pre">~torch.dtype</span> <span class="pre">=</span> <span class="pre">torch.complex64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attn_module=&lt;class</span> <span class="pre">'torchcvnn.nn.modules.activation.MultiheadAttention'&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/torchcvnn/nn/modules/transformer.html#TransformerEncoderLayer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torchcvnn.nn.TransformerEncoderLayer.__init__" title="Link to this definition">¶</a></dt>
 <dd><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p>
 </dd></dl>
 
@@ -302,7 +343,7 @@
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torchcvnn.nn.CELU.__init__" title="torchcvnn.nn.CELU.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#torchcvnn.nn.TransformerEncoderLayer.__init__" title="torchcvnn.nn.TransformerEncoderLayer.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(d_model, nhead[, dim_feedforward, ...])</p></td>
 <td><p>Initialize internal Module state, shared by both nn.Module and ScriptModule.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_module</span></code>(name, module)</p></td>
@@ -341,8 +382,8 @@
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>()</p></td>
 <td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">float</span></code> datatype.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code>(z)</p></td>
-<td><p>Performs the forward pass</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code>(src[, src_mask, ...])</p></td>
+<td><p>Define the computation performed at every call.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_buffer</span></code>(target)</p></td>
 <td><p>Return the buffer given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throw an error.</p></td>
@@ -486,23 +527,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="torchcvnn.nn.CGELU.html">
+          <a class="next-page" href="torchcvnn.nn.TransformerDecoderLayer.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">torchcvnn.nn.CGELU</div>
+                <div class="title">torchcvnn.nn.TransformerDecoderLayer</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="torchcvnn.nn.CCELU.html">
+          <a class="prev-page" href="torchcvnn.nn.Transformer.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">torchcvnn.nn.CCELU</div>
+                <div class="title">torchcvnn.nn.Transformer</div>
                 
               </div>
             </a>
@@ -543,9 +584,9 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">torchcvnn.nn.CELU</a><ul>
-<li><a class="reference internal" href="#torchcvnn.nn.CELU"><code class="docutils literal notranslate"><span class="pre">CELU</span></code></a><ul>
-<li><a class="reference internal" href="#torchcvnn.nn.CELU.__init__"><code class="docutils literal notranslate"><span class="pre">CELU.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#">torchcvnn.nn.TransformerEncoderLayer</a><ul>
+<li><a class="reference internal" href="#torchcvnn.nn.TransformerEncoderLayer"><code class="docutils literal notranslate"><span class="pre">TransformerEncoderLayer</span></code></a><ul>
+<li><a class="reference internal" href="#torchcvnn.nn.TransformerEncoderLayer.__init__"><code class="docutils literal notranslate"><span class="pre">TransformerEncoderLayer.__init__()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -565,6 +606,5 @@
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>

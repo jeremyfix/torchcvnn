@@ -145,6 +145,11 @@ def multi_head_attention_forward(
           :math:`S` is the source sequence length. If ``average_attn_weights=False``, returns attention weights per
           head of shape :math:`(num_heads, L, S)` when input is unbatched or :math:`(N, num_heads, L, S)`.
     """
+    if key_padding_mask is not None:
+        raise NotImplementedError("key_padding_mask is not supported yet")
+    if attn_mask is not None:
+        raise NotImplementedError("attn_mask is not supported yet")
+
     is_batched = F._mha_shape_check(
         query, key, value, key_padding_mask, attn_mask, num_heads
     )

@@ -444,8 +444,11 @@ class MultiheadAttention(nn.Module):
         #     mask_name="key_padding_mask",
         #     other_type=F._none_or_dtype(attn_mask),
         #     other_name="attn_mask",
-        #     target_type=query.dtype, # To adapt because query.dtype is complex
+        #     target_type=query.dtype,  # Adapted because q is complex
         # )
+        # But
+        # F._canonical_mask raises an exception
+        # AssertionError: only bool and floating types of key_padding_mask are supported
 
         if attn_mask is not None:
             raise NotImplementedError("attn_mask is not supported yet")
@@ -454,7 +457,7 @@ class MultiheadAttention(nn.Module):
         #     mask_name="attn_mask",
         #     other_type=None,
         #     other_name="",
-        #     target_type=query.dtype, # To adapt because query.dtype is complex
+        #     target_type=query.dtype,  # Adapted because q is complex
         #     check_other=False,
         # )
 

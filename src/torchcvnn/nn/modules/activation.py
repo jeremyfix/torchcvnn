@@ -296,7 +296,7 @@ class Cardioid(nn.Module):
 
 
 class MultiheadAttention(nn.Module):
-    r"""
+    """
 
     This class is adapted from torch.nn.MultiheadAttention to support complex valued tensors.
 
@@ -304,14 +304,13 @@ class MultiheadAttention(nn.Module):
     representation subspaces as described in the paper
     [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
 
-    $$
-    \mbox{MultiHead}(Q, K, V) = [head_1, \dots, head_h] W^O
-    $$
+    .. math::
+        \mbox{MultiHead}(Q, K, V) = [head_1, \dots, head_h] W^O
 
-    where $head_i = \mbox{Attention}(Q W^Q_i, KW^K_i, VW^V_i)$
+    where :math:`head_i = \mbox{Attention}(Q W^Q_i, KW^K_i, VW^V_i)`
 
     Arguments:
-        embed_dim:
+        embed_dim: Total dimension of the model.
         num_heads: Number of parallel heads. Note that `embed_dim` will be split accross `num_heads` (i.e. each head will have dimension `embed_dim // num_heads`)
         dropout: Dropout probability on `attn_output_weights`. Default: `0.0`
         kdim: Total number of features for keys. Default `None` which uses `kdim=embed_dim`
@@ -322,6 +321,23 @@ class MultiheadAttention(nn.Module):
         With pytorch 2.2.1, applying the MultiheadAttention to a complex valued tensor,
         calls torch.nn.functional.scaled_dot_product_attention which raises
         an exception "softmax_lastdim_kernel_impl" not implemented for 'ComplexFloat'
+
+    Example:
+
+        .. code-block:: python
+
+            import torchcvnn as c_nn
+            import torch
+
+            nhead = 8
+            seq_len = 10
+            batch_size = 32
+            num_features = 512
+
+            multihead_attn = c_nn.MultiheadAttention(embed_dim=num_features, num_heads=nhead)
+            src = torch.rand(seq_len, batch_size, num_features, dtype=torch.complex64)
+            attn_output, attn_output_weights = multihead_attn(src, src, src)
+            # attn_output is (seq_len, batch_size, numè_features)
 
     """
 
@@ -432,7 +448,8 @@ class MultiheadAttention(nn.Module):
         """
         Computes attention outputs using query, key and value embeddings.
 
-        Supports optional parameters for padding, masks and attention weights.
+        This function is adapted from torch.nn.MultiheadAttention to support complex valued tensors. It keeps the same
+        signature but does not support yet key_padding_mask and attn_mask.
         """
 
         is_batched = query.dim() == 3

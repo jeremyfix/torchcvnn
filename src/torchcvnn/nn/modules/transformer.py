@@ -429,7 +429,6 @@ class TransformerDecoderLayer(nn.Module):
             x = self.norm1(
                 x + self._sa_block(x, tgt_mask, tgt_key_padding_mask, tgt_is_causal)
             )
-            print(f"Before mha block : {x.shape} and memory : {memory.shape}")
             x = self.norm2(
                 x
                 + self._mha_block(

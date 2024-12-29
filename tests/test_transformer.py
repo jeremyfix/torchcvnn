@@ -42,7 +42,6 @@ def test_multihead_scaleddotproduct_selfattention():
 
 
 def test_multihead_scaleddotproduct():
-    print("test_multihead_scaleddotproduct")
     nheads = 8
 
     src_seq_len = 10
@@ -116,7 +115,6 @@ def test_transformer_encoder():
 
 
 def test_transformer_decoder_layer():
-    print("test_transformer_decoder_layer")
     nhead = 8
     src_seq_len = 10
     tgt_seq_len = 20
@@ -136,7 +134,6 @@ def test_transformer_decoder_layer():
     memory = torch.rand(batch_size, src_seq_len, num_features, dtype=torch.complex64)
     tgt = torch.rand(batch_size, tgt_seq_len, num_features, dtype=torch.complex64)
     out = decoder_layer(tgt, memory)
-    print(out.shape)
 
     assert out.shape == (batch_size, tgt_seq_len, num_features)
 

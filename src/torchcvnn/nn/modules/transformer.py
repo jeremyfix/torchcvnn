@@ -502,7 +502,7 @@ class Transformer(nn.Module):
         norm_first: bool = False,
         bias: bool = True,
         device=None,
-        dtype=None,
+        dtype: torch.dtype = torch.complex64,
     ) -> None:
         factory_kwargs = {"device": device, "dtype": dtype}
         super().__init__()
@@ -583,3 +583,7 @@ class Transformer(nn.Module):
             memory_is_causal=memory_is_causal,
         )
         return output
+
+    def _reset_parameters(self):
+        # TODO
+        pass

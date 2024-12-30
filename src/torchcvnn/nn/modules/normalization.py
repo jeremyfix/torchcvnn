@@ -45,6 +45,7 @@ class LayerNorm(nn.Module):
 
     Arguments:
         normalized_shape (int or list or torch.Size): input shape from an expected input of size :math:`(*, normalized_shape[0], normalized_shape[1], ..., normalized_shape[-1])`
+        eps (float) – a value added to the denominator for numerical stability. Default: 1e-5
         elementwise_affine (bool): a boolean value that when set to `True`, this module has learnable per-element affine parameters initialized to a diagonal matrix with diagonal element :math:`\frac{1}{\sqrt{2}}` (for weights) and zeros (for biases). Default: `True`
         bias (bool): if set to `False`, the layer will not learn an additive bias
     """
@@ -52,6 +53,7 @@ class LayerNorm(nn.Module):
     def __init__(
         self,
         normalized_shape: _shape_t,
+        eps: float = 1e-5,
         elementwise_affine: bool = True,
         bias: bool = True,
         device: torch.device = None,

@@ -227,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.BatchNorm2d.html">torchcvnn.nn.BatchNorm2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.BatchNorm1d.html">torchcvnn.nn.BatchNorm1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.LayerNorm.html">torchcvnn.nn.LayerNorm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.RMSNorm.html">torchcvnn.nn.RMSNorm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.Transformer.html">torchcvnn.nn.Transformer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.TransformerEncoderLayer.html">torchcvnn.nn.TransformerEncoderLayer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../modules/_autosummary/torchcvnn.nn.TransformerDecoderLayer.html">torchcvnn.nn.TransformerDecoderLayer</a></li>
@@ -418,6 +419,97 @@
         <span class="c1"># bias is (C, ) complex dtype</span>
         <span class="n">outz</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
+        <span class="n">outz</span> <span class="o">=</span> <span class="n">outz</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>  <span class="c1"># num_samples, comnbined_dimensions</span>
+
+        <span class="n">outz</span> <span class="o">=</span> <span class="n">outz</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">outz</span></div>
+
+
+
+<div class="viewcode-block" id="RMSNorm">
+<a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.RMSNorm.html#torchcvnn.nn.RMSNorm">[docs]</a>
+<span class="k">class</span> <span class="nc">RMSNorm</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implementation of the torch.nn.RMSNorm for complex numbers.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        normalized_shape (int or list or torch.Size): input shape from an expected input of size :math:`(*, normalized_shape[0], normalized_shape[1], ..., normalized_shape[-1])`</span>
+<span class="sd">        eps (float) – a value added to the denominator for numerical stability. Default: 1e-5</span>
+<span class="sd">        elementwise_affine (bool): a boolean value that when set to `True`, this module has learnable per-element affine parameters initialized to a diagonal matrix with diagonal element :math:`\frac{1}{\sqrt{2}}` (for weights) and zeros (for biases). Default: `True`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RMSNorm.__init__">
+<a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.RMSNorm.html#torchcvnn.nn.RMSNorm.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">normalized_shape</span><span class="p">:</span> <span class="n">_shape_t</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+        <span class="n">elementwise_affine</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">normalized_shape</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
+            <span class="n">normalized_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">normalized_shape</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalized_shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">normalized_shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">elementwise_affine</span> <span class="o">=</span> <span class="n">elementwise_affine</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">combined_dimensions</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalized_shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">elementwise_affine</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">combined_dimensions</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_parameter</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_parameters</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the weights. The weight is initialized to a diagonal</span>
+<span class="sd">        matrix with diagonal :math:`\frac{1}{\sqrt{2}}`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">elementwise_affine</span><span class="p">:</span>
+                <span class="c1"># Initialize all the weights to zeros</span>
+                <span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+                <span class="c1"># And then fill in the diagonal with 1/sqrt(2)</span>
+                <span class="c1"># w is C, 2, 2</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs the forward pass</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># z: *, normalized_shape[0] , ..., normalized_shape[-1]</span>
+        <span class="n">z_ravel</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">combined_dimensions</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">z_ravel</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">view_as_real</span><span class="p">(</span><span class="n">z_ravel</span><span class="p">)</span>  <span class="c1"># combined_dimensions,num_samples, 2</span>
+
+        <span class="c1"># Transform the complex numbers as 2 reals to compute the variances and</span>
+        <span class="c1"># covariances</span>
+        <span class="n">covs</span> <span class="o">=</span> <span class="n">bn</span><span class="o">.</span><span class="n">batch_cov</span><span class="p">(</span><span class="n">z_ravel</span><span class="p">,</span> <span class="n">centered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Invert the covariance to scale</span>
+        <span class="n">invsqrt_covs</span> <span class="o">=</span> <span class="n">bn</span><span class="o">.</span><span class="n">inv_sqrt_2x2</span><span class="p">(</span><span class="n">covs</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>  <span class="c1"># combined_dimensions, 2, 2</span>
+        <span class="c1"># Note: the z_centered.transpose is to make</span>
+        <span class="c1"># z_centered from (combined_dimensions, num_samples, 2) to (combined_dimensions, 2, num_samples)</span>
+        <span class="c1"># So that the batch matrix multiply works as expected</span>
+        <span class="c1"># where invsqrt_covs is (combined_dimensions, 2, 2)</span>
+        <span class="n">outz</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">invsqrt_covs</span><span class="p">,</span> <span class="n">z_ravel</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">outz</span> <span class="o">=</span> <span class="n">outz</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>  <span class="c1"># num_features, 2, BxHxW</span>
+
+        <span class="c1"># Scale by gamma</span>
+        <span class="c1"># weight is (num_features, 2, 2) real valued</span>
+        <span class="n">outz</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">outz</span><span class="p">)</span>  <span class="c1"># combined_dimensions, 2, num_samples</span>
+        <span class="n">outz</span> <span class="o">=</span> <span class="n">outz</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>  <span class="c1"># combined_dimensions, num_samples, 2</span>
+        <span class="n">outz</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">view_as_complex</span><span class="p">(</span><span class="n">outz</span><span class="p">)</span>  <span class="c1"># combined_dimensions, num_samples</span>
+
+        <span class="c1"># bias is (C, ) complex dtype</span>
         <span class="n">outz</span> <span class="o">=</span> <span class="n">outz</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>  <span class="c1"># num_samples, comnbined_dimensions</span>
 
         <span class="n">outz</span> <span class="o">=</span> <span class="n">outz</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>

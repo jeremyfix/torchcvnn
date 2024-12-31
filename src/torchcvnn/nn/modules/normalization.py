@@ -216,7 +216,7 @@ class RMSNorm(nn.Module):
         outz = torch.bmm(invsqrt_covs, z_ravel.transpose(1, 2))
         outz = outz.contiguous()  # num_features, 2, BxHxW
 
-        # Shift by beta and scale by gamma
+        # Scale by gamma
         # weight is (num_features, 2, 2) real valued
         outz = torch.bmm(self.weight, outz)  # combined_dimensions, 2, num_samples
         outz = outz.transpose(1, 2).contiguous()  # combined_dimensions, num_samples, 2

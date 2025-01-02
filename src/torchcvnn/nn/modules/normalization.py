@@ -44,7 +44,7 @@ class LayerNorm(nn.Module):
     Implementation of the torch.nn.LayerNorm for complex numbers.
 
     Arguments:
-        normalized_shape (int or list or torch.Size): input shape from an expected input of size :math:`(*, normalized_shape[0], normalized_shape[1], ..., normalized_shape[-1])`
+        normalized_shape (int or list or torch.Size): input shape from an expected input of size :math:`(*, normalized\_shape[0], normalized\_shape[1], ..., normalized\_shape[-1])`
         eps (float) – a value added to the denominator for numerical stability. Default: 1e-5
         elementwise_affine (bool): a boolean value that when set to `True`, this module has learnable per-element affine parameters initialized to a diagonal matrix with diagonal element :math:`\frac{1}{\sqrt{2}}` (for weights) and zeros (for biases). Default: `True`
         bias (bool): if set to `False`, the layer will not learn an additive bias
@@ -150,7 +150,7 @@ class RMSNorm(nn.Module):
     Implementation of the torch.nn.RMSNorm for complex numbers.
 
     Arguments:
-        normalized_shape (int or list or torch.Size): input shape from an expected input of size :math:`(*, normalized_shape[0], normalized_shape[1], ..., normalized_shape[-1])`
+        normalized_shape (int or list or torch.Size): input shape from an expected input of size :math:`(*, normalized\_shape[0], normalized\_shape[1], ..., normalized\_shape[-1])`
         eps (float) – a value added to the denominator for numerical stability. Default: 1e-5
         elementwise_affine (bool): a boolean value that when set to `True`, this module has learnable per-element affine parameters initialized to a diagonal matrix with diagonal element :math:`\frac{1}{\sqrt{2}}` (for weights) and zeros (for biases). Default: `True`
     """

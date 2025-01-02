@@ -99,3 +99,8 @@ Dropout layers
 --------------
 
 
+.. autosummary::
+   :toctree: _autosummary
+
+   Dropout
+   Dropout2d

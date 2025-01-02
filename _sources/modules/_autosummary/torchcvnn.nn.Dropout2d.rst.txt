@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.Dropout2d
+======================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: Dropout2d
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Dropout2d.__init__
+      ~Dropout2d.add_module
+      ~Dropout2d.apply
+      ~Dropout2d.bfloat16
+      ~Dropout2d.buffers
+      ~Dropout2d.children
+      ~Dropout2d.compile
+      ~Dropout2d.cpu
+      ~Dropout2d.cuda
+      ~Dropout2d.double
+      ~Dropout2d.eval
+      ~Dropout2d.extra_repr
+      ~Dropout2d.float
+      ~Dropout2d.forward
+      ~Dropout2d.get_buffer
+      ~Dropout2d.get_extra_state
+      ~Dropout2d.get_parameter
+      ~Dropout2d.get_submodule
+      ~Dropout2d.half
+      ~Dropout2d.ipu
+      ~Dropout2d.load_state_dict
+      ~Dropout2d.modules
+      ~Dropout2d.mtia
+      ~Dropout2d.named_buffers
+      ~Dropout2d.named_children
+      ~Dropout2d.named_modules
+      ~Dropout2d.named_parameters
+      ~Dropout2d.parameters
+      ~Dropout2d.register_backward_hook
+      ~Dropout2d.register_buffer
+      ~Dropout2d.register_forward_hook
+      ~Dropout2d.register_forward_pre_hook
+      ~Dropout2d.register_full_backward_hook
+      ~Dropout2d.register_full_backward_pre_hook
+      ~Dropout2d.register_load_state_dict_post_hook
+      ~Dropout2d.register_load_state_dict_pre_hook
+      ~Dropout2d.register_module
+      ~Dropout2d.register_parameter
+      ~Dropout2d.register_state_dict_post_hook
+      ~Dropout2d.register_state_dict_pre_hook
+      ~Dropout2d.requires_grad_
+      ~Dropout2d.set_extra_state
+      ~Dropout2d.set_submodule
+      ~Dropout2d.share_memory
+      ~Dropout2d.state_dict
+      ~Dropout2d.to
+      ~Dropout2d.to_empty
+      ~Dropout2d.train
+      ~Dropout2d.type
+      ~Dropout2d.xpu
+      ~Dropout2d.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Dropout2d.T_destination
+      ~Dropout2d.call_super_init
+      ~Dropout2d.dump_patches
+      ~Dropout2d.training
+   
+   

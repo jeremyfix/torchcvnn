@@ -232,6 +232,8 @@
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.Transformer.html">torchcvnn.nn.Transformer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.TransformerEncoderLayer.html">torchcvnn.nn.TransformerEncoderLayer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.TransformerDecoderLayer.html">torchcvnn.nn.TransformerDecoderLayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.Dropout.html">torchcvnn.nn.Dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="torchcvnn.nn.Dropout2d.html">torchcvnn.nn.Dropout2d</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../init.html">torchcvnn.nn.init</a></li>
@@ -293,7 +295,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>normalized_shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> or </em><a class="reference external" href="https://pytorch.org/docs/stable/size.html#torch.Size" title="(in PyTorch v2.5)"><em>torch.Size</em></a>) – input shape from an expected input of size <span class="math notranslate nohighlight">\((*, normalized_shape[0], normalized_shape[1], ..., normalized_shape[-1])\)</span></p></li>
+<li><p><strong>normalized_shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a><em> or </em><a class="reference external" href="https://pytorch.org/docs/stable/size.html#torch.Size" title="(in PyTorch v2.5)"><em>torch.Size</em></a>) – input shape from an expected input of size <span class="math notranslate nohighlight">\((*, normalized\_shape[0], normalized\_shape[1], ..., normalized\_shape[-1])\)</span></p></li>
 <li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – 1e-5</p></li>
 <li><p><strong>elementwise_affine</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – a boolean value that when set to <cite>True</cite>, this module has learnable per-element affine parameters initialized to a diagonal matrix with diagonal element <span class="math notranslate nohighlight">\(\frac{1}{\sqrt{2}}\)</span> (for weights) and zeros (for biases). Default: <cite>True</cite></p></li>
 <li><p><strong>bias</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – if set to <cite>False</cite>, the layer will not learn an additive bias</p></li>

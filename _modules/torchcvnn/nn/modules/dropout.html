@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>torchcvnn.datasets.slc.ann_file - torchcvnn 0.7.0 documentation</title>
+        <title>torchcvnn.nn.modules.dropout - torchcvnn 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -275,10 +275,10 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>Source code for torchcvnn.datasets.slc.ann_file</h1><div class="highlight"><pre>
+          <h1>Source code for torchcvnn.nn.modules.dropout</h1><div class="highlight"><pre>
 <span></span><span class="c1"># MIT License</span>
 
-<span class="c1"># Copyright (c) 2024 Jeremy Fix</span>
+<span class="c1"># Copyright (c) 2023 Jérémie Levi, Victor Dhédin, Jeremy Fix</span>
 
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -298,75 +298,82 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
+<span class="c1"># Standard imports</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
-<div class="viewcode-block" id="AnnFile">
-<a class="viewcode-back" href="../../../../modules/datasets.html#torchcvnn.datasets.slc.ann_file.AnnFile">[docs]</a>
-<span class="k">class</span> <span class="nc">AnnFile</span><span class="p">:</span>
+<span class="c1"># External imports</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch.nn.common_types</span> <span class="kn">import</span> <span class="n">_size_2_t</span>
+
+
+<div class="viewcode-block" id="Dropout">
+<a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.Dropout.html#torchcvnn.nn.Dropout">[docs]</a>
+<span class="k">class</span> <span class="nc">Dropout</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies dropout to zero out values of the inputs</span>
 
-<span class="sd">    From the documentation :</span>
+<span class="sd">    During training, randomly zeroes some of the elements of the input tensor</span>
+<span class="sd">    with probability :math:`p` using samples from a Bernouilli distribution. Each</span>
+<span class="sd">    channel will be zeroed out independently on every forward call.</span>
 
-<span class="sd">    The annotation file (.ann) is a keyword/value ASCII file in which the value on the right of the equals sign</span>
-<span class="sd">    corresponds to the keyword on the left of the equals sign. The number of keywords may change with time, so the line</span>
-<span class="sd">    number should not be assumed to be constant for any given keyword.</span>
+<span class="sd">    Furthermore, the outputs are scaled by a factor of :math:`\frac{1}{1-p}` during</span>
+<span class="sd">    training. This means that during evaluation the module simply computes an</span>
+<span class="sd">    identity function.</span>
 
-<span class="sd">    In addition, the spacing between keywords and</span>
-<span class="sd">    values may change. The units are given in parenthesis between the keyword and equal sign, and may change from</span>
-<span class="sd">    annotation file to annotation file and within each annotation file.</span>
+<span class="sd">    Note:</span>
+<span class="sd">        As for now, with torch 2.1.0 :external:py:class:`torch.nn.Dropout` cannot be applied on</span>
+<span class="sd">        complex valued tensors. However, our implementation relies on the torch</span>
+<span class="sd">        implementation by dropout out a tensor of ones used as a mask on the</span>
+<span class="sd">        input.</span>
 
-<span class="sd">    Comments are indicated by semicolons (;), and</span>
-<span class="sd">    may occur at the beginning of a line, or at the middle of a line (everything after the semicolon on that line is a</span>
-<span class="sd">    comment). The length of each text line is variable, and ends with a carriage return. There may be lines with</span>
-<span class="sd">    just a carriage return or spaces and a carriage return.</span>
-
-
+<span class="sd">    Arguments:</span>
+<span class="sd">        p: probability of an element to be zeroed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<div class="viewcode-block" id="Dropout.__init__">
+<a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.Dropout.html#torchcvnn.nn.Dropout.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span></div>
 
-    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">l</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">):</span>
-                    <span class="c1"># Skip comments</span>
-                    <span class="k">continue</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="c1"># Skip empty lines</span>
-                    <span class="n">fields</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; = &quot;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="n">key</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="c1"># key might be :</span>
-                    <span class="c1">#     ISLR Noise Calibration Term LRTI80                       (-)</span>
-                    <span class="c1">#     slc_1_1x1_mag.set_cols                                   (pixels)</span>
-                    <span class="c1"># ....</span>
-                    <span class="c1"># We split the key by spaces, take all but the last token (the units) and join them with an underscore</span>
-                    <span class="c1"># to get a key that is easier to use</span>
-                    <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                        <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">()))[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
 
-                    <span class="c1"># Now we process the value, which may end with a comment</span>
-                    <span class="n">value</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                            <span class="k">pass</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">z</span></div>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">myrep</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;AnnFile(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
-            <span class="n">myrep</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;     </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="n">myrep</span></div>
+
+
+<div class="viewcode-block" id="Dropout2d">
+<a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.Dropout2d.html#torchcvnn.nn.Dropout2d">[docs]</a>
+<span class="k">class</span> <span class="nc">Dropout2d</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies dropout to zero out complete channels</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        As for now, with torch 2.1.0 :external:py:class:`torch.nn.Dropout2d` cannot be applied on</span>
+<span class="sd">        complex valued tensors. However, our implementation relies on the torch</span>
+<span class="sd">        implementation by dropout out a tensor of ones used as a mask on the</span>
+<span class="sd">        input.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        p: probability of an element to be zeroed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Dropout2d.__init__">
+<a class="viewcode-back" href="../../../../modules/_autosummary/torchcvnn.nn.Dropout2d.html#torchcvnn.nn.Dropout2d.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span></div>
+
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">dropout2d</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">z</span></div>
 
 </pre></div>
         </article>

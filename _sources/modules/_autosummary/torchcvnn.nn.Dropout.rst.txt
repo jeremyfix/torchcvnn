@@ -1,0 +1,81 @@
+﻿torchcvnn.nn.Dropout
+====================
+
+.. currentmodule:: torchcvnn.nn
+
+.. autoclass:: Dropout
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Dropout.__init__
+      ~Dropout.add_module
+      ~Dropout.apply
+      ~Dropout.bfloat16
+      ~Dropout.buffers
+      ~Dropout.children
+      ~Dropout.compile
+      ~Dropout.cpu
+      ~Dropout.cuda
+      ~Dropout.double
+      ~Dropout.eval
+      ~Dropout.extra_repr
+      ~Dropout.float
+      ~Dropout.forward
+      ~Dropout.get_buffer
+      ~Dropout.get_extra_state
+      ~Dropout.get_parameter
+      ~Dropout.get_submodule
+      ~Dropout.half
+      ~Dropout.ipu
+      ~Dropout.load_state_dict
+      ~Dropout.modules
+      ~Dropout.mtia
+      ~Dropout.named_buffers
+      ~Dropout.named_children
+      ~Dropout.named_modules
+      ~Dropout.named_parameters
+      ~Dropout.parameters
+      ~Dropout.register_backward_hook
+      ~Dropout.register_buffer
+      ~Dropout.register_forward_hook
+      ~Dropout.register_forward_pre_hook
+      ~Dropout.register_full_backward_hook
+      ~Dropout.register_full_backward_pre_hook
+      ~Dropout.register_load_state_dict_post_hook
+      ~Dropout.register_load_state_dict_pre_hook
+      ~Dropout.register_module
+      ~Dropout.register_parameter
+      ~Dropout.register_state_dict_post_hook
+      ~Dropout.register_state_dict_pre_hook
+      ~Dropout.requires_grad_
+      ~Dropout.set_extra_state
+      ~Dropout.set_submodule
+      ~Dropout.share_memory
+      ~Dropout.state_dict
+      ~Dropout.to
+      ~Dropout.to_empty
+      ~Dropout.train
+      ~Dropout.type
+      ~Dropout.xpu
+      ~Dropout.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Dropout.T_destination
+      ~Dropout.call_super_init
+      ~Dropout.dump_patches
+      ~Dropout.training
+   
+   

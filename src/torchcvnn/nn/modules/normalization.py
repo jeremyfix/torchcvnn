@@ -63,6 +63,7 @@ class LayerNorm(nn.Module):
         if isinstance(normalized_shape, numbers.Integral):
             normalized_shape = (normalized_shape,)
         self.normalized_shape = tuple(normalized_shape)
+        self.eps = eps
 
         self.elementwise_affine = elementwise_affine
 
@@ -121,7 +122,7 @@ class LayerNorm(nn.Module):
         covs = bn.batch_cov(z_centered, centered=True)
 
         # Invert the covariance to scale
-        invsqrt_covs = bn.inv_sqrt_2x2(covs)  # combined_dimensions, 2, 2
+        invsqrt_covs = bn.inv_sqrt_2x2(covs + self.eps)  # combined_dimensions, 2, 2
         # Note: the z_centered.transpose is to make
         # z_centered from (combined_dimensions, num_samples, 2) to (combined_dimensions, 2, num_samples)
         # So that the batch matrix multiply works as expected

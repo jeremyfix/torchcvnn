@@ -96,7 +96,7 @@ def test_layernorm():
     covs = bn.batch_cov(out_real)
     id_cov = 0.5 * torch.eye(2).tile(embedding_dim, 1, 1)
 
-    assert torch.allclose(covs, id_cov, atol=1e-6)
+    assert torch.allclose(covs, id_cov, atol=1e-3)
 
     ###############
     # Image Example
@@ -129,7 +129,7 @@ def test_layernorm():
     covs = bn.batch_cov(out_real)
     id_cov = 0.5 * torch.eye(2).tile(embedding_dim, 1, 1)
 
-    assert torch.allclose(covs, id_cov, atol=1e-6)
+    assert torch.allclose(covs, id_cov, atol=1e-3)
 
 
 def test_rmsnorm():

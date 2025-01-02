@@ -345,6 +345,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">normalized_shape</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
             <span class="n">normalized_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">normalized_shape</span><span class="p">,)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">normalized_shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">normalized_shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">elementwise_affine</span> <span class="o">=</span> <span class="n">elementwise_affine</span>
 
@@ -404,7 +405,7 @@
         <span class="n">covs</span> <span class="o">=</span> <span class="n">bn</span><span class="o">.</span><span class="n">batch_cov</span><span class="p">(</span><span class="n">z_centered</span><span class="p">,</span> <span class="n">centered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Invert the covariance to scale</span>
-        <span class="n">invsqrt_covs</span> <span class="o">=</span> <span class="n">bn</span><span class="o">.</span><span class="n">inv_sqrt_2x2</span><span class="p">(</span><span class="n">covs</span><span class="p">)</span>  <span class="c1"># combined_dimensions, 2, 2</span>
+        <span class="n">invsqrt_covs</span> <span class="o">=</span> <span class="n">bn</span><span class="o">.</span><span class="n">inv_sqrt_2x2</span><span class="p">(</span><span class="n">covs</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>  <span class="c1"># combined_dimensions, 2, 2</span>
         <span class="c1"># Note: the z_centered.transpose is to make</span>
         <span class="c1"># z_centered from (combined_dimensions, num_samples, 2) to (combined_dimensions, 2, num_samples)</span>
         <span class="c1"># So that the batch matrix multiply works as expected</span>

@@ -553,7 +553,7 @@
             <span class="n">covs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_var</span>
 
         <span class="c1"># Invert the covariance to scale</span>
-        <span class="n">invsqrt_covs</span> <span class="o">=</span> <span class="n">inv_sqrt_2x2</span><span class="p">(</span><span class="n">covs</span><span class="p">)</span>  <span class="c1"># num_features, 2, 2</span>
+        <span class="n">invsqrt_covs</span> <span class="o">=</span> <span class="n">inv_sqrt_2x2</span><span class="p">(</span><span class="n">covs</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span>  <span class="c1"># num_features, 2, 2</span>
         <span class="c1"># Note: the xc_centered.transpose is to make</span>
         <span class="c1"># xc_centered from (C, BxHxW, 2) to (B, 2, BxHxW)</span>
         <span class="c1"># So that the batch matrix multiply works as expected</span>

@@ -20,12 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Standard imports
+from typing import Callable
+
 # External imports
 import torch
 import torch.nn as nn
 
 # Local imports
-import torchcvnn.nn as c_nn
+from .normalization import LayerNorm
+from .activation import modReLU, MultiheadAttention
 
 
 class ViTLayer(nn.Module):
@@ -35,6 +39,7 @@ class ViTLayer(nn.Module):
         num_heads: int,
         hidden_dim: int,
         mlp_dim: int,
+        norm_layer: Callable[..., nn.Module] = LayerNorm,
         device: torch.device = None,
         dtype: torch.dtype = torch.complex64,
     ):
@@ -43,17 +48,17 @@ class ViTLayer(nn.Module):
 
         factory_kwargs = {"device": device, "dtype": dtype}
 
-        self.norm1 = c_nn.LayerNorm(hidden_dim, **factory_kwargs)
-        self.attn = c_nn.MultiheadAttention(
+        self.norm1 = norm_layer(hidden_dim, **factory_kwargs)
+        self.attn = MultiheadAttention(
             embed_dim=hidden_dim,
             num_heads=num_heads,
             batch_first=True,
             **factory_kwargs
         )
-        self.norm2 = c_nn.LayerNorm(hidden_dim)
+        self.norm2 = norm_layer(hidden_dim)
         self.ffn = nn.Sequential(
             nn.Linear(hidden_dim, mlp_dim, **factory_kwargs),
-            c_nn.modReLU(),
+            modReLU(),
             nn.Linear(mlp_dim, hidden_dim, **factory_kwargs),
         )
 
@@ -74,6 +79,7 @@ class ViT(nn.Module):
         num_heads: int,
         hidden_dim: int,
         mlp_dim: int,
+        norm_layer: Callable[..., nn.Module] = LayerNorm,
         device: torch.device = None,
         dtype: torch.dtype = torch.complex64,
     ):

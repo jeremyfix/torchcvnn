@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Standard imports
+from typing import Tuple, Union
 
 # External imports
 import torch
@@ -84,6 +86,45 @@ def test_vit():
     assert out.shape == (batch_size, num_patches, hidden_dim)
 
 
+class PatchEmbedder(nn.Module):
+
+    def __init__(
+        self,
+        image_size: Union[int, Tuple[int, int]],
+        cin,
+        hidden_dim,
+        patch_size,
+        norm_layer: nn.Module = c_nn.LayerNorm,
+        device: torch.device = None,
+        dtype=torch.complex64,
+    ):
+        super(PatchEmbedder, self).__init__()
+
+        factory_kwargs = {"device": device, "dtype": dtype}
+
+        if isinstance(image_size, int):
+            image_size = (image_size, image_size)
+
+        self.embedder = nn.Sequential(
+            norm_layer([cin, *image_size], **factory_kwargs),
+            nn.Conv2d(
+                cin,
+                hidden_dim,
+                kernel_size=patch_size,
+                stride=patch_size,
+                **factory_kwargs,
+            ),
+            # norm_layer([hidden_dim], **factory_kwargs),
+            norm_layer(
+                [hidden_dim, image_size[0] // patch_size, image_size[1] // patch_size],
+                **factory_kwargs,
+            ),
+        )
+
+    def forward(self, x):
+        return self.embedder(x)
+
+
 def test_vit_bhl():
     batch_size = 2
     C, H, W = 3, 64, 64
@@ -96,17 +137,9 @@ def test_vit_bhl():
 
     for mvit, hidden_dim in vit_models:
         for patch_size in [16, 32]:
-            patch_embedding = nn.Sequential(
-                nn.Conv2d(
-                    C,
-                    hidden_dim,
-                    kernel_size=patch_size,
-                    stride=patch_size,
-                    dtype=torch.complex64,
-                ),
-                c_nn.LayerNorm(hidden_dim),
+            patch_embedding = PatchEmbedder(
+                (H, W), C, hidden_dim, patch_size, c_nn.LayerNorm, device=device
             )
-            patch_embedding = patch_embedding.to(device)
 
             vit = eval(f"c_models.{mvit}(patch_embedding).to(device)")
 

@@ -44,7 +44,7 @@ class ViTLayer(nn.Module):
 
         self.norm1 = c_nn.LayerNorm(embed_dim, **factory_kwargs)
         self.attn = c_nn.MultiheadAttention(
-            embed_dim=embed_dim, num_heads=num_heads, **factory_kwargs
+            embed_dim=embed_dim, num_heads=num_heads, batch_first=True, **factory_kwargs
         )
         self.norm2 = c_nn.LayerNorm(embed_dim)
         self.ffn = nn.Sequential(
@@ -85,12 +85,12 @@ class ViT(nn.Module):
         # x : (B, C, H, W)
         embedding = self.patch_embedder(x)  # (B, embed_dim, num_patch_H, num_patch_W)
 
-        # Transpose to ("seq_len"=num_patches, B, embed_dim)
-        embedding = embedding.flatten(2).permute(2, 0, 1).contiguous()
+        # Transpose to (B, "seq_len"=num_patches, embed_dim)
+        embedding = embedding.flatten(2).transpose(1, 2)
 
         in_vit_layer = embedding
         for layer in self.layers:
             in_vit_layer = layer(in_vit_layer)
 
         # Transpose to batch_first
-        return in_vit_layer.transpose(0, 1)
+        return in_vit_layer

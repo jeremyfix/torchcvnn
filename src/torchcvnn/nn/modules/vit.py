@@ -93,6 +93,8 @@ class ViT(nn.Module):
             self.layers.append(
                 ViTLayer(num_heads, hidden_dim, mlp_dim, **factory_kwargs)
             )
+        self.layers = nn.Sequential(*self.layers)
+        self.norm = norm_layer(hidden_dim, **factory_kwargs)
 
     def forward(self, x):
         # x : (B, C, H, W)
@@ -101,9 +103,9 @@ class ViT(nn.Module):
         # Transpose to (B, "seq_len"=num_patches, embed_dim)
         embedding = embedding.flatten(2).transpose(1, 2).contiguous()
 
-        in_vit_layer = embedding
-        for layer in self.layers:
-            in_vit_layer = layer(in_vit_layer)
+        out = self.layers(embedding)
+
+        out = self.norm(out)
 
         # Transpose to batch_first
-        return in_vit_layer
+        return out

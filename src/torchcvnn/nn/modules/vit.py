@@ -30,6 +30,7 @@ import torch.nn as nn
 # Local imports
 from .normalization import LayerNorm
 from .activation import modReLU, MultiheadAttention
+from .dropout import Dropout
 
 
 class ViTLayer(nn.Module):
@@ -39,6 +40,8 @@ class ViTLayer(nn.Module):
         num_heads: int,
         hidden_dim: int,
         mlp_dim: int,
+        dropout: float = 0.0,
+        attention_dropout: float = 0.0,
         norm_layer: Callable[..., nn.Module] = LayerNorm,
         device: torch.device = None,
         dtype: torch.dtype = torch.complex64,
@@ -51,20 +54,25 @@ class ViTLayer(nn.Module):
         self.norm1 = norm_layer(hidden_dim, **factory_kwargs)
         self.attn = MultiheadAttention(
             embed_dim=hidden_dim,
+            dropout=attention_dropout,
             num_heads=num_heads,
             batch_first=True,
             **factory_kwargs
         )
+        self.dropout = Dropout(dropout)
         self.norm2 = norm_layer(hidden_dim)
         self.ffn = nn.Sequential(
             nn.Linear(hidden_dim, mlp_dim, **factory_kwargs),
+            norm_layer(mlp_dim),
             modReLU(),
+            Dropout(dropout),
             nn.Linear(mlp_dim, hidden_dim, **factory_kwargs),
+            Dropout(dropout),
         )
 
     def forward(self, x):
         norm_x = self.norm1(x)
-        x = x + self.attn(norm_x, norm_x, norm_x, need_weights=False)[0]
+        x = x + self.dropout(self.attn(norm_x, norm_x, norm_x, need_weights=False)[0])
         x = x + self.ffn(self.norm2(x))
 
         return x
@@ -79,6 +87,8 @@ class ViT(nn.Module):
         num_heads: int,
         hidden_dim: int,
         mlp_dim: int,
+        dropout: float = 0.0,
+        attention_dropout: float = 0.0,
         norm_layer: Callable[..., nn.Module] = LayerNorm,
         device: torch.device = None,
         dtype: torch.dtype = torch.complex64,
@@ -88,6 +98,7 @@ class ViT(nn.Module):
         factory_kwargs = {"device": device, "dtype": dtype}
 
         self.patch_embedder = patch_embedder
+        self.dropout = Dropout(dropout)
         self.layers = nn.ModuleList([])
         for _ in range(num_layers):
             self.layers.append(
@@ -95,6 +106,8 @@ class ViT(nn.Module):
                     num_heads=num_heads,
                     hidden_dim=hidden_dim,
                     mlp_dim=mlp_dim,
+                    dropout=dropout,
+                    attention_dropout=attention_dropout,
                     norm_layer=norm_layer,
                     **factory_kwargs
                 )
@@ -109,7 +122,7 @@ class ViT(nn.Module):
         # Transpose to (B, "seq_len"=num_patches, embed_dim)
         embedding = embedding.flatten(2).transpose(1, 2).contiguous()
 
-        out = self.layers(embedding)
+        out = self.layers(self.dropout(embedding))
 
         out = self.norm(out)
 

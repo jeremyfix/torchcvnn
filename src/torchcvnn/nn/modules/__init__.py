@@ -32,6 +32,7 @@ from .transformer import (
     TransformerDecoderLayer,
     Transformer,
 )
+from .vit import ViTLayer, ViT
 from . import initialization as init
 from .loss import ComplexMSELoss
 from .activation import (

@@ -33,7 +33,8 @@ class ViTLayer(nn.Module):
     def __init__(
         self,
         num_heads: int,
-        embed_dim: int,
+        hidden_dim: int,
+        mlp_dim: int,
         device: torch.device = None,
         dtype: torch.dtype = torch.complex64,
     ):
@@ -42,15 +43,18 @@ class ViTLayer(nn.Module):
 
         factory_kwargs = {"device": device, "dtype": dtype}
 
-        self.norm1 = c_nn.LayerNorm(embed_dim, **factory_kwargs)
+        self.norm1 = c_nn.LayerNorm(hidden_dim, **factory_kwargs)
         self.attn = c_nn.MultiheadAttention(
-            embed_dim=embed_dim, num_heads=num_heads, batch_first=True, **factory_kwargs
+            embed_dim=hidden_dim,
+            num_heads=num_heads,
+            batch_first=True,
+            **factory_kwargs
         )
-        self.norm2 = c_nn.LayerNorm(embed_dim)
+        self.norm2 = c_nn.LayerNorm(hidden_dim)
         self.ffn = nn.Sequential(
-            nn.Linear(embed_dim, 4 * embed_dim, **factory_kwargs),
+            nn.Linear(hidden_dim, mlp_dim, **factory_kwargs),
             c_nn.modReLU(),
-            nn.Linear(4 * embed_dim, embed_dim, **factory_kwargs),
+            nn.Linear(mlp_dim, hidden_dim, **factory_kwargs),
         )
 
     def forward(self, x):
@@ -68,7 +72,8 @@ class ViT(nn.Module):
         patch_embedder: nn.Module,
         num_layers: int,
         num_heads: int,
-        embed_dim: int,
+        hidden_dim: int,
+        mlp_dim: int,
         device: torch.device = None,
         dtype: torch.dtype = torch.complex64,
     ):
@@ -79,7 +84,9 @@ class ViT(nn.Module):
         self.patch_embedder = patch_embedder
         self.layers = nn.ModuleList([])
         for _ in range(num_layers):
-            self.layers.append(ViTLayer(num_heads, embed_dim, **factory_kwargs))
+            self.layers.append(
+                ViTLayer(num_heads, hidden_dim, mlp_dim, **factory_kwargs)
+            )
 
     def forward(self, x):
         # x : (B, C, H, W)

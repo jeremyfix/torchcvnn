@@ -86,7 +86,7 @@ class ViT(nn.Module):
         embedding = self.patch_embedder(x)  # (B, embed_dim, num_patch_H, num_patch_W)
 
         # Transpose to (B, "seq_len"=num_patches, embed_dim)
-        embedding = embedding.flatten(2).transpose(1, 2)
+        embedding = embedding.flatten(2).transpose(1, 2).contiguous()
 
         in_vit_layer = embedding
         for layer in self.layers:

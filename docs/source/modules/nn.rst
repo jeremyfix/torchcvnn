@@ -83,6 +83,7 @@ Normalization layers
    BatchNorm2d
    BatchNorm1d
    LayerNorm
+   RMSNorm
 
 Transformer layers
 ------------------
@@ -98,3 +99,8 @@ Dropout layers
 --------------
 
 
+.. autosummary::
+   :toctree: _autosummary
+
+   Dropout
+   Dropout2d

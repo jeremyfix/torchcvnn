@@ -91,7 +91,13 @@ class ViT(nn.Module):
         self.layers = nn.ModuleList([])
         for _ in range(num_layers):
             self.layers.append(
-                ViTLayer(num_heads, hidden_dim, mlp_dim, **factory_kwargs)
+                ViTLayer(
+                    num_heads=num_heads,
+                    hidden_dim=hidden_dim,
+                    mlp_dim=mlp_dim,
+                    norm_layer=norm_layer,
+                    **factory_kwargs
+                )
             )
         self.layers = nn.Sequential(*self.layers)
         self.norm = norm_layer(hidden_dim, **factory_kwargs)
